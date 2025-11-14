@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Catatan Piutang & Utang</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
+</head>
+<body>
+
+    <div class="header">
+        <div class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </div>
+        <h1>Catatan Keuangan</h1>
+        <div class="header-logo" id="headerLogo"></div> 
+    </div>
+
+    <div class="side-menu-modal" id="sideMenuModal">
+        <div class="side-menu-content" id="sideMenuContent">
+            <div class="side-menu-header">MENU UTAMA</div>
+            <div class="menu-item active" data-page="homePage">
+                <i class="fas fa-home"></i> Beranda
+            </div>
+            <div class="menu-item" data-page="piutangPage">
+                <i class="fas fa-arrow-circle-up"></i> Daftar Piutang
+            </div>
+            <div class="menu-item" data-page="utangPage">
+                <i class="fas fa-arrow-circle-down"></i> Daftar Utang
+            </div>
+            <div class="menu-item" data-page="formPage">
+                <i class="fas fa-plus-circle"></i> Tambah Transaksi
+            </div>
+            <div class="menu-item" data-page="historyPage">
+                <i class="fas fa-history"></i> Riwayat Lunas
+            </div>
+            <div class="menu-item" data-page="summaryPage">
+                <i class="fas fa-chart-pie"></i> Ringkasan Total
+            </div>
+            <div class="menu-item" data-page="backupPage">
+                <i class="fas fa-database"></i> Backup & Restore Data
+            </div>
+            <div class="menu-item" onclick="exportToCSV()">
+                <i class="fas fa-file-csv"></i> Export Data (CSV)
+            </div>
+            <div class="menu-footer">
+                Versi 1.3 (Denda Majemuk & Cicilan Kumulatif)
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        
+        <div class="page active" id="homePage">
+             <div class="notification-status-info">
+                 <i class="fas fa-bell"></i>
+                 <span id="notificationStatusText">Status Notifikasi: Memuat...</span>
+                 <button onclick="requestNotificationPermission()">Aktifkan Izin Notifikasi</button>
+             </div>
+            <div class="dashboard-section">
+                <h2>Ringkasan Keuangan Aktif</h2>
+                <div class="summary-dashboard" id="mainDashboard">
+                    <p style="text-align: center; color: var(--text-muted);">Memuat...</p>
+                </div>
+            </div>
+
+            <div class="dashboard-section">
+                <h2>Distribusi Total Piutang & Utang (Awal)</h2>
+                <div class="chart-container">
+                    <canvas id="piutangChart"></canvas>
+                </div>
+            </div>
+
+            <div class="dashboard-section">
+                <h2>Jatuh Tempo Mendekat (Aktif)</h2>
+                <div id="latestTransactions">
+                     <p style="text-align: center; color: var(--text-muted);">Tidak ada transaksi aktif.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="piutangPage">
+            <h2>Daftar Piutang Aktif</h2>
+            <div class="list-controls">
+                 <input type="text" id="searchPiutang" placeholder="Cari nama..." onkeyup="filterTransactionList('piutang')">
+                 <select id="sortPiutang" onchange="filterTransactionList('piutang')">
+                     <option value="due_asc">Jatuh Tempo (Terdekat)</option>
+                     <option value="amount_desc">Sisa (Terbesar)</option>
+                     <option value="due_desc">Jatuh Tempo (Terjauh)</option>
+                 </select>
+            </div>
+            <div id="piutangList">
+                <p style="text-align: center; color: var(--text-muted);">Tidak ada piutang aktif.</p>
+            </div>
+        </div>
+
+        <div class="page" id="utangPage">
+            <h2>Daftar Utang Aktif</h2>
+            <div class="list-controls">
+                 <input type="text" id="searchUtang" placeholder="Cari nama..." onkeyup="filterTransactionList('utang')">
+                 <select id="sortUtang" onchange="filterTransactionList('utang')">
+                     <option value="due_asc">Jatuh Tempo (Terdekat)</option>
+                     <option value="amount_desc">Sisa (Terbesar)</option>
+                     <option value="due_desc">Jatuh Tempo (Terjauh)</option>
+                 </select>
+            </div>
+            <div id="utangList">
+                <p style="text-align: center; color: var(--text-muted);">Tidak ada utang aktif.</p>
+            </div>
+        </div>
+        
+        <div class="page" id="historyPage">
+            <h2>Riwayat Transaksi Lunas</h2>
+            <div class="list-controls">
+                 <input type="text" id="searchHistory" placeholder="Cari nama..." onkeyup="filterTransactionList('history')">
+                 <select id="sortHistory" onchange="filterTransactionList('history')">
+                     <option value="lunas_desc">Tanggal Lunas (Terbaru)</option>
+                     <option value="principal_desc">Pokok (Terbesar)</option>
+                 </select>
+            </div>
+            <div id="historyList">
+                <p style="text-align: center; color: var(--text-muted);">Tidak ada riwayat lunas.</p>
+            </div>
+        </div>
+        
+        <div class="page" id="summaryPage">
+            <h2>Ringkasan Total Keuangan</h2>
+            <div class="summary-page-content">
+                <div class="summary-block">
+                    <h3>Total Piutang (Klaim)</h3>
+                    <div class="summary-row">
+                        <span>Total Awal:</span> 
+                        <strong id="summaryPiutangAwal">Rp 0</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Sisa Piutang Aktif:</span> 
+                        <strong style="color: var(--success-color);" id="summaryPiutangSisa">Rp 0</strong>
+                    </div>
+                </div>
+                
+                <div class="summary-block">
+                    <h3>Total Utang (Kewajiban)</h3>
+                    <div class="summary-row">
+                        <span>Total Awal:</span> 
+                        <strong id="summaryUtangAwal">Rp 0</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Sisa Utang Aktif:</span> 
+                        <strong style="color: var(--danger-color);" id="summaryUtangSisa">Rp 0</strong>
+                    </div>
+                </div>
+                
+                <div class="summary-block">
+                    <h3>Net Worth (Nilai Bersih)</h3>
+                    <div class="summary-row networth">
+                        <span>Net Worth Akhir (Piutang Sisa - Utang Sisa):</span> 
+                        <strong id="summaryNetWorth">Rp 0</strong>
+                    </div>
+                </div>
+                
+                <button onclick="exportToCSV()" style="background-color: var(--secondary-color);">
+                     <i class="fas fa-file-csv"></i> Export Semua Data ke CSV
+                </button>
+            </div>
+        </div>
+
+        <div class="page" id="formPage">
+            <h2>Tambah Transaksi Baru</h2>
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label for="type"><i class="fas fa-exchange-alt"></i> Tipe Transaksi:</label>
+                    <select id="type" required>
+                        <option value="piutang">Piutang (Orang berutang pada Anda)</option>
+                        <option value="utang">Utang (Anda berutang pada orang)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="person"><i class="fas fa-user"></i> Nama Pihak Kedua:</label>
+                    <input type="text" id="person" required placeholder="Nama orang/perusahaan">
+                </div>
+                
+                <div class="form-group">
+                    <label for="principal"><i class="fas fa-coins"></i> Pokok Pinjaman (Rp):</label>
+                    <input type="text" id="principal" required placeholder="Contoh: 1.000.000" oninput="formatInputRupiah(this); updateInstallmentEstimate();">
+                </div>
+
+                <div class="form-group">
+                    <label for="interestRate"><i class="fas fa-percent"></i> Suku Bunga (%) per Tenor (Flat):</label>
+                    <input type="number" id="interestRate" required value="0" min="0" step="0.01" oninput="updateInstallmentEstimate()">
+                    <div class="form-info">Tulis '0' jika tanpa bunga. Bunga dihitung dari Pokok Pinjaman.</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="installmentsCount"><i class="fas fa-calendar-alt"></i> Tenor/Jumlah Cicilan (Bulan):</label>
+                    <input type="number" id="installmentsCount" required min="1" value="1" oninput="updateInstallmentEstimate(); calculateDueDate();">
+                    <div id="installmentEstimate" class="form-info" style="display: none; margin-top: 10px;"></div> 
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate"><i class="fas fa-calendar-day"></i> Tanggal Mulai Pinjaman:</label>
+                    <input type="date" id="startDate" required onchange="calculateDueDate()">
+                </div>
+                
+                <div class="form-group form-info">
+                    <label><i class="fas fa-clock"></i> Estimasi Tanggal Jatuh Tempo Akhir:</label>
+                    <strong id="finalDueDateDisplay">Pilih tanggal mulai dan tenor/cicilan.</strong>
+                </div>
+
+                <button type="submit"><i class="fas fa-save"></i> Catat Transaksi</button>
+            </form>
+        </div>
+        
+        <div class="page" id="backupPage">
+            <h2><i class="fas fa-database"></i> Backup & Restore Data</h2>
+            
+            <div class="data-section">
+                <h3>Status Data Aktif</h3>
+                <p><strong>Status Data Aktif (`personalFinanceTracker_v2`):</strong></p>
+                <div id="data-status">Memuat data...</div>
+                <p>Simulasi data yang tersimpan (JSON format):</p>
+                <pre id="current-app-data" class="mock-data"></pre>
+            </div>
+
+            <div class="backup-section">
+                <h2>Fitur Backup & Restore (JSON)</h2>
+                <div class="info">
+                    <strong>Penting:</strong> Fitur ini membuat file **JSON** sebagai *backup* data Anda. Data akan berisi semua Piutang, Utang, dan Riwayat pembayaran Anda.
+                </div>
+                <div class="button-group" style="margin-top: 15px;">
+                    <button id="export-btn" class="export-btn">⬇️ Export Data JSON</button>
+                    <button id="trigger-import-btn" class="import-btn">⬆️ Import Data JSON</button>
+                    <input type="file" id="import-file" accept="application/json">
+                </div>
+                <p style="font-size: 0.8em; color: var(--text-muted); margin-top: 10px;">
+                    File export akan tersimpan dengan nama: CatatanKeuangan_Backup_YYYY-MM-DD.json
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="fab" id="fabAddTransaction" onclick="navigateTo('formPage')">
+        <i class="fas fa-plus"></i>
+    </div>
+    
+    <div id="transactionDetailModal" class="modal">
+        <div class="modal-content-detail">
+            <span class="close-btn" onclick="closeDetailModal()">&times;</span>
+            <div class="modal-title" id="modalTitle"></div>
+            <div id="modalContent"></div>
+            <div class="modal-actions" id="modalActions"></div>
+        </div>
+    </div>
+    
+    <div id="paymentDateModal" class="modal">
+        <div class="modal-content-payment">
+            <h3>Catat Pembayaran</h3>
+            <div id="paymentAmountDisplay"></div>
+            <div class="form-group" style="margin-top: 20px;">
+                <label for="datePaidInput"><i class="fas fa-calendar-check"></i> Tanggal Pembayaran:</label>
+                <input type="date" id="datePaidInput" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="nominalPaidInput"><i class="fas fa-hand-holding-usd"></i> Nominal Dibayar:</label>
+                <input type="text" id="nominalPaidInput" placeholder="Masukkan jumlah bayar..." oninput="formatInputRupiah(this)">
+                <div class="form-info">Nominal akan otomatis terisi dengan jumlah tagihan. Isi jika bayar lebih/kurang.</div>
+            </div>
+
+            <div class="payment-modal-actions">
+                <button style="background-color: var(--secondary-color);" onclick="closePaymentModal()">Batal</button>
+                <button id="confirmPaymentBtn" style="background-color: var(--success-color);">Konfirmasi Bayar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
