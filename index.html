@@ -2,293 +2,223 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Catatan Piutang & Utang</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catatan Keuangan (Hutang & Piutang)</title>
+    
     <link rel="stylesheet" href="style.css"> 
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4170035550920357"
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script> 
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4170035550920357"
      crossorigin="anonymous"></script>
-    <link rel="manifest" href="manifest.json">
-
-<link rel="apple-touch-icon" href="/assets/icon.png">
-
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="application-name" content="Catatan Hutang">
-<meta name="apple-mobile-web-app-title" content="Catatan Hutang">
-<meta name="theme-color" content="#2196F3">
-
 </head>
 <body>
 
     <div class="header">
-        <div class="menu-toggle" id="menuToggle">
-            <i class="fas fa-bars"></i>
-        </div>
-        <h1>Catatan Keuangan</h1>
-        <div class="header-logo" id="headerLogo"></div> 
+        <div id="menuToggle">☰</div> 
+        <h1>Catatan Keuangan </h1>
     </div>
-
-    <div class="side-menu-modal" id="sideMenuModal">
-        <div class="side-menu-content" id="sideMenuContent">
-            <div class="side-menu-header">MENU UTAMA</div>
-            <div class="menu-item active" data-page="homePage">
-                <i class="fas fa-home"></i> Beranda
-            </div>
-            <div class="menu-item" data-page="piutangPage">
-                <i class="fas fa-arrow-circle-up"></i> Daftar Piutang
-            </div>
-            <div class="menu-item" data-page="utangPage">
-                <i class="fas fa-arrow-circle-down"></i> Daftar Utang
-            </div>
-            <div class="menu-item" data-page="formPage">
-                <i class="fas fa-plus-circle"></i> Tambah Transaksi
-            </div>
-            <div class="menu-item" data-page="historyPage">
-                <i class="fas fa-history"></i> Riwayat Lunas
-            </div>
-            <div class="menu-item" data-page="summaryPage">
-                <i class="fas fa-chart-pie"></i> Ringkasan Total
-            </div>
-            <div class="menu-item" data-page="backupPage">
-                <i class="fas fa-database"></i> Backup & Restore Data
-            </div>
-            <div class="menu-item" onclick="exportToCSV()">
-                <i class="fas fa-file-csv"></i> Export Data (CSV)
-            </div>
-            <div class="menu-footer">
-                Versi 1.3 (Denda Majemuk & Cicilan Kumulatif)
-            </div>
+    
+    <div class="ad-container ad-top">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-4170035550920357"
+             data-ad-slot="1369506733"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
         </div>
+    
+    <div id="sideMenuModal">
+        <div id="sideMenuContent">
+            <h3 style="padding: 0 20px;">Menu Aplikasi</h3>
+            <hr style="margin-bottom: 20px;">
+            <div class="menu-item active" data-page="homePage"><span class="icon">🏠</span> Beranda</div>
+            <div class="menu-item" data-page="piutangPage"><span class="icon">💵</span> Piutang</div>
+            <div class="menu-item" data-page="utangPage"><span class="icon">💳</span> Utang</div>
+            <div class="menu-item" data-page="historyPage"><span class="icon">📋</span> Riwayat</div>
+            <div class="menu-item" data-page="summaryPage"><span class="icon">📈</span> Ringkasan & Export</div>
+            </div>
     </div>
-
-    <div class="main-content">
+    
+    <div class="container">
         
-        <div class="page active" id="homePage">
-             <div class="notification-status-info">
-                 <i class="fas fa-bell"></i>
-                 <span id="notificationStatusText">Status Notifikasi: Memuat...</span>
-                 <button onclick="requestNotificationPermission()">Aktifkan Izin Notifikasi</button>
-             </div>
-            <div class="dashboard-section">
-                <h2>Ringkasan Keuangan Aktif</h2>
-                <div class="summary-dashboard" id="mainDashboard">
-                    <p style="text-align: center; color: var(--text-muted);">Memuat...</p>
-                </div>
+        <div id="homePage" class="page active">
+            <h2>Beranda 🏠</h2>
+            <div id="mainDashboard"></div>
+            
+            <div class="ad-container ad-in-content">
+                <ins class="adsbygoogle"
+                     style="display:block;"
+                     data-ad-format="fluid"
+                     data-ad-layout-key="-gw-3+1f-3d+2z"
+                     data-ad-client="ca-pub-4170035550920357"
+                     data-ad-slot="1091688029"></ins>
             </div>
-
-            <div class="dashboard-section">
-                <h2>Distribusi Total Piutang & Utang (Awal)</h2>
-                <div class="chart-container">
-                    <canvas id="piutangChart"></canvas>
-                </div>
+            
+            <h3>Grafik Status Keuangan 📈</h3>
+            <div id="chartArea">
+                <canvas id="piutangChart"></canvas>
             </div>
-
-            <div class="dashboard-section">
-                <h2>Jatuh Tempo Mendekat (Aktif)</h2>
-                <div id="latestTransactions">
-                     <p style="text-align: center; color: var(--text-muted);">Tidak ada transaksi aktif.</p>
-                </div>
+            
+            <h3>Transaksi Aktif Terbaru</h3>
+            <div id="latestTransactions" class="transaction-list-container">
+                <p style="text-align: center; color: var(--text-muted);">Memuat data...</p>
             </div>
-        </div>
-
-        <div class="page" id="piutangPage">
-            <h2>Daftar Piutang Aktif</h2>
-            <div class="list-controls">
-                 <input type="text" id="searchPiutang" placeholder="Cari nama..." onkeyup="filterTransactionList('piutang')">
-                 <select id="sortPiutang" onchange="filterTransactionList('piutang')">
-                     <option value="due_asc">Jatuh Tempo (Terdekat)</option>
-                     <option value="amount_desc">Sisa (Terbesar)</option>
-                     <option value="due_desc">Jatuh Tempo (Terjauh)</option>
-                 </select>
-            </div>
-            <div id="piutangList">
-                <p style="text-align: center; color: var(--text-muted);">Tidak ada piutang aktif.</p>
-            </div>
-        </div>
-
-        <div class="page" id="utangPage">
-            <h2>Daftar Utang Aktif</h2>
-            <div class="list-controls">
-                 <input type="text" id="searchUtang" placeholder="Cari nama..." onkeyup="filterTransactionList('utang')">
-                 <select id="sortUtang" onchange="filterTransactionList('utang')">
-                     <option value="due_asc">Jatuh Tempo (Terdekat)</option>
-                     <option value="amount_desc">Sisa (Terbesar)</option>
-                     <option value="due_desc">Jatuh Tempo (Terjauh)</option>
-                 </select>
-            </div>
-            <div id="utangList">
-                <p style="text-align: center; color: var(--text-muted);">Tidak ada utang aktif.</p>
+            
+            <div class="ad-container ad-bottom">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-4170035550920357"
+                     data-ad-slot="3450258051"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
             </div>
         </div>
         
-        <div class="page" id="historyPage">
-            <h2>Riwayat Transaksi Lunas</h2>
-            <div class="list-controls">
-                 <input type="text" id="searchHistory" placeholder="Cari nama..." onkeyup="filterTransactionList('history')">
-                 <select id="sortHistory" onchange="filterTransactionList('history')">
-                     <option value="lunas_desc">Tanggal Lunas (Terbaru)</option>
-                     <option value="principal_desc">Pokok (Terbesar)</option>
-                 </select>
-            </div>
-            <div id="historyList">
-                <p style="text-align: center; color: var(--text-muted);">Tidak ada riwayat lunas.</p>
-            </div>
-        </div>
-        
-        <div class="page" id="summaryPage">
-            <h2>Ringkasan Total Keuangan</h2>
-            <div class="summary-page-content">
-                <div class="summary-block">
-                    <h3>Total Piutang (Klaim)</h3>
-                    <div class="summary-row">
-                        <span>Total Awal:</span> 
-                        <strong id="summaryPiutangAwal">Rp 0</strong>
-                    </div>
-                    <div class="summary-row">
-                        <span>Sisa Piutang Aktif:</span> 
-                        <strong style="color: var(--success-color);" id="summaryPiutangSisa">Rp 0</strong>
-                    </div>
-                </div>
-                
-                <div class="summary-block">
-                    <h3>Total Utang (Kewajiban)</h3>
-                    <div class="summary-row">
-                        <span>Total Awal:</span> 
-                        <strong id="summaryUtangAwal">Rp 0</strong>
-                    </div>
-                    <div class="summary-row">
-                        <span>Sisa Utang Aktif:</span> 
-                        <strong style="color: var(--danger-color);" id="summaryUtangSisa">Rp 0</strong>
-                    </div>
-                </div>
-                
-                <div class="summary-block">
-                    <h3>Net Worth (Nilai Bersih)</h3>
-                    <div class="summary-row networth">
-                        <span>Net Worth Akhir (Piutang Sisa - Utang Sisa):</span> 
-                        <strong id="summaryNetWorth">Rp 0</strong>
-                    </div>
-                </div>
-                
-                <button onclick="exportToCSV()" style="background-color: var(--secondary-color);">
-                     <i class="fas fa-file-csv"></i> Export Semua Data ke CSV
-                </button>
-            </div>
-        </div>
-
-        <div class="page" id="formPage">
-            <h2>Tambah Transaksi Baru</h2>
+        <div id="formPage" class="page">
+            <h2>Catat Transaksi Baru ➕</h2>
             <form id="transactionForm">
-                <div class="form-group">
-                    <label for="type"><i class="fas fa-exchange-alt"></i> Tipe Transaksi:</label>
-                    <select id="type" required>
-                        <option value="piutang">Piutang (Orang berutang pada Anda)</option>
-                        <option value="utang">Utang (Anda berutang pada orang)</option>
+                <div><label for="type">Tipe Transaksi:</label><select id="type" required><option value="piutang">Piutang (Saya Memberi Pinjaman)</option><option value="utang">Utang (Saya Menerima Pinjaman)</option></select></div>
+                <div><label for="person">Nama Pihak/Orang:</label><input type="text" id="person" placeholder="Masukkan Nama..." required></div>
+                <div><label for="principal">Jumlah Pokok (Rp):</label><input type="text" id="principal" placeholder="Contoh 1.000.000" required></div>
+                <div><label for="startDate">Tanggal Mulai Pinjam:</label><input type="date" id="startDate" required></div>
+                <div><label for="interestRate">Suku Bunga (% per Bulan):</label><input type="text" id="interestRate" min="0" placeholder="Masukkan Angka.." required></div>
+                <div><label for="installmentsCount">Tenor/Jumlah Cicilan (Bulan):</label><input type="number" id="installmentsCount" min="1" placeholder="Masukkan Angka.." required></div>
+                <div id="installmentEstimate" class="estimate-box"></div>
+                <div><label>Tanggal Jatuh Tempo Terakhir:</label><p id="finalDueDateDisplay" class="info-display"></p></div>
+                <button type="submit" style="width: 100%;">Catat Transaksi</button>
+            </form>
+            <div class="ad-container ad-in-form">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-4170035550920357"
+                     data-ad-slot="6016711642"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+            </div>
+        </div>
+        
+        <div id="piutangPage" class="page">
+            <h2>Daftar Piutang Aktif 💵</h2>
+            <div class="controls-container">
+                <div class="search-container"><input type="text" id="searchPiutang" placeholder="Cari Piutang berdasarkan nama..." onkeyup="filterTransactionList('piutang')"></div>
+                <div class="sort-controls">
+                    <label for="sortPiutang">Urutkan:</label>
+                    <select id="sortPiutang" onchange="filterTransactionList('piutang')">
+                        <option value="due_asc">Jatuh Tempo Terdekat</option>
+                        <option value="due_desc">Jatuh Tempo Terlama</option>
+                        <option value="amount_desc">Sisa (Terbesar)</option>
                     </select>
                 </div>
+            </div>
+            <div id="piutangList" class="transaction-list-container"><p>Memuat data piutang...</p></div>
+            <div class="ad-container ad-in-list">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-4170035550920357"
+                     data-ad-slot="9353321426"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+            </div>
+        </div>
 
-                <div class="form-group">
-                    <label for="person"><i class="fas fa-user"></i> Nama Pihak Kedua:</label>
-                    <input type="text" id="person" required placeholder="Nama orang/perusahaan">
+        <div id="utangPage" class="page">
+            <h2>Daftar Utang Aktif 💳</h2>
+            <div class="controls-container">
+                <div class="search-container"><input type="text" id="searchUtang" placeholder="Cari Utang berdasarkan nama..." onkeyup="filterTransactionList('utang')"></div>
+                <div class="sort-controls">
+                    <label for="sortUtang">Urutkan:</label>
+                    <select id="sortUtang" onchange="filterTransactionList('utang')">
+                        <option value="due_asc">Jatuh Tempo Terdekat</option>
+                        <option value="due_desc">Jatuh Tempo Terlama</option>
+                        <option value="amount_desc">Sisa (Terbesar)</option>
+                    </select>
                 </div>
-                
-                <div class="form-group">
-                    <label for="principal"><i class="fas fa-coins"></i> Pokok Pinjaman (Rp):</label>
-                    <input type="text" id="principal" required placeholder="Contoh: 1.000.000" oninput="formatInputRupiah(this); updateInstallmentEstimate();">
-                </div>
-
-                <div class="form-group">
-                    <label for="interestRate"><i class="fas fa-percent"></i> Suku Bunga (%) per Tenor (Flat):</label>
-                    <input type="number" id="interestRate" required value="0" min="0" step="0.01" oninput="updateInstallmentEstimate()">
-                    <div class="form-info">Tulis '0' jika tanpa bunga. Bunga dihitung dari Pokok Pinjaman.</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="installmentsCount"><i class="fas fa-calendar-alt"></i> Tenor/Jumlah Cicilan (Bulan):</label>
-                    <input type="number" id="installmentsCount" required min="1" value="1" oninput="updateInstallmentEstimate(); calculateDueDate();">
-                    <div id="installmentEstimate" class="form-info" style="display: none; margin-top: 10px;"></div> 
-                </div>
-
-                <div class="form-group">
-                    <label for="startDate"><i class="fas fa-calendar-day"></i> Tanggal Mulai Pinjaman:</label>
-                    <input type="date" id="startDate" required onchange="calculateDueDate()">
-                </div>
-                
-                <div class="form-group form-info">
-                    <label><i class="fas fa-clock"></i> Estimasi Tanggal Jatuh Tempo Akhir:</label>
-                    <strong id="finalDueDateDisplay">Pilih tanggal mulai dan tenor/cicilan.</strong>
-                </div>
-
-                <button type="submit"><i class="fas fa-save"></i> Catat Transaksi</button>
-            </form>
+            </div>
+            <div id="utangList" class="transaction-list-container"><p>Memuat data utang...</p></div>
+            <div class="ad-container ad-in-list">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-4170035550920357"
+                     data-ad-slot="7187033524"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+            </div>
         </div>
         
-        <div class="page" id="backupPage">
-            <h2><i class="fas fa-database"></i> Backup & Restore Data</h2>
-            
-            <div class="data-section">
-                <h3>Status Data Aktif</h3>
-                <p><strong>Status Data Aktif (`personalFinanceTracker_v2`):</strong></p>
-                <div id="data-status">Memuat data...</div>
-                <p>Simulasi data yang tersimpan (JSON format):</p>
-                <pre id="current-app-data" class="mock-data"></pre>
+        <div id="historyPage" class="page">
+            <h2>Riwayat Transaksi Lunas 📋</h2>
+            <div class="controls-container">
+                <div class="search-container"><input type="text" id="searchHistory" placeholder="Cari Riwayat berdasarkan nama..." onkeyup="filterTransactionList('history')"></div>
+                <div class="sort-controls">
+                    <label for="sortHistory">Urutkan:</label>
+                    <select id="sortHistory" onchange="filterTransactionList('history')">
+                        <option value="lunas_desc">Tanggal Lunas Terbaru</option>
+                        <option value="principal_desc">Pokok (Terbesar)</option>
+                    </select>
+                </div>
             </div>
-
-            <div class="backup-section">
-                <h2>Fitur Backup & Restore (JSON)</h2>
-                <div class="info">
-                    <strong>Penting:</strong> Fitur ini membuat file **JSON** sebagai *backup* data Anda. Data akan berisi semua Piutang, Utang, dan Riwayat pembayaran Anda.
-                </div>
-                <div class="button-group" style="margin-top: 15px;">
-                    <button id="export-btn" class="export-btn">⬇️ Export Data JSON</button>
-                    <button id="trigger-import-btn" class="import-btn">⬆️ Import Data JSON</button>
-                    <input type="file" id="import-file" accept="application/json">
-                </div>
-                <p style="font-size: 0.8em; color: var(--text-muted); margin-top: 10px;">
-                    File export akan tersimpan dengan nama: CatatanKeuangan_Backup_YYYY-MM-DD.json
-                </p>
+            <div id="historyList" class="transaction-list-container"><p>Memuat riwayat lunas...</p></div>
+            <div class="ad-container ad-in-list">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-4170035550920357"
+                     data-ad-slot="2628841410"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
             </div>
         </div>
+
+        <div id="summaryPage" class="page">
+            <h2>Ringkasan & Export Data 📈</h2>
+            
+            <div class="summary-box">
+                <p style="margin-top:0;">Export data transaksi aktif dan lunas ke dalam format **CSV** (kompatibel dengan Excel) untuk analisis lebih lanjut.</p>
+                <button onclick="exportToCSV()" class="btn-success" style="width: 100%;">Export Semua Data ke CSV</button>
+                <hr style="margin: 15px 0; border: none; border-top: 1px dashed var(--border-color);">
+                
+                <p style="margin-bottom:10px;">Backup/Restore data dalam format **JSON**.</p>
+                <button onclick="exportToJSON()" class="btn-info" style="width: 100%; margin-bottom: 10px;">Export Data ke JSON</button>
+                
+                <label for="importFile" style="text-align: center;">Pilih file JSON untuk Import:</label>
+                <input type="file" id="importFile" accept=".json"> 
+            </div>
+            
+            <h3>Ringkasan Saldo Global</h3>
+            <div id="balanceSummary" class="summary-box">
+                <div class="modal-detail-row"><span>Total Piutang (Awal):</span> <strong id="summaryPiutangAwal">Rp 0</strong></div>
+                <div class="modal-detail-row"><span>Sisa Piutang (Aktif):</span> <strong id="summaryPiutangSisa">Rp 0</strong></div>
+                <hr style="border: none; border-top: 1px dashed #eee; margin: 10px 0;">
+                <div class="modal-detail-row"><span>Total Utang (Awal):</span> <strong id="summaryUtangAwal">Rp 0</strong></div>
+                <div class="modal-detail-row"><span>Sisa Utang (Aktif):</span> <strong id="summaryUtangSisa">Rp 0</strong></div>
+                <hr style="border: none; border-top: 2px solid var(--border-color); margin: 15px 0;">
+                <div class="modal-detail-row final-summary"><span>Net Worth (Bersih Aktif):</span> <strong id="summaryNetWorth">Rp 0</strong></div>
+            </div>
+            
+            <div class="ad-container ad-bottom">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-4170035550920357"
+                     data-ad-slot="5769299636"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+            </div>
+        </div>
+
     </div>
-    
-    <div class="fab" id="fabAddTransaction" onclick="navigateTo('formPage')">
-        <i class="fas fa-plus"></i>
-    </div>
-    
-    <div id="transactionDetailModal" class="modal">
-        <div class="modal-content-detail">
-            <span class="close-btn" onclick="closeDetailModal()">&times;</span>
-            <div class="modal-title" id="modalTitle"></div>
+
+    <div id="transactionDetailModal" class="modal-overlay">
+        <div class="modal-content">
+            <span onclick="closeDetailModal()" class="close-btn">&times;</span>
+            <h3 id="modalTitle" class="modal-header">Detail Transaksi</h3>
             <div id="modalContent"></div>
-            <div class="modal-actions" id="modalActions"></div>
+            <div id="modalActions" class="modal-actions"></div>
         </div>
     </div>
     
-    <div id="paymentDateModal" class="modal">
-        <div class="modal-content-payment">
-            <h3>Catat Pembayaran</h3>
-            <div id="paymentAmountDisplay"></div>
-            <div class="form-group" style="margin-top: 20px;">
-                <label for="datePaidInput"><i class="fas fa-calendar-check"></i> Tanggal Pembayaran:</label>
-                <input type="date" id="datePaidInput" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="nominalPaidInput"><i class="fas fa-hand-holding-usd"></i> Nominal Dibayar:</label>
-                <input type="text" id="nominalPaidInput" placeholder="Masukkan jumlah bayar..." oninput="formatInputRupiah(this)">
-                <div class="form-info">Nominal akan otomatis terisi dengan jumlah tagihan. Isi jika bayar lebih/kurang.</div>
-            </div>
+    <button id="fabAddTransaction" onclick="navigateTo('formPage')"><span class="icon">＋</span></button>
 
-            <div class="payment-modal-actions">
-                <button style="background-color: var(--secondary-color);" onclick="closePaymentModal()">Batal</button>
-                <button id="confirmPaymentBtn" style="background-color: var(--success-color);">Konfirmasi Bayar</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+    <script src="script.js"></script> 
 </body>
 </html>
