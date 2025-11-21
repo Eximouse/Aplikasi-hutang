@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#2b2d42">
+    <title>Finansial Pro</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="shortcut icon" href="favicon.ico" type ="image/x-icon">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      
+      <meta name="google-adsense-account" content="ca-pub-4170035550920357">
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4170035550920357"
+     crossorigin="anonymous"></script>     
+      
+</head>
+<body>
+
+    <header class="top-bar">
+        <div class="user-info">
+            <small class="text-muted">Selamat Datang di Aplikasi Finansial Pro</small>
+            <h2 id="header-title">Ringkasan</h2>
+        </div>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+        </div>
+    </header>
+
+    <main class="app-container">
+        
+        <section id="page-home" class="page active">
+            <div class="balance-card glass-effect">
+                <span style="opacity: 0.8;">Total Kekayaan Bersih</span>
+                <h1 id="main-balance">Rp 0</h1>
+                <div class="balance-row">
+                    <div><i class="fas fa-arrow-down text-green"></i> Masuk: <span id="main-income">0</span></div>
+                    <div><i class="fas fa-arrow-up text-red"></i> Keluar: <span id="main-expense">0</span></div>
+                </div>
+            </div>
+
+            <div class="quick-stats-grid">
+                <div class="stat-card border-left-green">
+                    <i class="fas fa-hand-holding-usd text-green"></i>
+                    <div>
+                        <small>Total Piutang</small>
+                        <strong id="main-piutang">Rp 0</strong>
+                    </div>
+                </div>
+                <div class="stat-card border-left-red">
+                    <i class="fas fa-file-invoice-dollar text-red"></i>
+                    <div>
+                        <small>Total Hutang</small>
+                        <strong id="main-hutang">Rp 0</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <h3><i class="fas fa-chart-pie"></i> Arus Kas Bulan Ini</h3>
+                <div class="chart-container">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-budget" class="page">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('budget', 'tab-budget-list')">Transaksi</button>
+                <button class="tab" onclick="switchTab('budget', 'tab-budget-plan')">Planning & Target</button>
+            </div>
+
+            <div id="tab-budget-list" class="tab-content active">
+                <div class="list-header">
+                    <h3>Riwayat Terakhir</h3>
+                    <button class="btn-xs" onclick="exportCSV('budget')"><i class="fas fa-download"></i> CSV</button>
+                </div>
+                <div id="budget-list" class="transaction-list mt-10"></div>
+            </div>
+
+            <div id="tab-budget-plan" class="tab-content">
+                <div class="card luxury-card">
+                    <h3><i class="fas fa-bullseye"></i> Tambah Target Baru</h3>
+                    <div class="form-group">
+                        <input type="text" id="goal-name" placeholder="Nama Target (misal: Beli iPhone)">
+                        <input type="text" inputmode="numeric" class="money-input" id="goal-amount" placeholder="Target Nominal (Rp)">
+                        <button class="btn-primary full-width" onclick="addGoal()">Simpan</button>
+                    </div>
+                </div>
+                <div class="mt-20">
+                    <small class="text-muted">Klik pada kartu target untuk menambah tabungan.</small>
+                </div>
+                <div id="goal-list" class="goal-list mt-10"></div>
+            </div>
+        </section>
+
+        <section id="page-loans" class="page">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('loans', 'tab-loans-active')">Aktif</button>
+                <button class="tab" onclick="switchTab('loans', 'tab-loans-history')">Riwayat Lunas</button>
+            </div>
+
+            <div class="search-wrapper mb-20">
+                <i class="fas fa-search"></i>
+                <input type="text" id="loan-search" placeholder="Cari nama..." onkeyup="renderLoans()">
+            </div>
+
+            <div id="tab-loans-active" class="tab-content active">
+                <div id="loan-list-active" class="loan-grid"></div>
+            </div>
+
+            <div id="tab-loans-history" class="tab-content">
+                 <div class="list-header">
+                    <h3>Arsip Lunas</h3>
+                    <button class="btn-xs" onclick="exportCSV('loans')"><i class="fas fa-download"></i> CSV</button>
+                </div>
+                <div id="loan-list-history" class="loan-grid mt-10"></div>
+            </div>
+        </section>
+
+        <section id="page-calc" class="page">
+            <div class="card luxury-card">
+                <div class="card-header-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <h3 class="text-center mb-20">Compound Interest Calculator</h3>
+                
+                <div class="form-group">
+                    <label>Modal Awal/Modal Saat Ini (Rp)</label>
+                    <input type="text" inputmode="numeric" class="money-input" id="calc-principal" placeholder="Contoh: 10.000.000">
+                </div>
+
+                <div class="form-group">
+                    <label>Pilih Metode Investasi</label>
+                    <select id="calc-method" onchange="toggleDcaInput()">
+                        <option value="none">Tidak Ada (Lump Sum)</option>
+                        <option value="daily">Nabung Harian</option>
+                        <option value="weekly">Nabung Mingguan</option>
+                        <option value="monthly">Nabung Bulanan</option>
+                        <option value="yearly">Nabung Tahunan</option>
+                    </select>
+                </div>
+
+                <div class="form-group hidden" id="dca-input-group">
+                    <label>Nominal Rutin (Rp)</label>
+                    <input type="text" inputmode="numeric" class="money-input" id="calc-contribution" placeholder="Contoh: 50.000">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Return (%/thn)</label>
+                        <input type="number" id="calc-rate" placeholder="10">
+                    </div>
+                    <div class="form-group">
+                        <label>Durasi/Jangka Waktu (Thn)</label>
+                        <input type="number" id="calc-years" placeholder="5">
+                    </div>
+                </div>
+
+                <button class="btn-primary full-width mt-10" onclick="calculateCompound()">Hitung Simulasi</button>
+            </div>
+
+            <div id="calc-result" class="result-box hidden mt-20 fade-in">
+                <div class="flex-between mb-10">
+                    <small>Estimasi Total Akhir:</small>
+                    <i class="fas fa-times" onclick="resetCalc()" style="cursor:pointer; color:var(--text-muted); padding:5px;"></i>
+                </div>
+                <h2 id="calc-total-display" class="text-primary">Rp 0</h2>
+                
+                <div class="calc-details mb-20">
+                    <div class="detail-row"><span>Modal Disetor:</span> <strong id="calc-principal-display">Rp 0</strong></div>
+                    <div class="detail-row"><span>Bunga/Keuntungan:</span> <strong id="calc-interest-display" class="text-green">Rp 0</strong></div>
+                </div>
+
+                <button class="btn-danger full-width" onclick="resetCalc()" style="font-size: 0.9rem; padding: 12px;">
+                    <i class="fas fa-trash-alt"></i> Hapus
+                </button>
+            </div>
+        </section>
+
+        <section id="page-settings" class="page">
+            <div class="card">
+                <h3><i class="fas fa-cog"></i> Preferensi</h3>
+                <div class="setting-item">
+                    <span>Bahasa</span>
+                    <select id="lang-select">
+                        <option value="id">Indonesia</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span>Import Data (CSV)</span>
+                    <label class="btn-xs file-label">
+                        Pilih File <input type="file" id="import-file" hidden onchange="importCSV(this)">
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <span>Finansial Pro</span>
+                    </div>                   <div <small class="badge-gray">Version: 3.1</small>
+                </div>
+            </div>
+            
+            <div class="card mt-20 border-red">
+                <h3>Hapus Data !</h3>
+                <p class="text-muted text-sm mb-10">Data Yang Sudah Di Hapus Tidak Akan Bisa Di Pulihkan
+                Pastikan Sudah Mencadangkan Seluruh Data Anda.</p>
+                <button class="btn-danger full-width" onclick="resetData()">Reset Semua Data</button>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="toast-container"></div>
+
+    <div class="fab-wrapper">
+        <div class="fab-menu" id="fab-menu">
+            <button onclick="openModal('modal-budget')" data-label="Catat Transaksi"><i class="fas fa-wallet"></i></button>
+            <button onclick="openModal('modal-loan')" data-label="Catat Hutang/Piutang"><i class="fas fa-handshake"></i></button>
+        </div>
+        <button class="fab-main" onclick="toggleFab()">
+            <i class="fas fa-plus" id="fab-icon"></i>
+        </button>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" onclick="navTo('page-home')">
+            <i class="fas fa-home"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="#" class="nav-item" onclick="navTo('page-budget')">
+            <i class="fas fa-wallet"></i>
+            <span>BudgetKu</span>
+        </a>
+        <a href="#" class="nav-item" onclick="navTo('page-loans')">
+            <i class="fas fa-file-invoice-dollar"></i>
+            <span>Pinjaman</span>
+        </a>
+        <a href="#" class="nav-item" onclick="navTo('page-calc')">
+            <i class="fas fa-calculator"></i>
+            <span>Simulasi</span>
+        </a>
+        <a href="#" class="nav-item" onclick="navTo('page-settings')">
+            <i class="fas fa-cog"></i>
+            <span>Setelan</span>
+        </a>
+    </nav>
+
+    <div class="modal-overlay" id="modal-budget">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Catat Keuangan</h3>
+                <i class="fas fa-times close-icon" onclick="closeModal('modal-budget')"></i>
+            </div>
+            <div class="modal-body">
+                <div class="type-selector">
+                    <input type="radio" name="b-type" id="t-out" value="expense" checked>
+                    <label for="t-out" class="type-btn expense">Pengeluaran</label>
+                    
+                    <input type="radio" name="b-type" id="t-in" value="income">
+                    <label for="t-in" class="type-btn income">Pemasukan</label>
+                </div>
+                <input type="text" inputmode="numeric" class="money-input input-lg" id="b-amount" placeholder="Nominal (Rp)">
+                <input type="text" id="b-desc" placeholder="Keterangan (cth: Makan Siang)">
+                <input type="date" id="b-date">
+                <button class="btn-primary full-width mt-20" onclick="saveBudget()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-loan">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Catat Pinjaman</h3>
+                <i class="fas fa-times close-icon" onclick="closeModal('modal-loan')"></i>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tipe Transaksi</label>
+                    <select id="l-type">
+                        <option value="piutang">Saya Meminjamkan (Piutang)</option>
+                        <option value="utang">Saya Berhutang (Hutang)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Nama Orang/Pihak Kedua</label>
+                    <input type="text" id="l-person" placeholder="Nama lengkap">
+                </div>
+                <div class="form-group">
+                    <label>Pokok Pinjaman</label>
+                    <input type="text" inputmode="numeric" class="money-input" id="l-principal" oninput="calcLoanPreview()" placeholder="0">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Bunga (%/bln)</label>
+                        <input type="number" id="l-rate" value="0" oninput="calcLoanPreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>Tenor (Bulan)</label>
+                        <input type="number" id="l-tenor" value="1" oninput="calcLoanPreview()">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tanggal Transaksi</label>
+                    <input type="date" id="l-date">
+                </div>
+                
+                <div class="info-preview">
+                    <div class="flex-between"><span>Cicilan/bln:</span> <strong id="prev-installment">Rp 0</strong></div>
+                    <div class="flex-between"><span>Total Akhir:</span> <strong id="prev-total">Rp 0</strong></div>
+                </div>
+
+                <button class="btn-primary full-width mt-20" onclick="saveLoan()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-detail">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Rincian Transaksi</h3>
+                <i class="fas fa-times close-icon" onclick="closeModal('modal-detail')"></i>
+            </div>
+            <div class="modal-body" id="detail-content">
+                </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-target-add">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Tabung Dana</h3>
+                <i class="fas fa-times close-icon" onclick="closeModal('modal-target-add')"></i>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted text-center mb-20">Berapa nominal yang ingin kamu tambahkan?</p>
+                <div class="form-group">
+                    <label>Nominal Setor (Rp)</label>
+                    <input type="text" inputmode="numeric" class="money-input input-lg" id="target-add-amount" placeholder="0">
+                </div>
+                <input type="hidden" id="target-current-id">
+                <button class="btn-primary full-width mt-10" onclick="saveTargetSavings()">Tambah Tabungan</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="sw-register.js"></script>
+    <script src="script.js"></script>    
+</body>
+</html>
