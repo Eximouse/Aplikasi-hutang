@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>404 - File Not Found</title>
+
+  <script>
+    // Cek jika URL yang dicari adalah jalur verifikasi TWA yang gagal (404)
+    if (window.location.pathname === '/.well-known/assetlinks.json') {
+      // Lakukan redirect ke lokasi file yang benar di root
+      window.location.replace('/assetlinks.json');
+    } 
+  </script>
+  </head>
+<body>
+  <h1>404</h1>
+  <p>File tidak ditemukan. Jika Anda mencari assetlinks.json, Anda akan diarahkan...</p>
+</body>
+</html>
