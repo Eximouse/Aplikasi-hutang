@@ -35,6 +35,28 @@
       "purpose": "maskable"
     }
    ],
+   
+  "screenshots": [
+    {
+      "src": "images/screenshot-mobile-1.png",
+      "sizes": "1080x2301",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "images/screenshot-mobile-2.png",
+      "sizes": "1080x2305",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "images/screenshot-mobile-3.png",
+      "sizes": "1080x2309",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+   
   "categories": [
     "books",
     "finance",
