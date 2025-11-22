@@ -34,5 +34,11 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+   ],
+  "categories": [
+    "books",
+    "finance"
+  ],
+  "id": "Finansial Pro",
+  "description": "FinPro\nAplikasi catatan Keuangan yang banyak kegunaan, mulai dari Budgeting, Manajemen Pinjaman, Kalkulator investasi dan lain-lain"
 }
