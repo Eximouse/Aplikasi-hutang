@@ -32,7 +32,7 @@ function saveData() {
     updateUI();
 }
 
-// --- MONEY FORMATTER HELPER ---
+// --- MONEY & DATE FORMATTER HELPER ---
 function initMoneyInputs() {
     const inputs = document.querySelectorAll('.money-input');
     inputs.forEach(input => {
@@ -60,6 +60,20 @@ function parseMoney(str) {
 function fmtMoney(num) {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
 }
+
+// FUNGSI BARU: FORMAT TANGGAL DD-NamaBulan-YYYY
+function fmtDate(dateString) {
+    const options = { day: '2-digit', month: 'long', year: 'numeric' };
+    const date = new Date(dateString);
+    // Menggunakan locale 'id-ID' untuk mendapatkan nama bulan dalam Bahasa Indonesia
+    // dan mengatur format
+    let formatted = date.toLocaleDateString('id-ID', options);
+    
+    // Mengganti spasi menjadi hyphen, dan menghilangkan 'Tgl ' (jika ada)
+    formatted = formatted.replace(/\s/g, '-').replace('Tgl-', ''); 
+    return formatted;
+}
+// ---------------------------------------------------
 
 // --- NAVIGATION ---
 function navTo(pageId) {
@@ -328,6 +342,7 @@ function renderLoans() {
                     <strong>${l.person}</strong>
                     <span style="font-size:0.7rem; font-weight:bold; color:${l.type==='piutang'?'var(--success)':'var(--danger)'}">${l.type.toUpperCase()}</span>
                 </div>
+                <small class="text-muted">Tanggal: ${fmtDate(l.date)}</small>
                 <div class="flex-between mt-10 text-muted">
                     <small>Sisa: ${fmtMoney(l.total - l.paid)}</small>
                     <small>${Math.round(progress)}%</small>
