@@ -1,1 +1,10 @@
-
+[
+  {
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "id.web.eximouse.twa",
+        "sha256_cert_fingerprints": ["9B:8C:A9:24:61:73:F0:E6:9F:F6:A5:AC:7B:72:39:FE:14:8E:A1:26:3D:A4:41:A8:C3:CD:5D:E5:8C:B1:0B:CB"]
+      }
+    }
+]
