@@ -4,7 +4,7 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
 // --- VARIABEL CACHING ---
-const ASSET_CACHE_NAME = 'finpro-v2';
+const ASSET_CACHE_NAME = 'finpro-v1';
 const ASSETS = [
     './',
     './index.html',
