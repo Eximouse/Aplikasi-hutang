@@ -161,3 +161,68 @@ input:checked + .type-btn.expense { background: var(--danger); }
 @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .fade-in { animation: fadeIn 0.5s ease; }
+
+/* --- Tambahan untuk Halaman Tools & Dana Darurat --- */
+
+/* Conic Gradient Progress Circle (Lebih Ringan dari Chart.js) */
+.progress-circle-conic {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: conic-gradient(var(--primary) 0%, #e0e0e0 0%);
+    margin: 0 auto 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: background 0.5s ease;
+}
+
+.progress-circle-conic .inner-circle {
+    width: 170px;
+    height: 170px;
+    background: var(--bg-card);
+    border-radius: 50%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.progress-circle-conic .percentage {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.progress-circle-conic .status-text {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+/* Info Box */
+.info-box {
+    background: rgba(255, 193, 7, 0.1);
+    color: #e67e22;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+[data-theme="dark"] .progress-circle-conic {
+    background: conic-gradient(var(--primary) 0%, #444 0%);
+}
+[data-theme="dark"] .progress-circle-conic .inner-circle {
+    background: var(--bg-card);
+}
+
+/* Navbar Adjustment for 5 Items (Already grid, just ensure icon alignment) */
+.bottom-nav {
+    grid-template-columns: repeat(5, 1fr); 
+}

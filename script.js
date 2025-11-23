@@ -1,17 +1,308 @@
+// --- DICTIONARY BAHASA (Language Resources) ---
+const RESOURCES = {
+    id: {
+        welcome_msg: "Selamat Datang di Aplikasi Finansial Pro",
+        nav_home: "Beranda",
+        nav_budget: "BudgetKu",
+        nav_tools: "Tools",
+        nav_loans: "Pinjaman",
+        nav_settings: "Setelan",
+        nav_calc: "Kalkulator",
+        
+        total_net_worth: "Total Kekayaan Bersih",
+        lbl_in: "Masuk",
+        lbl_out: "Keluar",
+        total_receivable: "Total Piutang",
+        total_debt: "Total Hutang",
+        em_fund_title: "Dana Darurat",
+        em_check_status: "Cek Status Aman",
+        em_not_set: "Belum diset",
+        cashflow_title: "Arus Kas Bulan Ini",
+
+        tab_trans: "Transaksi",
+        tab_plan: "Planning & Target",
+        recent_history: "Riwayat Terakhir",
+        add_new_goal: "Tambah Target Baru",
+        ph_goal_name: "Nama Target (misal: Beli iPhone)",
+        ph_goal_amount: "Target Nominal (Rp)",
+        btn_save: "Simpan",
+        goal_hint: "Klik pada kartu target untuk menambah tabungan.",
+
+        tab_active: "Aktif",
+        tab_history: "Riwayat Lunas",
+        ph_search_name: "Cari nama...",
+        archive_paid: "Arsip Lunas",
+
+        collected: "Terkumpul",
+        your_target: "Target Kamu",
+        month: "Bulan",
+        btn_add_savings: "Tambah Tabungan",
+        risk_profile_title: "Atur Profil Risiko",
+        risk_profile_desc: "Aplikasi akan menghitung target ideal berdasarkan profil risiko hidup Anda secara otomatis.",
+        lbl_expense: "Pengeluaran Bulanan (Rata-rata)",
+        ph_expense: "Contoh: 3.000.000",
+        lbl_job_status: "Status Pekerjaan",
+        opt_stable: "Karyawan Tetap / PNS (Stabil)",
+        opt_freelance: "Freelance / Bisnis (Fluktuatif)",
+        lbl_dependents: "Jumlah Tanggungan",
+        opt_single: "Sendiri (Single)",
+        opt_family_small: "1-2 Orang (Keluarga Kecil)",
+        opt_family_large: "3+ Orang (Keluarga Besar)",
+        btn_recalc: "Hitung Ulang Target",
+
+        lbl_principal: "Modal Awal/Modal Saat Ini (Rp)",
+        lbl_inv_method: "Pilih Metode Investasi",
+        opt_lump: "Tidak Ada (Lump Sum)",
+        opt_daily: "Nabung Harian",
+        opt_weekly: "Nabung Mingguan",
+        opt_monthly: "Nabung Bulanan",
+        opt_yearly: "Nabung Tahunan",
+        lbl_routine_amount: "Nominal Rutin (Rp)",
+        lbl_duration: "Durasi (Thn)",
+        btn_calc_sim: "Hitung Simulasi",
+        est_total: "Estimasi Total Akhir:",
+        lbl_capital: "Modal Disetor:",
+        lbl_interest: "Bunga/Cuan:",
+
+        pref_title: "Preferensi",
+        lbl_lang: "Bahasa",
+        btn_choose_file: "Pilih File",
+        danger_zone_title: "Hapus Data !",
+        danger_zone_desc: "Data yang dihapus tidak bisa dipulihkan.",
+        btn_reset_data: "Reset Semua Data",
+
+        modal_trans_title: "Catat Keuangan",
+        lbl_expense_type: "Pengeluaran",
+        lbl_income_type: "Pemasukan",
+        ph_desc: "Keterangan (cth: Makan Siang)",
+        
+        modal_loan_title: "Catat Pinjaman",
+        lbl_trans_type: "Tipe Transaksi",
+        opt_lend: "Saya Meminjamkan (Piutang)",
+        opt_borrow: "Saya Berhutang (Hutang)",
+        lbl_person_name: "Nama Orang/Pihak Kedua",
+        lbl_principal_loan: "Pokok Pinjaman",
+        lbl_trans_date: "Tanggal Transaksi",
+        lbl_installment: "Cicilan/bln:",
+        lbl_total_final: "Total Akhir:",
+        
+        modal_detail_title: "Rincian Transaksi",
+        modal_save_title: "Tabung Dana",
+        ask_amount_add: "Berapa nominal yang ingin kamu tambahkan?",
+        lbl_deposit_amount: "Nominal Setor (Rp)",
+        
+        em_modal_desc: "Amankan masa depanmu dengan menabung hari ini.",
+        em_tip: "Sisihkan uang receh atau sisa belanja harian Anda di sini agar tidak terasa berat.",
+        btn_save_savings: "Simpan Tabungan",
+        
+        // --- TAMBAHAN UNTUK FAB ---
+        fab_trans: "Catat Transaksi",
+        fab_loan: "Catat Hutang/Piutang",
+        fab_emergency: "Tabung Dana Darurat",
+
+        // JS Messages
+        msg_complete_data: "Mohon lengkapi data",
+        msg_trans_saved: "Transaksi berhasil dicatat",
+        msg_invalid_goal: "Data target tidak valid",
+        msg_goal_created: "Target baru dibuat",
+        msg_invalid_amount: "Nominal tidak valid",
+        msg_success_add: "Berhasil menambah",
+        msg_loan_saved: "Data pinjaman tersimpan",
+        msg_paid: "LUNAS",
+        msg_payment_recorded: "Pembayaran dicatat",
+        msg_fill_year: "Durasi tahun harus diisi",
+        msg_confirm_del: "Yakin hapus item ini?",
+        msg_confirm_reset: "PERINGATAN: Semua data akan hilang permanen! Lanjutkan?",
+        msg_prof_saved: "Profil tersimpan! Target Anda:",
+        
+        word_remaining: "Sisa",
+        word_bill: "Total Tagihan",
+        word_pay: "Bayar"
+    },
+    en: {
+        welcome_msg: "Welcome to Finansial Pro App",
+        nav_home: "Home",
+        nav_budget: "Budget",
+        nav_tools: "Tools",
+        nav_loans: "Loans",
+        nav_settings: "Settings",
+        nav_calc: "Calculator",
+        
+        total_net_worth: "Total Net Worth",
+        lbl_in: "Income",
+        lbl_out: "Expense",
+        total_receivable: "Total Receivables",
+        total_debt: "Total Debt",
+        em_fund_title: "Emergency Fund",
+        em_check_status: "Check Status",
+        em_not_set: "Not set",
+        cashflow_title: "Cashflow This Month",
+
+        tab_trans: "Transactions",
+        tab_plan: "Planning & Goals",
+        recent_history: "Recent History",
+        add_new_goal: "Add New Goal",
+        ph_goal_name: "Goal Name (e.g., Buy iPhone)",
+        ph_goal_amount: "Target Amount (Rp)",
+        btn_save: "Save",
+        goal_hint: "Click on a goal card to add savings.",
+
+        tab_active: "Active",
+        tab_history: "Paid History",
+        ph_search_name: "Search name...",
+        archive_paid: "Paid Archive",
+
+        collected: "Collected",
+        your_target: "Your Target",
+        month: "Months",
+        btn_add_savings: "Add Savings",
+        risk_profile_title: "Risk Profile",
+        risk_profile_desc: "App will calculate ideal target based on your life risk profile automatically.",
+        lbl_expense: "Monthly Expense (Average)",
+        ph_expense: "Ex: 3.000.000",
+        lbl_job_status: "Job Status",
+        opt_stable: "Permanent Employee / Gov (Stable)",
+        opt_freelance: "Freelance / Business (Fluctuating)",
+        lbl_dependents: "Dependents",
+        opt_single: "Single (Alone)",
+        opt_family_small: "1-2 People (Small Family)",
+        opt_family_large: "3+ People (Large Family)",
+        btn_recalc: "Recalculate Target",
+
+        lbl_principal: "Initial Capital (Rp)",
+        lbl_inv_method: "Select Invest Method",
+        opt_lump: "None (Lump Sum)",
+        opt_daily: "Daily Savings",
+        opt_weekly: "Weekly Savings",
+        opt_monthly: "Monthly Savings",
+        opt_yearly: "Yearly Savings",
+        lbl_routine_amount: "Routine Amount (Rp)",
+        lbl_duration: "Duration (Yrs)",
+        btn_calc_sim: "Calculate Simulation",
+        est_total: "Estimated Total:",
+        lbl_capital: "Capital Invested:",
+        lbl_interest: "Interest/Profit:",
+
+        pref_title: "Preferences",
+        lbl_lang: "Language",
+        btn_choose_file: "Choose File",
+        danger_zone_title: "Delete Data !",
+        danger_zone_desc: "Deleted data cannot be recovered.",
+        btn_reset_data: "Reset All Data",
+
+        modal_trans_title: "Record Finance",
+        lbl_expense_type: "Expense",
+        lbl_income_type: "Income",
+        ph_desc: "Description (e.g., Lunch)",
+        
+        modal_loan_title: "Record Loan",
+        lbl_trans_type: "Transaction Type",
+        opt_lend: "I am Lending (Receivable)",
+        opt_borrow: "I am Borrowing (Debt)",
+        lbl_person_name: "Person Name",
+        lbl_principal_loan: "Principal Loan",
+        lbl_trans_date: "Transaction Date",
+        lbl_installment: "Installment/mo:",
+        lbl_total_final: "Final Total:",
+        
+        modal_detail_title: "Transaction Detail",
+        modal_save_title: "Save Funds",
+        ask_amount_add: "How much to add?",
+        lbl_deposit_amount: "Deposit Amount (Rp)",
+        
+        em_modal_desc: "Secure your future by saving today.",
+        em_tip: "Set aside loose change or daily shopping changes here so it doesn't feel heavy.",
+        btn_save_savings: "Save Savings",
+        
+        // --- TAMBAHAN UNTUK FAB ---
+        fab_trans: "Record Transaction",
+        fab_loan: "Record Loan",
+        fab_emergency: "Add Emergency Fund",
+
+        // JS Messages
+        msg_complete_data: "Please complete data",
+        msg_trans_saved: "Transaction saved successfully",
+        msg_invalid_goal: "Invalid goal data",
+        msg_goal_created: "New goal created",
+        msg_invalid_amount: "Invalid amount",
+        msg_success_add: "Successfully added",
+        msg_loan_saved: "Loan data saved",
+        msg_paid: "PAID OFF",
+        msg_payment_recorded: "Payment recorded",
+        msg_fill_year: "Year duration is required",
+        msg_confirm_del: "Are you sure to delete this item?",
+        msg_confirm_reset: "WARNING: All data will be lost permanently! Continue?",
+        msg_prof_saved: "Profile saved! Your Target:",
+
+        word_remaining: "Remaining",
+        word_bill: "Total Bill",
+        word_pay: "Pay"
+    }
+};
+
 // --- STATE & CONFIG ---
 const APP_KEY = 'finpro_elite_v1';
 let data = {
     budget: [],
     loans: [],
     goals: [],
+    emergency: {
+        saved: 0,
+        expense: 0,
+        job: 'stable',
+        dependents: '0',
+        targetMonths: 6,
+        targetAmount: 0
+    },
     settings: { theme: 'light', lang: 'id' }
 };
+
+// --- HELPER TRANSLATION ---
+function t(key) {
+    const lang = data.settings.lang || 'id';
+    return RESOURCES[lang][key] || key;
+}
+
+function changeLanguage(lang) {
+    data.settings.lang = lang;
+    saveData();
+    updateUI(); // Ini akan memicu renderLanguage
+}
+
+function renderLanguage() {
+    // 1. Update text content (data-i18n)
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = t(key);
+    });
+
+    // 2. Update placeholder input (data-i18n-ph)
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        el.placeholder = t(key);
+    });
+
+    // 3. (BARU) Update atribut data-label untuk FAB (data-i18n-label)
+    document.querySelectorAll('[data-i18n-label]').forEach(el => {
+        const key = el.getAttribute('data-i18n-label');
+        // Kita ubah isi atribut 'data-label' agar CSS content:attr() berubah
+        el.setAttribute('data-label', t(key));
+    });
+
+    // 4. Update Dropdown Value
+    document.getElementById('lang-select').value = data.settings.lang;
+}
+
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
     initTheme();
     
+    if (!data.emergency) {
+        data.emergency = { saved: 0, expense: 0, job: 'stable', dependents: '0', targetMonths: 6, targetAmount: 0 };
+    }
+
     const today = new Date().toISOString().split('T')[0];
     const dateInputs = document.querySelectorAll('input[type="date"]');
     dateInputs.forEach(input => {
@@ -29,13 +320,14 @@ function loadData() {
 
 function saveData() {
     localStorage.setItem(APP_KEY, JSON.stringify(data));
-    updateUI();
+    // updateUI dipanggil di fungsi yang memanggil saveData, atau di event change
 }
 
 // --- MONEY & DATE FORMATTER HELPER ---
 function initMoneyInputs() {
     const inputs = document.querySelectorAll('.money-input');
     inputs.forEach(input => {
+        input.oninput = null; 
         input.addEventListener('input', function(e) {
             let value = this.value.replace(/\D/g, '');
             if (value) {
@@ -44,7 +336,6 @@ function initMoneyInputs() {
             } else {
                 this.value = '';
             }
-            
             if(this.id === 'l-principal' || this.id === 'l-rate' || this.id === 'l-tenor') {
                 calcLoanPreview();
             }
@@ -54,6 +345,7 @@ function initMoneyInputs() {
 
 function parseMoney(str) {
     if (!str) return 0;
+    if (typeof str === 'number') return str;
     return parseInt(str.replace(/\./g, ''), 10);
 }
 
@@ -61,19 +353,19 @@ function fmtMoney(num) {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
 }
 
-// FUNGSI BARU: FORMAT TANGGAL DD-NamaBulan-YYYY
 function fmtDate(dateString) {
+    // Tanggal tidak perlu diterjemahkan hard-code, 
+    // tapi kita bisa gunakan locale dari settings
+    const lang = data.settings.lang === 'id' ? 'id-ID' : 'en-US';
     const options = { day: '2-digit', month: 'long', year: 'numeric' };
     const date = new Date(dateString);
-    // Menggunakan locale 'id-ID' untuk mendapatkan nama bulan dalam Bahasa Indonesia
-    // dan mengatur format
-    let formatted = date.toLocaleDateString('id-ID', options);
+    let formatted = date.toLocaleDateString(lang, options);
     
-    // Mengganti spasi menjadi hyphen, dan menghilangkan 'Tgl ' (jika ada)
-    formatted = formatted.replace(/\s/g, '-').replace('Tgl-', ''); 
+    if(data.settings.lang === 'id') {
+        formatted = formatted.replace(/\s/g, '-').replace('Tgl-', ''); 
+    }
     return formatted;
 }
-// ---------------------------------------------------
 
 // --- NAVIGATION ---
 function navTo(pageId) {
@@ -83,14 +375,23 @@ function navTo(pageId) {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     event.currentTarget.classList.add('active');
     
-    const titles = {
-        'page-home': 'Ringkasan', 'page-budget': 'Buku Kas', 
-        'page-loans': 'Manajemen Pinjaman', 'page-calc': 'Simulasi Bunga Majemuk', 'page-settings': 'Pengaturan'
+    // JUDUL HEADER DINAMIS SESUAI BAHASA
+    const titleKeys = {
+        'page-home': 'nav_home', 
+        'page-budget': 'nav_budget', 
+        'page-loans': 'nav_loans', 
+        'page-tools': 'nav_tools', 
+        'page-settings': 'nav_settings'
     };
-    document.getElementById('header-title').textContent = titles[pageId];
+    
+    const titleKey = titleKeys[pageId];
+    // Set attribut agar bisa di-update saat ganti bahasa
+    const headerEl = document.getElementById('header-title');
+    headerEl.setAttribute('data-i18n', titleKey);
+    headerEl.textContent = t(titleKey);
     
     const fab = document.querySelector('.fab-wrapper');
-    if (pageId === 'page-calc' || pageId === 'page-settings') {
+    if (pageId === 'page-settings') {
         fab.style.display = 'none';
     } else {
         fab.style.display = 'flex';
@@ -98,8 +399,9 @@ function navTo(pageId) {
 }
 
 function switchTab(context, tabId) {
-    const parent = document.getElementById(`page-${context}`);
-    
+    const parent = context === 'tools' ? document.getElementById('page-tools') : document.getElementById(`page-${context}`);
+    if(!parent) return;
+
     const contents = parent.querySelectorAll('.tab-content');
     contents.forEach(c => {
         c.classList.remove('active');
@@ -112,7 +414,7 @@ function switchTab(context, tabId) {
     
     const tabs = parent.querySelectorAll('.tab');
     tabs.forEach(t => t.classList.remove('active'));
-    event.target.classList.add('active');
+    if(event && event.target) event.target.classList.add('active');
 }
 
 // --- UI INTERACTION ---
@@ -158,13 +460,13 @@ function saveBudget() {
     const desc = document.getElementById('b-desc').value;
     const date = document.getElementById('b-date').value;
 
-    if (!amount || !desc) return showToast('Mohon lengkapi data', 'error');
+    if (!amount || !desc) return showToast(t('msg_complete_data'), 'error');
 
     data.budget.unshift({ id: Date.now(), type, amount, desc, date });
     saveData();
     closeModal('modal-budget');
     resetInputs('modal-budget');
-    showToast('Transaksi berhasil dicatat');
+    showToast(t('msg_trans_saved'));
 }
 
 function renderBudget() {
@@ -207,14 +509,14 @@ function addGoal() {
     const name = document.getElementById('goal-name').value;
     const amount = parseMoney(document.getElementById('goal-amount').value);
     
-    if(!name || !amount) return showToast('Data target tidak valid', 'error');
+    if(!name || !amount) return showToast(t('msg_invalid_goal'), 'error');
     
     data.goals.push({id: Date.now(), name, amount, saved: 0});
     saveData();
     
     document.getElementById('goal-name').value = '';
     document.getElementById('goal-amount').value = '';
-    showToast('Target baru dibuat');
+    showToast(t('msg_goal_created'));
 }
 
 function renderGoals() {
@@ -240,7 +542,7 @@ function renderGoals() {
                 <span class="badge-gray">${percent}%</span>
             </div>
             <div class="flex-between mt-10 text-muted" style="font-size:0.9rem">
-                <span>Terkumpul: <b class="text-primary">${fmtMoney(g.saved)}</b></span>
+                <span>${t('collected')}: <b class="text-primary">${fmtMoney(g.saved)}</b></span>
                 <span>Target: ${fmtMoney(g.amount)}</span>
             </div>
             <div class="goal-progress-bg">
@@ -264,14 +566,94 @@ function saveTargetSavings() {
     const id = parseInt(document.getElementById('target-current-id').value);
     const amount = parseMoney(document.getElementById('target-add-amount').value);
     
-    if(!amount || amount <= 0) return showToast('Nominal tidak valid', 'error');
+    if(!amount || amount <= 0) return showToast(t('msg_invalid_amount'), 'error');
     
     const goal = data.goals.find(g => g.id === id);
     if(goal) {
         goal.saved += amount;
         saveData();
         closeModal('modal-target-add');
-        showToast(`Berhasil menambah Rp ${amount.toLocaleString()}`);
+        showToast(`${t('msg_success_add')} Rp ${amount.toLocaleString()}`);
+    }
+}
+
+// --- FEATURE: EMERGENCY FUND ---
+function toggleEmergencySettings() {
+    const form = document.getElementById('emergency-settings-form');
+    const icon = document.getElementById('em-settings-icon');
+    form.classList.toggle('hidden');
+    
+    if(form.classList.contains('hidden')) {
+        icon.className = 'fas fa-chevron-down';
+    } else {
+        icon.className = 'fas fa-chevron-up';
+        document.getElementById('em-expense').value = data.emergency.expense ? data.emergency.expense.toLocaleString('id-ID') : '';
+        document.getElementById('em-job').value = data.emergency.job || 'stable';
+        document.getElementById('em-dependents').value = data.emergency.dependents || '0';
+    }
+}
+
+function saveEmergencyProfile() {
+    const expense = parseMoney(document.getElementById('em-expense').value);
+    const job = document.getElementById('em-job').value;
+    const dependents = document.getElementById('em-dependents').value;
+
+    if(!expense) return showToast(t('msg_complete_data'), 'error');
+
+    let months = 6; 
+    if (job === 'freelance') months += 3;
+    if (dependents === '1') months += 3; 
+    else if (dependents === '3') months += 6; 
+
+    const targetAmount = months * expense;
+
+    data.emergency.expense = expense;
+    data.emergency.job = job;
+    data.emergency.dependents = dependents;
+    data.emergency.targetMonths = months;
+    data.emergency.targetAmount = targetAmount;
+
+    saveData();
+    toggleEmergencySettings();
+    showToast(`${t('msg_prof_saved')} ${months} ${t('month')}`);
+}
+
+function addEmergencyFund() {
+    const amount = parseMoney(document.getElementById('em-add-amount').value);
+    if(amount > 0) {
+        data.emergency.saved += amount;
+        saveData();
+        closeModal('modal-emergency-add');
+        document.getElementById('em-add-amount').value = '';
+        showToast(`${t('em_fund_title')} +${fmtMoney(amount)}`);
+    } else {
+        showToast(t('msg_invalid_amount'), 'error');
+    }
+}
+
+function renderEmergency() {
+    if(!data.emergency) return;
+    const em = data.emergency;
+    
+    document.getElementById('em-target-rp').textContent = fmtMoney(em.targetAmount);
+    document.getElementById('em-current-rp').textContent = fmtMoney(em.saved);
+    document.getElementById('em-target-month').textContent = em.targetMonths;
+    
+    let percent = 0;
+    if(em.targetAmount > 0) {
+        percent = Math.round((em.saved / em.targetAmount) * 100);
+    }
+    if(percent > 100) percent = 100;
+
+    document.getElementById('em-percent').textContent = percent + "%";
+    
+    const circle = document.getElementById('emergency-circle');
+    circle.style.background = `conic-gradient(var(--primary) ${percent * 3.6}deg, #e0e0e0 0deg)`;
+    
+    const homeStatus = document.getElementById('home-emergency-status');
+    if(homeStatus) {
+        if(em.targetAmount === 0) homeStatus.textContent = t('em_not_set');
+        else homeStatus.textContent = `${percent}% ${t('collected')}`;
     }
 }
 
@@ -297,7 +679,7 @@ function saveLoan() {
     const tenor = parseInt(document.getElementById('l-tenor').value) || 1;
     const date = document.getElementById('l-date').value;
 
-    if(!person || !principal) return showToast('Data harus lengkap', 'error');
+    if(!person || !principal) return showToast(t('msg_complete_data'), 'error');
 
     const total = principal + (principal * (rate/100) * tenor);
     
@@ -311,7 +693,7 @@ function saveLoan() {
     saveData();
     closeModal('modal-loan');
     resetInputs('modal-loan');
-    showToast('Data pinjaman tersimpan');
+    showToast(t('msg_loan_saved'));
 }
 
 function renderLoans() {
@@ -342,9 +724,9 @@ function renderLoans() {
                     <strong>${l.person}</strong>
                     <span style="font-size:0.7rem; font-weight:bold; color:${l.type==='piutang'?'var(--success)':'var(--danger)'}">${l.type.toUpperCase()}</span>
                 </div>
-                <small class="text-muted">Tanggal: ${fmtDate(l.date)}</small>
+                <small class="text-muted">${fmtDate(l.date)}</small>
                 <div class="flex-between mt-10 text-muted">
-                    <small>Sisa: ${fmtMoney(l.total - l.paid)}</small>
+                    <small>${t('word_remaining')}: ${fmtMoney(l.total - l.paid)}</small>
                     <small>${Math.round(progress)}%</small>
                 </div>
                 <div class="goal-progress-bg" style="height:6px; margin-top:5px;">
@@ -367,7 +749,7 @@ function showLoanDetail(id) {
     
     let historyHtml = l.history.map(h => 
         `<div class="flex-between" style="border-bottom:1px dashed var(--border); padding:10px 0">
-            <small>${h.date}</small>
+            <small>${fmtDate(h.date)}</small>
             <small>${fmtMoney(h.amount)}</small>
         </div>`
     ).join('');
@@ -379,25 +761,25 @@ function showLoanDetail(id) {
         </div>
         <div class="quick-stats-grid">
             <div class="stat-card text-center" style="display:block">
-                <small>Total Tagihan</small><br><strong>${fmtMoney(l.total)}</strong>
+                <small>${t('word_bill')}</small><br><strong>${fmtMoney(l.total)}</strong>
             </div>
             <div class="stat-card text-center" style="display:block">
-                <small>Sisa</small><br><strong class="text-red">${fmtMoney(remaining)}</strong>
+                <small>${t('word_remaining')}</small><br><strong class="text-red">${fmtMoney(remaining)}</strong>
             </div>
         </div>
         
         ${l.status === 'active' ? `
         <div class="card mt-20" style="background:var(--bg-body); border:none;">
-            <h4><i class="fas fa-money-bill-wave"></i> Bayar / Cicil</h4>
+            <h4><i class="fas fa-money-bill-wave"></i> ${t('word_pay')}</h4>
             <div class="flex-between mt-10">
                 <input type="text" inputmode="numeric" class="money-input" id="pay-amount" placeholder="Nominal" style="margin:0; width:60%">
-                <button class="btn-primary" onclick="payLoan(${l.id})" style="width:35%">Bayar</button>
+                <button class="btn-primary" onclick="payLoan(${l.id})" style="width:35%">${t('word_pay')}</button>
             </div>
-        </div>` : '<div class="card text-center text-green mt-20"><strong><i class="fas fa-check"></i> LUNAS</strong></div>'}
+        </div>` : `<div class="card text-center text-green mt-20"><strong><i class="fas fa-check"></i> ${t('msg_paid')}</strong></div>`}
 
         <div class="mt-20">
-            <h4>Riwayat Pembayaran</h4>
-            ${historyHtml || '<small class="text-muted">Belum ada pembayaran</small>'}
+            <h4>${t('tab_history')}</h4>
+            ${historyHtml || '<small class="text-muted">-</small>'}
         </div>
         <button class="btn-danger full-width mt-20" onclick="deleteItem('loans', ${l.id})">Hapus Data</button>
     `;
@@ -417,9 +799,9 @@ function payLoan(id) {
     
     if(l.paid >= l.total) {
         l.status = 'completed';
-        showToast('Hutang/Piutang LUNAS!', 'success');
+        showToast(t('msg_paid'), 'success');
     } else {
-        showToast('Pembayaran dicatat');
+        showToast(t('msg_payment_recorded'));
     }
     
     saveData();
@@ -444,7 +826,7 @@ function calculateCompound() {
     const method = document.getElementById('calc-method').value;
     const PMT = parseMoney(document.getElementById('calc-contribution').value) || 0;
 
-    if(t === 0) return showToast('Durasi tahun harus diisi', 'error');
+    if(t === 0) return showToast(t('msg_fill_year'), 'error');
 
     let n = 1; 
 
@@ -477,7 +859,6 @@ function calculateCompound() {
     document.getElementById('calc-principal-display').textContent = fmtMoney(totalInvested);
     document.getElementById('calc-interest-display').textContent = fmtMoney(totalInterest);
 
-    // AUTO CLEAR INPUTS
     document.getElementById('calc-principal').value = '';
     document.getElementById('calc-contribution').value = '';
     document.getElementById('calc-rate').value = '';
@@ -490,14 +871,14 @@ function resetCalc() {
 
 // --- SYSTEM ---
 function deleteItem(collection, id) {
-    if(!confirm('Yakin hapus item ini?')) return;
+    if(!confirm(t('msg_confirm_del'))) return;
     data[collection] = data[collection].filter(x => x.id !== id);
     saveData();
     if(document.getElementById('modal-detail').classList.contains('active')) closeModal('modal-detail');
 }
 
 function resetData() {
-    if(confirm('PERINGATAN: Semua data akan hilang permanen! Lanjutkan?')) {
+    if(confirm(t('msg_confirm_reset'))) {
         localStorage.removeItem(APP_KEY);
         location.reload();
     }
@@ -544,9 +925,11 @@ function toggleTheme() {
 }
 
 function updateUI() {
+    renderLanguage(); // RENDER BAHASA DULUAN
     renderBudget();
     renderLoans();
     renderGoals();
+    renderEmergency();
 }
 
 let chartInstance = null;
@@ -559,10 +942,12 @@ function renderChart(income, expense) {
         expense = 0;
     }
 
+    const labels = [t('lbl_income_type'), t('lbl_expense_type')]; // Translate chart labels
+
     chartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Pemasukan', 'Pengeluaran'],
+            labels: labels,
             datasets: [{
                 data: [income, expense],
                 backgroundColor: ['#4481eb', '#fc5c7d'],
