@@ -43,7 +43,9 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 100px; transition: background 0.3s ease, color 0.3s ease; }
+
+/* [MODIFIED FOR ADSENSE] Padding bawah diperbesar agar konten tidak ketutup iklan anchor/navigasi */
+body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 140px; transition: background 0.3s ease, color 0.3s ease; }
 
 /* Utilities */
 .text-green { color: var(--success) !important; }
@@ -51,12 +53,24 @@ body { background-color: var(--bg-body); color: var(--text-main); padding-bottom
 .text-primary { color: var(--primary) !important; }
 .text-muted { color: var(--text-muted) !important; font-size: 0.9em; }
 .text-center { text-align: center; }
-.hidden { display: none; }
+.hidden { display: none !important; }
 .mt-10 { margin-top: 10px; }
 .mt-20 { margin-top: 20px; }
 .mb-20 { margin-bottom: 20px; }
 .full-width { width: 100%; }
 .flex-between { display: flex; justify-content: space-between; align-items: center; }
+
+/* [NEW] Class Khusus Wadah Iklan Manual (Opsional) */
+.ad-slot {
+    width: 100%;
+    min-height: 100px; /* Tinggi minimal agar tidak layout shift */
+    background: transparent;
+    margin: 20px 0;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 /* Header */
 .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(255, 255, 255, 0.8); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px); border-bottom: 1px solid transparent; }
@@ -71,14 +85,17 @@ body { background-color: var(--bg-body); color: var(--text-main); padding-bottom
 .page.active { display: block; }
 
 /* Cards */
-.card { background: var(--bg-card); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 15px; border: 1px solid var(--border); }
+/* [MODIFIED FOR ADSENSE] Margin diperbesar ke 30px agar ada celah untuk Auto Ads */
+.card { background: var(--bg-card); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 30px; border: 1px solid var(--border); }
 
-.balance-card { background: var(--gradient-card); padding: 25px; border-radius: 24px; color: white; margin-bottom: 25px; box-shadow: 0 10px 25px rgba(68, 129, 235, 0.4); position: relative; overflow: hidden; }
+/* [MODIFIED FOR ADSENSE] Margin diperbesar */
+.balance-card { background: var(--gradient-card); padding: 25px; border-radius: 24px; color: white; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(68, 129, 235, 0.4); position: relative; overflow: hidden; }
 .balance-card h1 { font-size: 2.4rem; margin: 10px 0; font-weight: 700; letter-spacing: -1px; }
 .balance-row { display: flex; gap: 15px; font-size: 0.9rem; background: rgba(255, 255, 255, 0.15); padding: 12px; border-radius: 16px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2); }
 .balance-card .text-green, .balance-card .text-red { color: #fff !important; font-weight: bold; } 
 
-.quick-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+/* [MODIFIED FOR ADSENSE] Margin diperbesar */
+.quick-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
 .stat-card { background: var(--bg-card); padding: 15px; border-radius: 16px; display: flex; align-items: center; gap: 15px; box-shadow: var(--shadow); border: 1px solid var(--border); position: relative; overflow: hidden; }
 .stat-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
 .border-left-green::before { background: var(--success); }
@@ -151,7 +168,7 @@ input:checked + .type-btn.expense { background: var(--danger); }
 .detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.95rem; }
 
 /* Toast */
-#toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 300; display: flex; flex-direction: column; gap: 12px; width: 90%; max-width: 350px; }
+#toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 12px; width: 90%; max-width: 350px; }
 .toast { padding: 16px 24px; border-radius: 16px; color: white; font-size: 0.95rem; box-shadow: 0 10px 25px rgba(0,0,0,0.15); animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 12px; font-weight: 600; backdrop-filter: blur(5px); }
 .toast.success { background: rgba(0, 176, 155, 0.95); }
 .toast.error { background: rgba(252, 92, 125, 0.95); }
@@ -162,67 +179,233 @@ input:checked + .type-btn.expense { background: var(--danger); }
 @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .fade-in { animation: fadeIn 0.5s ease; }
 
-/* --- Tambahan untuk Halaman Tools & Dana Darurat --- */
-
-/* Conic Gradient Progress Circle (Lebih Ringan dari Chart.js) */
+/* --- TAMBAHAN UNTUK HALAMAN DANA DARURAT --- */
 .progress-circle-conic {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
+    width: 200px; height: 200px; border-radius: 50%;
     background: conic-gradient(var(--primary) 0%, #e0e0e0 0%);
-    margin: 0 auto 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    margin: 0 auto 10px; display: flex; justify-content: center; align-items: center;
+    position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     transition: background 0.5s ease;
 }
-
 .progress-circle-conic .inner-circle {
-    width: 170px;
-    height: 170px;
-    background: var(--bg-card);
-    border-radius: 50%;
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    width: 170px; height: 170px; background: var(--bg-card);
+    border-radius: 50%; position: absolute; display: flex;
+    flex-direction: column; justify-content: center; align-items: center;
 }
+.progress-circle-conic .percentage { font-size: 2.5rem; font-weight: 800; color: var(--primary); line-height: 1; }
+.progress-circle-conic .status-text { font-size: 0.9rem; color: var(--text-muted); margin-top: 5px; }
 
-.progress-circle-conic .percentage {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--primary);
-    line-height: 1;
-}
-
-.progress-circle-conic .status-text {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-top: 5px;
-}
-
-/* Info Box */
 .info-box {
-    background: rgba(255, 193, 7, 0.1);
-    color: #e67e22;
-    padding: 12px;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    line-height: 1.4;
+    background: rgba(255, 193, 7, 0.1); color: #e67e22; padding: 12px;
+    border-radius: 12px; font-size: 0.9rem; line-height: 1.4;
     border: 1px solid rgba(255, 193, 7, 0.3);
 }
 
-[data-theme="dark"] .progress-circle-conic {
-    background: conic-gradient(var(--primary) 0%, #444 0%);
-}
-[data-theme="dark"] .progress-circle-conic .inner-circle {
-    background: var(--bg-card);
+[data-theme="dark"] .progress-circle-conic { background: conic-gradient(var(--primary) 0%, #444 0%); }
+[data-theme="dark"] .progress-circle-conic .inner-circle { background: var(--bg-card); }
+
+/* --- PIN LOCK SCREEN --- */
+.pin-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--gradient-primary); z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(10px); transition: opacity 0.3s;
 }
 
-/* Navbar Adjustment for 5 Items (Already grid, just ensure icon alignment) */
-.bottom-nav {
-    grid-template-columns: repeat(5, 1fr); 
+.pin-card {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 30px; border-radius: 30px;
+    text-align: center; width: 320px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.pin-dots { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+.dot { width: 15px; height: 15px; border-radius: 50%; background: rgba(255,255,255,0.3); transition: 0.2s; border: 2px solid rgba(255,255,255,0.5); }
+.dot.filled { background: white; transform: scale(1.2); box-shadow: 0 0 10px rgba(255,255,255,0.5); }
+.dot.error { background: #fc5c7d; border-color: #fc5c7d; animation: shake 0.3s; }
+
+.pin-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+.pin-keypad button {
+    background: rgba(255,255,255,0.1); border: none;
+    color: white; font-size: 1.5rem; height: 65px; width: 65px;
+    border-radius: 50%; cursor: pointer; margin: 0 auto;
+    transition: 0.2s; display: grid; place-items: center;
+}
+.pin-keypad button:active { background: rgba(255,255,255,0.4); transform: scale(0.9); }
+.btn-enter { background: rgba(0, 176, 155, 0.4) !important; }
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+/* --- PERBAIKAN TAMPILAN SETTINGS (Rapi & Satu Baris) --- */
+
+/* Membuat item pengaturan berjejer ke samping (Kiri: Teks, Kanan: Tombol) */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border); /* Garis pemisah tipis */
+}
+
+/* Menghilangkan garis di item terakhir */
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+/* Styling teks label */
+.setting-item span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+    flex: 1; /* Mengambil ruang sisa di kiri */
+}
+
+/* Merapikan Dropdown Bahasa */
+.setting-item select {
+    width: auto !important; /* Supaya tidak full width */
+    margin-bottom: 0 !important;
+    padding: 8px 35px 8px 15px;
+    font-size: 0.85rem;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border);
+}
+
+/* Merapikan Tombol Kecil di Settings */
+.setting-item .btn-xs {
+    margin: 0;
+    padding: 8px 20px;
+    font-size: 0.85rem;
+    border-radius: 12px;
+}
+
+/* Styling Khusus Tombol Aktifkan PIN (agar biru/merah tapi kecil) */
+.btn-toggle-active {
+    background-color: var(--primary) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 10px rgba(68, 129, 235, 0.3);
+}
+
+.btn-toggle-inactive {
+    background-color: var(--danger) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 10px rgba(252, 92, 125, 0.3);
+}
+
+/* File Input Wrapper agar rapi */
+.file-label {
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* --- FITUR DOMPET (WALLETS) --- */
+.wallet-container-scroll {
+    overflow-x: auto;
+    padding-bottom: 5px;
+    margin: 0 -10px 20px -10px; /* Agar sedikit melebar keluar */
+    padding: 0 10px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.wallet-container-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.wallet-list-row {
+    display: flex;
+    gap: 12px;
+    width: max-content;
+}
+
+.wallet-card-mini {
+    background: var(--bg-card);
+    padding: 15px;
+    border-radius: 18px;
+    min-width: 140px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.wallet-card-mini small { font-size: 0.75rem; color: var(--text-muted); }
+.wallet-card-mini strong { font-size: 1rem; margin-top: 5px; color: var(--text-main); }
+.wallet-card-mini .icon { 
+    margin-bottom: 8px; 
+    font-size: 1.2rem; 
+    color: var(--primary);
+    background: rgba(68, 129, 235, 0.1);
+    width: 35px; height: 35px;
+    display: grid; place-items: center;
+    border-radius: 10px;
+}
+
+/* Update tabs agar muat 3 kolom */
+.tabs { gap: 5px; }
+.tab { padding: 10px 5px; font-size: 0.85rem; }
+
+/* Tambahan styling untuk indikator tagihan */
+.border-left-green { border-left: 4px solid var(--success) !important; }
+.border-left-red { border-left: 4px solid var(--danger) !important; }
+
+/* Table Styles untuk Rincian Kalkulator */
+.table-responsive {
+    overflow-x: auto;
+}
+#calc-breakdown-list tr {
+    border-bottom: 1px solid var(--border);
+}
+#calc-breakdown-list tr:nth-child(even) {
+    background-color: var(--bg-input);
+}
+#calc-breakdown-list td {
+    padding: 12px 5px;
+    color: var(--text-main);
+}
+#calc-breakdown-list td.highlight {
+    font-weight: bold;
+    color: var(--primary);
+}
+
+/* Styling Modal Bahasa */
+.lang-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: 0.2s;
+    border-radius: 12px;
+}
+.lang-item:hover {
+    background-color: var(--bg-input);
+}
+.lang-item:last-child {
+    border-bottom: none;
+}
+.check-icon {
+    display: none; /* Sembunyikan centang secara default */
+}
+.lang-item.active .check-icon {
+    display: block; /* Munculkan centang jika aktif */
+}
+.lang-item.active {
+    background-color: var(--bg-input);
+    font-weight: 600;
+}
+
+/* Animasi Kedap-Kedip untuk Jatuh Tempo Hari Ini */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
 }

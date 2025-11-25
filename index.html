@@ -15,7 +15,13 @@
     
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
+
+<meta name="google-adsense-account" content="ca-pub-4170035550920357">
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4170035550920357"
+     crossorigin="anonymous"></script>
+    
+    </head>
 <body>
 
     <header class="top-bar">
@@ -32,6 +38,11 @@
         
         <section id="page-home" class="page active">
             <div class="balance-card glass-effect">
+                <div class="wallet-container-scroll mb-20">
+                    <div id="wallet-list" class="wallet-list-row">
+                        </div>
+                </div>
+
                 <span style="opacity: 0.8;" data-i18n="total_net_worth">Total Kekayaan Bersih</span>
                 <h1 id="main-balance">Rp 0</h1>
                 <div class="balance-row">
@@ -56,6 +67,13 @@
                     </div>
                 </div>
             </div>
+
+            <div class="ad-slot">
+                <small style="display:block; font-size:0.6rem; color:#ccc; margin-bottom:5px;">Advertisement</small>
+                
+                <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fs+3n+7a-ag-4h" data-ad-client="ca-pub-4170035550920357" data-ad-slot="6949327399"></ins> 
+                
+                </div>
             
             <div class="card" onclick="navTo('page-tools'); switchTab('tools', 'tab-emergency')" style="cursor: pointer; background: var(--bg-input);">
                 <div class="flex-between">
@@ -81,7 +99,8 @@
         <section id="page-budget" class="page">
             <div class="tabs">
                 <button class="tab active" onclick="switchTab('budget', 'tab-budget-list')" data-i18n="tab_trans">Transaksi</button>
-                <button class="tab" onclick="switchTab('budget', 'tab-budget-plan')" data-i18n="tab_plan">Planning & Target</button>
+                <button class="tab" onclick="switchTab('budget', 'tab-bills')" data-i18n="tab_bills">Tagihan</button>
+                <button class="tab" onclick="switchTab('budget', 'tab-budget-plan')" data-i18n="tab_plan">Target</button>
             </div>
 
             <div id="tab-budget-list" class="tab-content active">
@@ -89,7 +108,45 @@
                     <h3 data-i18n="recent_history">Riwayat Terakhir</h3>
                     <button class="btn-xs" onclick="exportCSV('budget')"><i class="fas fa-download"></i> CSV</button>
                 </div>
+
+                <div class="ad-slot" style="margin: 10px 0;">
+                    <ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-4170035550920357"
+     data-ad-slot="1369506733"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+
+                    </div>
+
                 <div id="budget-list" class="transaction-list mt-10"></div>
+            </div>
+
+            <div id="tab-bills" class="tab-content">
+                <div class="card luxury-card">
+                    <div class="flex-between" onclick="toggleAddBill()" style="cursor: pointer;">
+                        <h3><i class="fas fa-file-invoice"></i> <span data-i18n="add_bill_title">Tambah Tagihan</span></h3>
+                        <i class="fas fa-plus-circle text-primary"></i>
+                    </div>
+                    
+                    <div id="add-bill-form" class="hidden mt-20">
+                        <div class="form-group">
+                            <input type="text" id="bill-name" data-i18n-ph="ph_bill_name" placeholder="Nama (cth: WiFi, Listrik)">
+                            <input type="text" inputmode="numeric" class="money-input" id="bill-amount" placeholder="Nominal Rutin (Rp)">
+                            <label style="font-size:0.8rem; color:var(--text-muted);" data-i18n="lbl_due_date">Setiap Tanggal:</label>
+                            <select id="bill-date" style="margin-top:5px;">
+                                </select>
+                            <button class="btn-primary full-width mt-10" onclick="saveBill()" data-i18n="btn_save">Simpan Tagihan</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-header mt-20">
+                    <h3 data-i18n="bill_list_title">Tagihan Bulan Ini</h3>
+                    <small id="bill-status-summary" class="badge-gray">0 Lunas</small>
+                </div>
+                <div id="bill-list" class="transaction-list mt-10">
+                    </div>
             </div>
 
             <div id="tab-budget-plan" class="tab-content">
@@ -118,6 +175,16 @@
                 <i class="fas fa-search"></i>
                 <input type="text" id="loan-search" data-i18n-ph="ph_search_name" placeholder="Cari nama..." onkeyup="renderLoans()">
             </div>
+
+            <div class="ad-slot" style="margin: 10px 0;">
+                <ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-4170035550920357"
+     data-ad-slot="3450258051"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+
+                </div>
 
             <div id="tab-loans-active" class="tab-content active">
                 <div id="loan-list-active" class="loan-grid"></div>
@@ -163,6 +230,18 @@
                         <i class="fas fa-plus-circle"></i> <span data-i18n="btn_add_savings">Tambah Tabungan</span>
                     </button>
                 </div>
+
+                <div class="ad-slot">
+                     <small style="display:block; font-size:0.6rem; color:#ccc; margin-bottom:5px;">Advertisement</small>
+                     
+                     <ins class="adsbygoogle"
+     style="display:block"
+     data-ad-format="fluid"
+     data-ad-layout-key="-fs+3n+7a-ag-4h"
+     data-ad-client="ca-pub-4170035550920357"
+     data-ad-slot="4634047443"></ins>
+
+                     </div>
 
                 <div class="card mt-20">
                     <div class="flex-between" onclick="toggleEmergencySettings()" style="cursor: pointer;">
@@ -253,22 +332,34 @@
         <section id="page-settings" class="page">
             <div class="card">
                 <h3><i class="fas fa-cog"></i> <span data-i18n="pref_title">Preferensi</span></h3>
-                <div class="setting-item">
+                <div class="setting-item" onclick="openLangModal()" style="cursor: pointer;">
                     <span data-i18n="lbl_lang">Bahasa</span>
-                    <select id="lang-select" onchange="changeLanguage(this.value)">
-                        <option value="id">Indonesia</option>
-                        <option value="en">English</option>
-                    </select>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span id="current-lang-label" class="text-muted text-sm">Indonesia</span>
+                        <i class="fas fa-chevron-right text-muted"></i>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <span data-i18n="security_title">Keamanan Aplikasi</span>
+                    <button id="btn-toggle-pin" class="btn-xs" onclick="togglePinSetup()" data-i18n="enable_pin">Aktifkan PIN</button>
                 </div>
                 <div class="setting-item">
-                    <span>Import Data (CSV)</span>
-                    <label class="btn-xs file-label">
-                        <span data-i18n="btn_choose_file">Pilih File</span> <input type="file" id="import-file" hidden onchange="importCSV(this)">
+                    <span>Backup Data (JSON)</span>
+                   <button class="btn-xs" onclick="downloadBackup()">
+                        <i class="fas fa-download"></i> <span data-i18n="btn_download">Simpan</span>
+                    </button>
+                </div>
+                <div class="setting-item">
+                    <span>Restore Data (JSON)</span>
+                    <label class="btn-xs file-label" style="background: var(--bg-input); border: 1px dashed var(--primary);">
+                        <span data-i18n="btn_choose_file">Pilih File</span> 
+                        <input type="file" id="restore-file" hidden onchange="restoreBackup(this)">
                     </label>
                 </div>
                 <div class="setting-item">
-                    <p><small class="badge-gray">Finansial Pro</p>
-                <p><small class="badge-gray">Version: 4.0 Elite</small> </p>
+                    <span>Finansial Pro</span>
+                    <small class="badge-gray">Version: 4.1</small>
                 </div>
             </div>
             
@@ -283,7 +374,7 @@
 
     <div id="toast-container"></div>
 
-        <div class="fab-wrapper">
+    <div class="fab-wrapper">
         <div class="fab-menu" id="fab-menu">
             <button onclick="openModal('modal-budget')" data-label="Catat Transaksi" data-i18n-label="fab_trans">
                 <i class="fas fa-wallet"></i>
@@ -299,7 +390,6 @@
             <i class="fas fa-plus" id="fab-icon"></i>
         </button>
     </div>
-
 
     <nav class="bottom-nav">
         <a href="#" class="nav-item active" onclick="navTo('page-home')">
@@ -338,6 +428,12 @@
                     <input type="radio" name="b-type" id="t-in" value="income">
                     <label for="t-in" class="type-btn income" data-i18n="lbl_income_type">Pemasukan</label>
                 </div>
+                
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <select id="b-wallet" style="padding: 10px; border-radius: 12px; background: var(--bg-input);">
+                        </select>
+                </div>
+
                 <input type="text" inputmode="numeric" class="money-input input-lg" id="b-amount" placeholder="Nominal (Rp)">
                 <input type="text" id="b-desc" data-i18n-ph="ph_desc" placeholder="Keterangan (cth: Makan Siang)">
                 <input type="date" id="b-date">
@@ -357,7 +453,7 @@
                     <label data-i18n="lbl_trans_type">Tipe Transaksi</label>
                     <select id="l-type">
                         <option value="piutang" data-i18n="opt_lend">Saya Meminjamkan (Piutang)</option>
-                        <option value="utang" data-i18n="opt_borrow">Saya Berhutang (Hutang)</option>
+                        <option value="hutang" data-i18n="opt_borrow">Saya Berhutang (Hutang)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -368,16 +464,17 @@
                     <label data-i18n="lbl_principal_loan">Pokok Pinjaman</label>
                     <input type="text" inputmode="numeric" class="money-input" id="l-principal" oninput="calcLoanPreview()" placeholder="0">
                 </div>
-                <div class="form-row">
+                                <div class="form-row">
                     <div class="form-group">
-                        <label>Bunga (%/bln)</label>
-                        <input type="number" id="l-rate" value="0" oninput="calcLoanPreview()">
+                        <label data-i18n="lbl_interest_rate">Bunga (%/bln)</label>
+                        <input type="number" id="l-rate" placeholder="0" oninput="calcLoanPreview()">
                     </div>
                     <div class="form-group">
-                        <label>Tenor (<span data-i18n="month">Bulan</span>)</label>
+                        <label data-i18n="lbl_tenor_month">Tenor (Bulan)</label>
                         <input type="number" id="l-tenor" value="1" oninput="calcLoanPreview()">
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label data-i18n="lbl_trans_date">Tanggal Transaksi</label>
                     <input type="date" id="l-date">
@@ -436,6 +533,103 @@
                     <p style="font-size: 0.85rem; margin-top:5px;" data-i18n="em_tip">Sisihkan uang receh atau sisa belanja harian Anda di sini agar tidak terasa berat.</p>
                 </div>
                 <button class="btn-primary full-width mt-10" onclick="addEmergencyFund()" data-i18n="btn_save_savings">Simpan Tabungan</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pin-overlay" class="pin-overlay hidden">
+        <div class="pin-card glass-effect">
+            <div class="icon-lock mb-20">
+                <i class="fas fa-lock" style="font-size: 2rem; color: white;"></i>
+            </div>
+            <h3 id="pin-title" style="color: white; margin-bottom: 20px;">Masukkan PIN</h3>
+            
+            <div class="pin-dots">
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            </div>
+
+            <div class="pin-keypad">
+                <button onclick="pressPin(1)">1</button>
+                <button onclick="pressPin(2)">2</button>
+                <button onclick="pressPin(3)">3</button>
+                <button onclick="pressPin(4)">4</button>
+                <button onclick="pressPin(5)">5</button>
+                <button onclick="pressPin(6)">6</button>
+                <button onclick="pressPin(7)">7</button>
+                <button onclick="pressPin(8)">8</button>
+                <button onclick="pressPin(9)">9</button>
+                <button onclick="pressPin('c')" class="btn-clear"><i class="fas fa-backspace"></i></button>
+                <button onclick="pressPin(0)">0</button>
+                <button onclick="pressPin('enter')" class="btn-enter"><i class="fas fa-check"></i></button>
+            </div>
+            
+            <button class="btn-xs mt-20" id="btn-forgot-pin" onclick="resetData()" style="background: rgba(255,0,0,0.3); color: white; border:none; display:none;">Lupa PIN? Reset Data</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-calc-detail">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Pertumbuhan Aset</h3>
+                <i class="fas fa-times close-icon" onclick="closeModal('modal-calc-detail')"></i>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="w-full text-left" style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border);">
+                                <th style="padding:10px 5px;">Thn</th>
+                                <th style="padding:10px 5px;">Total Modal</th>
+                                <th style="padding:10px 5px; text-align:right;">Saldo Akhir</th>
+                            </tr>
+                        </thead>
+                        <tbody id="calc-breakdown-list">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-confirm" style="z-index: 99999;"> <div class="modal-card" style="max-width: 320px; text-align: center;">
+            <div class="mb-20">
+                <i class="fas fa-exclamation-circle text-warning" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                <h3 id="confirm-title" style="margin-bottom: 10px;">Konfirmasi</h3>
+                <p id="confirm-msg" class="text-muted">Apakah anda yakin?</p>
+            </div>
+            <div class="flex-between" style="gap: 10px;">
+                <button class="btn-xs full-width" onclick="closeModal('modal-confirm')" style="background: var(--bg-input); border: 1px solid var(--border);">
+                    <span id="btn-conf-cancel">Batal</span>
+                </button>
+                <button class="btn-xs full-width btn-primary" id="btn-conf-yes">
+                    <span id="btn-conf-yes-text">Ya, Hapus</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-lang" style="z-index: 99999;">
+        <div class="modal-card" style="max-width: 350px;">
+            <div class="modal-header mb-20">
+                <h3 data-i18n="lbl_select_lang">Pilih Bahasa</h3>
+                <i class="fas fa-times close-icon" onclick="closeModal('modal-lang')"></i>
+            </div>
+            <div class="lang-options">
+                <div class="lang-item" onclick="selectLang('id')">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="font-size:1.5rem">🇮🇩</span>
+                        <span>Bahasa Indonesia</span>
+                    </div>
+                    <i class="fas fa-check text-primary check-icon" id="check-id"></i>
+                </div>
+
+                <div class="lang-item" onclick="selectLang('en')">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="font-size:1.5rem">🇺🇸</span>
+                        <span>English (US)</span>
+                    </div>
+                    <i class="fas fa-check text-primary check-icon" id="check-en"></i>
+                </div>
             </div>
         </div>
     </div>

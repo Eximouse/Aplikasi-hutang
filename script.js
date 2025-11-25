@@ -2,6 +2,15 @@
 const RESOURCES = {
     id: {
         welcome_msg: "Selamat Datang di Aplikasi Finansial Pro",
+        msg_empty_trans: "Belum ada transaksi tercatat",
+        msg_empty_bill: "Belum ada tagihan rutin",
+        msg_empty_goal: "Belum ada target tabungan",
+        msg_empty_loan: "Belum ada data pinjaman",
+        
+        wallet_cash: "Tunai",
+        wallet_bank: "Bank/ATM",
+        wallet_ewallet: "E-Wallet",
+        
         nav_home: "Beranda",
         nav_budget: "BudgetKu",
         nav_tools: "Tools",
@@ -18,7 +27,22 @@ const RESOURCES = {
         em_check_status: "Cek Status Aman",
         em_not_set: "Belum diset",
         cashflow_title: "Arus Kas Bulan Ini",
-
+        
+        lbl_confirm_title: "Konfirmasi",
+        btn_cancel: "Batal",
+        btn_yes: "Ya, Lanjutkan",
+        
+        tab_bills: "Tagihan",
+        add_bill_title: "Tambah Tagihan Rutin",
+        ph_bill_name: "Nama (cth: WiFi, Listrik)",
+        lbl_due_date: "Jatuh Tempo Tanggal:",
+        bill_list_title: "Tagihan Bulan Ini",
+        btn_pay_bill: "Bayar Sekarang",
+        msg_bill_paid: "Tagihan berhasil dibayar!",
+        status_paid: "LUNAS",
+        status_unpaid: "BELUM",
+        status_overdue: "TELAT",
+        
         tab_trans: "Transaksi",
         tab_plan: "Planning & Target",
         recent_history: "Riwayat Terakhir",
@@ -27,12 +51,26 @@ const RESOURCES = {
         ph_goal_amount: "Target Nominal (Rp)",
         btn_save: "Simpan",
         goal_hint: "Klik pada kartu target untuk menambah tabungan.",
+        
+        lbl_interest_rate: "Bunga (%/bln)",
+        lbl_tenor_month: "Tenor (Bulan)",
+        lbl_installment: "Cicilan/bln",
+        
+        sts_due_today: "JATUH TEMPO HARI INI!",
+        sts_due_in: "Jatuh Tempo: H-",
+        sts_late: "TELAT",
+        sts_day: "Hari",
 
         tab_active: "Aktif",
         tab_history: "Riwayat Lunas",
+        lbl_pay_history: "Riwayat Pembayaran",
         ph_search_name: "Cari nama...",
         archive_paid: "Arsip Lunas",
-
+        
+        tip_delete_pay: "Hapus Pembayaran ini",
+        confirm_del_pay: "Hapus catatan pembayaran ini? Saldo hutang akan kembali bertambah.",
+        msg_pay_deleted: "Pembayaran dibatalkan/dihapus",
+                
         collected: "Terkumpul",
         your_target: "Target Kamu",
         month: "Bulan",
@@ -66,7 +104,9 @@ const RESOURCES = {
 
         pref_title: "Preferensi",
         lbl_lang: "Bahasa",
+        lbl_select_lang: "Pilih Bahasa",
         btn_choose_file: "Pilih File",
+        btn_download: "Simpan",
         danger_zone_title: "Hapus Data !",
         danger_zone_desc: "Data yang dihapus tidak bisa dipulihkan.",
         btn_reset_data: "Reset Semua Data",
@@ -94,11 +134,29 @@ const RESOURCES = {
         em_modal_desc: "Amankan masa depanmu dengan menabung hari ini.",
         em_tip: "Sisihkan uang receh atau sisa belanja harian Anda di sini agar tidak terasa berat.",
         btn_save_savings: "Simpan Tabungan",
+
+        // Kata-kata untuk Logika JS
+        word_receivable: "PIUTANG",
+        word_debt: "HUTANG",
+        word_remaining: "Sisa",
+        ph_amount: "Nominal",
+        btn_delete_data: "Hapus Data Ini",
         
-        // --- TAMBAHAN UNTUK FAB ---
+        // FAB Labels
         fab_trans: "Catat Transaksi",
         fab_loan: "Catat Hutang/Piutang",
         fab_emergency: "Tabung Dana Darurat",
+
+        // Security PIN
+        security_title: "Keamanan Aplikasi",
+        enable_pin: "Aktifkan PIN",
+        disable_pin: "Nonaktifkan PIN",
+        enter_pin: "Masukkan PIN Keamanan",
+        setup_pin: "Buat PIN Baru (4 Angka)",
+        pin_wrong: "PIN Salah!",
+        pin_set: "PIN Keamanan Diaktifkan!",
+        pin_unset: "PIN Dinonaktifkan",
+        confirm_disable_pin: "Matikan keamanan PIN?",
 
         // JS Messages
         msg_complete_data: "Mohon lengkapi data",
@@ -121,6 +179,15 @@ const RESOURCES = {
     },
     en: {
         welcome_msg: "Welcome to Finansial Pro App",
+        msg_empty_trans: "No transactions recorded yet",
+        msg_empty_bill: "No recurring bills yet",
+        msg_empty_goal: "No saving goals yet",
+        msg_empty_loan: "No loan records yet",
+        
+        wallet_cash: "Cash",
+        wallet_bank: "Bank/ATM",
+        wallet_ewallet: "E-Wallet",
+        
         nav_home: "Home",
         nav_budget: "Budget",
         nav_tools: "Tools",
@@ -137,7 +204,22 @@ const RESOURCES = {
         em_check_status: "Check Status",
         em_not_set: "Not set",
         cashflow_title: "Cashflow This Month",
-
+        
+        lbl_confirm_title: "Confirmation",
+        btn_cancel: "Cancel",
+        btn_yes: "Yes, Proceed",
+        
+        tab_bills: "Bills",
+        add_bill_title: "Add Recurring Bill",
+        ph_bill_name: "Name (e.g. WiFi, Power)",
+        lbl_due_date: "Due Date:",
+        bill_list_title: "Bills This Month",
+        btn_pay_bill: "Pay Now",
+        msg_bill_paid: "Bill paid successfully!",
+        status_paid: "PAID",
+        status_unpaid: "UNPAID",
+        status_overdue: "LATE",
+        
         tab_trans: "Transactions",
         tab_plan: "Planning & Goals",
         recent_history: "Recent History",
@@ -147,11 +229,25 @@ const RESOURCES = {
         btn_save: "Save",
         goal_hint: "Click on a goal card to add savings.",
 
+        lbl_interest_rate: "Interest Rate (%/mo)",
+        lbl_tenor_month: "Duration (Months)",
+        lbl_installment: "Installment/mo",
+        
+        sts_due_today: "DUE TODAY!",
+        sts_due_in: "Due in: D-",
+        sts_late: "OVERDUE",
+        sts_day: "Days",
+        
         tab_active: "Active",
         tab_history: "Paid History",
+        lbl_pay_history: "Payment History",
         ph_search_name: "Search name...",
-        archive_paid: "Paid Archive",
+        archive_paid: "Paid Archive",                
 
+        tip_delete_pay: "Delete this payment",
+        confirm_del_pay: "Delete this payment record? Debt balance will increase.",
+        msg_pay_deleted: "Payment cancelled/deleted",
+        
         collected: "Collected",
         your_target: "Your Target",
         month: "Months",
@@ -185,7 +281,9 @@ const RESOURCES = {
 
         pref_title: "Preferences",
         lbl_lang: "Language",
+        lbl_select_lang: "Select Language",
         btn_choose_file: "Choose File",
+        btn_download: "Download",
         danger_zone_title: "Delete Data !",
         danger_zone_desc: "Deleted data cannot be recovered.",
         btn_reset_data: "Reset All Data",
@@ -214,10 +312,28 @@ const RESOURCES = {
         em_tip: "Set aside loose change or daily shopping changes here so it doesn't feel heavy.",
         btn_save_savings: "Save Savings",
         
-        // --- TAMBAHAN UNTUK FAB ---
+        // Kata-kata untuk Logika JS
+        word_receivable: "LENDING", // Atau RECEIVABLE
+        word_debt: "DEBT",
+        word_remaining: "Remaining",
+        ph_amount: "Amount",
+        btn_delete_data: "Delete Data",
+
+        // FAB Labels
         fab_trans: "Record Transaction",
         fab_loan: "Record Loan",
         fab_emergency: "Add Emergency Fund",
+
+        // Security PIN
+        security_title: "App Security",
+        enable_pin: "Enable PIN",
+        disable_pin: "Disable PIN",
+        enter_pin: "Enter Security PIN",
+        setup_pin: "Create New PIN (4 Digits)",
+        pin_wrong: "Wrong PIN!",
+        pin_set: "Security PIN Enabled!",
+        pin_unset: "PIN Disabled",
+        confirm_disable_pin: "Disable PIN security?",
 
         // JS Messages
         msg_complete_data: "Please complete data",
@@ -246,6 +362,12 @@ let data = {
     budget: [],
     loans: [],
     goals: [],
+    bills: [],  
+    wallets: [
+        { id: 1, name: 'Tunai', type: 'cash', balance: 0 },
+        { id: 2, name: 'Bank/ATM', type: 'bank', balance: 0 },
+        { id: 3, name: 'E-Wallet', type: 'ewallet', balance: 0 }
+    ],
     emergency: {
         saved: 0,
         expense: 0,
@@ -254,7 +376,7 @@ let data = {
         targetMonths: 6,
         targetAmount: 0
     },
-    settings: { theme: 'light', lang: 'id' }
+    settings: { theme: 'light', lang: 'id', pin: null }
 };
 
 // --- HELPER TRANSLATION ---
@@ -266,38 +388,99 @@ function t(key) {
 function changeLanguage(lang) {
     data.settings.lang = lang;
     saveData();
-    updateUI(); // Ini akan memicu renderLanguage
+    updateUI();
 }
 
 function renderLanguage() {
-    // 1. Update text content (data-i18n)
+    // 1. Update Text Content (data-i18n)
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         el.textContent = t(key);
     });
 
-    // 2. Update placeholder input (data-i18n-ph)
+    // 2. Update Placeholder
     document.querySelectorAll('[data-i18n-ph]').forEach(el => {
         const key = el.getAttribute('data-i18n-ph');
         el.placeholder = t(key);
     });
 
-    // 3. (BARU) Update atribut data-label untuk FAB (data-i18n-label)
+    // 3. Update Label FAB
     document.querySelectorAll('[data-i18n-label]').forEach(el => {
         const key = el.getAttribute('data-i18n-label');
-        // Kita ubah isi atribut 'data-label' agar CSS content:attr() berubah
         el.setAttribute('data-label', t(key));
     });
 
-    // 4. Update Dropdown Value
-    document.getElementById('lang-select').value = data.settings.lang;
+    // [BARU] Update Label Bahasa di Halaman Settings
+    const labelLang = document.getElementById('current-lang-label');
+    if(labelLang) {
+        labelLang.textContent = data.settings.lang === 'id' ? 'Indonesia' : 'English';
+    }
+    
+    // Update tombol PIN juga
+    updatePinButtonText();
 }
 
+    // --- SISTEM BAHASA BARU (MODAL) ---
+
+function openLangModal() {
+    // 1. Reset tampilan aktif
+    document.querySelectorAll('.lang-item').forEach(el => el.classList.remove('active'));
+    document.getElementById('check-id').style.display = 'none';
+    document.getElementById('check-en').style.display = 'none';
+
+    // 2. Tandai bahasa yang sedang aktif
+    const cur = data.settings.lang;
+    if(cur === 'id') {
+        document.getElementById('check-id').parentElement.classList.add('active');
+        document.getElementById('check-id').style.display = 'block';
+    } else {
+        document.getElementById('check-en').parentElement.classList.add('active');
+        document.getElementById('check-en').style.display = 'block';
+    }
+
+    openModal('modal-lang');
+}
+
+function selectLang(langCode) {
+    // 1. Simpan ke data
+    data.settings.lang = langCode;
+    saveData();
+
+    // 2. Update UI (Ganti bahasa seluruh aplikasi)
+    renderLanguage(); 
+    
+    // 3. Update konten lain
+    renderWallets();
+    renderBudget();
+    renderBills();
+    renderLoans();
+    updatePinButtonText();
+
+    // 4. Tutup modal
+    closeModal('modal-lang');
+    
+    showToast(langCode === 'id' ? "Bahasa diganti" : "Language changed");
+}
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
     loadData();
+    
+    // [BARU] Migrasi data lama jika belum ada dompet
+    if (!data.wallets || data.wallets.length === 0) {
+        data.wallets = [
+            { id: 1, name: 'Tunai', type: 'cash', balance: 0 },
+            { id: 2, name: 'Bank/ATM', type: 'bank', balance: 0 },
+            { id: 3, name: 'E-Wallet', type: 'ewallet', balance: 0 }
+        ];
+    }
+       
+        if (!data.bills) {
+            data.bills = [];
+        }
+        
     initTheme();
+    checkPinLock();
     
     if (!data.emergency) {
         data.emergency = { saved: 0, expense: 0, job: 'stable', dependents: '0', targetMonths: 6, targetAmount: 0 };
@@ -310,7 +493,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     initMoneyInputs();
+    renderWallets();
+    // Isi dropdown tanggal 1-31 untuk form tagihan
+    const dateSelect = document.getElementById('bill-date');
+    if(dateSelect) {
+        for(let i=1; i<=31; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = i;
+            dateSelect.appendChild(opt);
+        }
+    }
+    // Panggil renderBills agar data tagihan muncul saat aplikasi dibuka
+    renderBills();
     updateUI();
+    setTimeout(() => {
+        refreshAds('page-home');
+    }, 500);
 });
 
 function loadData() {
@@ -320,7 +519,6 @@ function loadData() {
 
 function saveData() {
     localStorage.setItem(APP_KEY, JSON.stringify(data));
-    // updateUI dipanggil di fungsi yang memanggil saveData, atau di event change
 }
 
 // --- MONEY & DATE FORMATTER HELPER ---
@@ -354,8 +552,6 @@ function fmtMoney(num) {
 }
 
 function fmtDate(dateString) {
-    // Tanggal tidak perlu diterjemahkan hard-code, 
-    // tapi kita bisa gunakan locale dari settings
     const lang = data.settings.lang === 'id' ? 'id-ID' : 'en-US';
     const options = { day: '2-digit', month: 'long', year: 'numeric' };
     const date = new Date(dateString);
@@ -375,7 +571,6 @@ function navTo(pageId) {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     event.currentTarget.classList.add('active');
     
-    // JUDUL HEADER DINAMIS SESUAI BAHASA
     const titleKeys = {
         'page-home': 'nav_home', 
         'page-budget': 'nav_budget', 
@@ -385,7 +580,6 @@ function navTo(pageId) {
     };
     
     const titleKey = titleKeys[pageId];
-    // Set attribut agar bisa di-update saat ganti bahasa
     const headerEl = document.getElementById('header-title');
     headerEl.setAttribute('data-i18n', titleKey);
     headerEl.textContent = t(titleKey);
@@ -396,6 +590,9 @@ function navTo(pageId) {
     } else {
         fab.style.display = 'flex';
     }
+    setTimeout(() => {
+        refreshAds(pageId);
+    }, 100);
 }
 
 function switchTab(context, tabId) {
@@ -459,14 +656,29 @@ function saveBudget() {
     const amount = parseMoney(amountRaw);
     const desc = document.getElementById('b-desc').value;
     const date = document.getElementById('b-date').value;
+    // [BARU] Ambil ID dompet
+    const walletId = parseInt(document.getElementById('b-wallet').value);
 
     if (!amount || !desc) return showToast(t('msg_complete_data'), 'error');
 
-    data.budget.unshift({ id: Date.now(), type, amount, desc, date });
+    // [BARU] Update Saldo Dompet
+    const wallet = data.wallets.find(w => w.id === walletId);
+    if (wallet) {
+        if (type === 'income') {
+            wallet.balance += amount;
+        } else {
+            wallet.balance -= amount;
+        }
+    }
+
+    // [BARU] Simpan walletId ke dalam data transaksi agar bisa dibatalkan nanti
+    data.budget.unshift({ id: Date.now(), type, amount, desc, date, walletId });
+    
     saveData();
     closeModal('modal-budget');
     resetInputs('modal-budget');
     showToast(t('msg_trans_saved'));
+    updateUI(); // Refresh semua UI
 }
 
 function renderBudget() {
@@ -477,14 +689,24 @@ function renderBudget() {
     data.budget.forEach(b => {
         if (b.type === 'income') income += b.amount; else expense += b.amount;
         
+        // [UPDATE] Logika penamaan wallet dengan translasi bahasa (t(...))
+        let walletName = 'Dompet';
+        const w = data.wallets.find(x => x.id === b.walletId);
+        if (w) {
+            if (w.type === 'cash') walletName = t('wallet_cash');
+            else if (w.type === 'bank') walletName = t('wallet_bank');
+            else if (w.type === 'ewallet') walletName = t('wallet_ewallet');
+            else walletName = w.name;
+        }
+
         const el = document.createElement('div');
         el.className = `list-item ${b.type}`;
         el.innerHTML = `
             <div style="display:flex; align-items:center; gap:15px;">
                 <i class="fas ${b.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
                 <div>
-                    <strong>${b.desc}</strong><br>
-                    <small class="text-muted">${b.date}</small>
+                    <strong>${b.desc}</strong> <span style="font-size:0.7em; background:var(--bg-input); padding:2px 6px; border-radius:4px; border:1px solid var(--border);">${walletName}</span><br>
+                    <small class="text-muted">${fmtDate(b.date)}</small>
                 </div>
             </div>
             <div style="text-align:right">
@@ -496,12 +718,56 @@ function renderBudget() {
         `;
         list.appendChild(el);
     });
-
-    document.getElementById('main-balance').textContent = fmtMoney(income - expense);
+    
     document.getElementById('main-income').textContent = fmtMoney(income);
     document.getElementById('main-expense').textContent = fmtMoney(expense);
-    
     renderChart(income, expense);
+    renderEmptyState('budget-list', 'msg_empty_trans');
+}
+
+function renderWallets() {
+    const container = document.getElementById('wallet-list');
+    const select = document.getElementById('b-wallet');
+    
+    if(!container || !select) return;
+
+    container.innerHTML = '';
+    select.innerHTML = '';
+
+    let globalTotal = 0;
+
+    data.wallets.forEach(w => {
+        globalTotal += w.balance;
+
+        // [UPDATE] Tentukan nama berdasarkan tipe untuk translasi
+        let displayName = w.name;
+        if (w.type === 'cash') displayName = t('wallet_cash');
+        else if (w.type === 'bank') displayName = t('wallet_bank');
+        else if (w.type === 'ewallet') displayName = t('wallet_ewallet');
+
+        // 1. Render Kartu di Home
+        let iconClass = 'fa-wallet';
+        if(w.type === 'bank') iconClass = 'fa-university';
+        if(w.type === 'ewallet') iconClass = 'fa-mobile-alt';
+
+        const el = document.createElement('div');
+        el.className = 'wallet-card-mini';
+        el.innerHTML = `
+            <div class="icon"><i class="fas ${iconClass}"></i></div>
+            <small>${displayName}</small>
+            <strong>${fmtMoney(w.balance)}</strong>
+        `;
+        container.appendChild(el);
+
+        // 2. Render Pilihan di Dropdown Modal
+        const opt = document.createElement('option');
+        opt.value = w.id;
+        opt.textContent = `${displayName} (${fmtMoney(w.balance)})`;
+        select.appendChild(opt);
+    });
+
+    // Update Total Saldo Utama
+    document.getElementById('main-balance').textContent = fmtMoney(globalTotal);
 }
 
 // --- FEATURE: GOALS ---
@@ -517,6 +783,7 @@ function addGoal() {
     document.getElementById('goal-name').value = '';
     document.getElementById('goal-amount').value = '';
     showToast(t('msg_goal_created'));
+    updateUI();
 }
 
 function renderGoals() {
@@ -554,6 +821,8 @@ function renderGoals() {
         `;
         container.appendChild(el);
     });
+   
+    renderEmptyState('goal-list', 'msg_empty_goal', 'fa-bullseye');
 }
 
 function openGoalModal(id) {
@@ -616,6 +885,7 @@ function saveEmergencyProfile() {
     saveData();
     toggleEmergencySettings();
     showToast(`${t('msg_prof_saved')} ${months} ${t('month')}`);
+    updateUI();
 }
 
 function addEmergencyFund() {
@@ -626,6 +896,7 @@ function addEmergencyFund() {
         closeModal('modal-emergency-add');
         document.getElementById('em-add-amount').value = '';
         showToast(`${t('em_fund_title')} +${fmtMoney(amount)}`);
+        updateUI();
     } else {
         showToast(t('msg_invalid_amount'), 'error');
     }
@@ -694,6 +965,7 @@ function saveLoan() {
     closeModal('modal-loan');
     resetInputs('modal-loan');
     showToast(t('msg_loan_saved'));
+    updateUI();
 }
 
 function renderLoans() {
@@ -701,8 +973,13 @@ function renderLoans() {
     const historyList = document.getElementById('loan-list-history');
     const search = document.getElementById('loan-search').value.toLowerCase();
     
+    if(!activeList || !historyList) return;
+
     activeList.innerHTML = ''; historyList.innerHTML = '';
     let totPiutang = 0, totHutang = 0;
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
 
     data.loans.forEach(l => {
         if(l.status === 'active') {
@@ -712,24 +989,97 @@ function renderLoans() {
 
         if(!l.person.toLowerCase().includes(search)) return;
 
+        // --- [LOGIKA SIKLUS BULANAN] ---
+        let dueStatusHTML = '';
+        
+        if (l.status === 'active') {
+            const transDate = new Date(l.date);
+            transDate.setHours(0,0,0,0);
+
+            let maxDueDate = new Date(transDate);
+            maxDueDate.setMonth(transDate.getMonth() + (l.tenor || 1));
+            
+            let targetDueDate = new Date(today.getFullYear(), today.getMonth(), transDate.getDate());
+
+            if (targetDueDate.getMonth() !== today.getMonth()) {
+                targetDueDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            }
+
+            if (targetDueDate <= transDate) {
+                targetDueDate.setMonth(targetDueDate.getMonth() + 1);
+            }
+            
+            let thisMonthDue = new Date(today.getFullYear(), today.getMonth(), transDate.getDate());
+            if (today > thisMonthDue && thisMonthDue > transDate && thisMonthDue <= maxDueDate) {
+                targetDueDate = thisMonthDue;
+            }
+
+            if (targetDueDate > maxDueDate) {
+                targetDueDate = maxDueDate;
+            }
+
+            const diffTime = targetDueDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+
+            const lang = data.settings.lang === 'id' ? 'id-ID' : 'en-US';
+            const shortDate = targetDueDate.toLocaleDateString(lang, { day: 'numeric', month: 'short', year: '2-digit' });
+
+            if (diffDays === 0) {
+                dueStatusHTML = `<small class="badge-gray" style="background:rgba(247, 183, 51, 0.15); color:var(--warning); font-weight:700; animation: pulse 1.5s infinite;">
+                                    <i class="fas fa-exclamation-circle"></i> ${t('sts_due_today')}
+                                 </small>`;
+            } else if (diffDays > 0) {
+                const prefix = data.settings.lang === 'id' ? 'H-' : 'Due ';
+                const color = diffDays <= 7 ? 'var(--primary)' : 'var(--text-muted)';
+                const bg = diffDays <= 7 ? 'rgba(68, 129, 235, 0.1)' : 'var(--bg-input)';
+                
+                dueStatusHTML = `<small style="background:${bg}; color:${color}; padding: 4px 10px; border-radius: 8px; font-weight:600; font-size: 0.75rem; display:inline-block;">
+                                    <i class="fas fa-clock"></i> ${prefix}${diffDays} &bull; ${shortDate}
+                                 </small>`;
+            } else {
+                dueStatusHTML = `<small class="badge-gray" style="background:var(--danger-bg); color:var(--danger); font-weight:700;">
+                                    ${t('sts_late')} ${Math.abs(diffDays)} ${t('sts_day')}
+                                 </small>`;
+            }
+        } else {
+            dueStatusHTML = `<small class="badge-gray" style="background:var(--success-bg); color:var(--success); font-weight:700;"><i class="fas fa-check"></i> LUNAS</small>`;
+        }
+        // -------------------------------------------
+
+        const typeLabel = l.type === 'piutang' ? t('word_receivable') : t('word_debt');
+        const remainingLabel = t('word_remaining');
+        const progress = Math.min(100, (l.paid / l.total) * 100);
+        
+        // [UPDATE] Format Label Tenor (Contoh: "6 Bulan")
+        const tenorLabel = (l.tenor || 1) + ' ' + t('month');
+
         const el = document.createElement('div');
         el.className = 'card list-item';
         el.style.borderLeft = l.type === 'piutang' ? '4px solid var(--success)' : '4px solid var(--danger)';
         
-        const progress = Math.min(100, (l.paid / l.total) * 100);
-        
         el.innerHTML = `
             <div style="flex:1" onclick="showLoanDetail(${l.id})">
                 <div class="flex-between">
-                    <strong>${l.person}</strong>
-                    <span style="font-size:0.7rem; font-weight:bold; color:${l.type==='piutang'?'var(--success)':'var(--danger)'}">${l.type.toUpperCase()}</span>
+                    <div>
+                        <strong>${l.person}</strong>
+                        <div style="margin-top:6px;">${dueStatusHTML}</div>
+                    </div>
+                    <div style="text-align:right">
+                         <span style="font-size:0.7rem; font-weight:bold; color:${l.type==='piutang'?'var(--success)':'var(--danger)'}">
+                            ${typeLabel} 
+                        </span><br>
+                        
+                        <small class="text-muted" style="font-size:0.7rem;">
+                            ${tenorLabel} &bull; ${Math.round(progress)}%
+                        </small>
+                    </div>
                 </div>
-                <small class="text-muted">${fmtDate(l.date)}</small>
-                <div class="flex-between mt-10 text-muted">
-                    <small>${t('word_remaining')}: ${fmtMoney(l.total - l.paid)}</small>
-                    <small>${Math.round(progress)}%</small>
+
+                <div class="flex-between text-muted mt-10" style="font-size:0.85rem; border-top:1px dashed var(--border); padding-top:8px;">
+                    <small>${remainingLabel}: <b style="color:var(--text-main)">${fmtMoney(l.total - l.paid)}</b></small>
+                    <small>Total: ${fmtMoney(l.total)}</small>
                 </div>
-                <div class="goal-progress-bg" style="height:6px; margin-top:5px;">
+                <div class="goal-progress-bg" style="height:6px; margin-top:8px;">
                     <div class="goal-progress-bar" style="width:${progress}%; background:${l.type==='piutang'?'var(--success)':'var(--danger)'}"></div>
                 </div>
             </div>
@@ -741,23 +1091,38 @@ function renderLoans() {
 
     document.getElementById('main-piutang').textContent = fmtMoney(totPiutang);
     document.getElementById('main-hutang').textContent = fmtMoney(totHutang);
+    
+    renderEmptyState('loan-list-active', 'msg_empty_loan', 'fa-hand-holding-usd');
+    renderEmptyState('loan-list-history', 'msg_empty_loan', 'fa-history');
 }
 
 function showLoanDetail(id) {
     const l = data.loans.find(x => x.id === id);
+    if (!l) return; 
+    
     const remaining = l.total - l.paid;
     
-    let historyHtml = l.history.map(h => 
+    // [LOGIKA BARU] Terjemahkan tipe untuk Badge di atas
+    const typeLabel = l.type === 'piutang' ? t('word_receivable') : t('word_debt');
+
+    // History Html
+    let historyHtml = l.history.map((h, i) => 
         `<div class="flex-between" style="border-bottom:1px dashed var(--border); padding:10px 0">
-            <small>${fmtDate(h.date)}</small>
-            <small>${fmtMoney(h.amount)}</small>
+            <small class="text-muted">${fmtDate(h.date)}</small>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <small style="font-weight:bold;">${fmtMoney(h.amount)}</small>
+                <i class="fas fa-times-circle text-red" 
+                   onclick="deletePayment(${l.id}, ${i})" 
+                   style="cursor:pointer; font-size:1rem;" 
+                   title="${t('tip_delete_pay')}"></i> 
+            </div>
         </div>`
     ).join('');
 
     const html = `
         <div class="text-center mb-20">
             <h2>${l.person}</h2>
-            <span class="badge-gray">${l.type.toUpperCase()}</span>
+            <span class="badge-gray">${typeLabel}</span>
         </div>
         <div class="quick-stats-grid">
             <div class="stat-card text-center" style="display:block">
@@ -772,16 +1137,17 @@ function showLoanDetail(id) {
         <div class="card mt-20" style="background:var(--bg-body); border:none;">
             <h4><i class="fas fa-money-bill-wave"></i> ${t('word_pay')}</h4>
             <div class="flex-between mt-10">
-                <input type="text" inputmode="numeric" class="money-input" id="pay-amount" placeholder="Nominal" style="margin:0; width:60%">
+                <input type="text" inputmode="numeric" class="money-input" id="pay-amount" placeholder="${t('ph_amount')}" style="margin:0; width:60%">
                 <button class="btn-primary" onclick="payLoan(${l.id})" style="width:35%">${t('word_pay')}</button>
             </div>
         </div>` : `<div class="card text-center text-green mt-20"><strong><i class="fas fa-check"></i> ${t('msg_paid')}</strong></div>`}
 
         <div class="mt-20">
-            <h4>${t('tab_history')}</h4>
-            ${historyHtml || '<small class="text-muted">-</small>'}
+            <h4>${t('lbl_pay_history')}</h4>
+            ${historyHtml || '<small class="text-muted" style="display:block; text-align:center; margin-top:10px;">- ' + t('word_remaining') + ' 0 -</small>'}
         </div>
-        <button class="btn-danger full-width mt-20" onclick="deleteItem('loans', ${l.id})">Hapus Data</button>
+        
+        <button class="btn-danger full-width mt-20" onclick="deleteItem('loans', ${l.id})">${t('btn_delete_data')}</button>
     `;
     
     document.getElementById('detail-content').innerHTML = html;
@@ -790,13 +1156,27 @@ function showLoanDetail(id) {
 }
 
 function payLoan(id) {
+    // Ambil input dari modal detail
     const amount = parseMoney(document.getElementById('pay-amount').value);
-    if(!amount) return;
-
-    const l = data.loans.find(x => x.id === id);
-    l.paid += amount;
-    l.history.push({ date: new Date().toISOString().split('T')[0], amount });
     
+    // Validasi input
+    if(!amount || amount <= 0) {
+        showToast(t('msg_invalid_amount'), 'error');
+        return;
+    }
+
+    // Cari data loan berdasarkan ID
+    const l = data.loans.find(x => x.id === id);
+    if (!l) return;
+
+    // Update data: Tambah jumlah terbayar & catat histori
+    l.paid += amount;
+    l.history.push({ 
+        date: new Date().toISOString().split('T')[0], 
+        amount: amount 
+    });
+    
+    // Cek apakah sudah lunas
     if(l.paid >= l.total) {
         l.status = 'completed';
         showToast(t('msg_paid'), 'success');
@@ -806,7 +1186,37 @@ function payLoan(id) {
     
     saveData();
     closeModal('modal-detail');
+    updateUI(); 
 }
+
+  // [UPDATE FINAL] Fungsi hapus pembayaran dengan Modal Custom
+function deletePayment(loanId, historyIndex) {
+    // Panggil modal custom, bukan window.confirm
+    showConfirmDialog(t('confirm_del_pay'), function() {
+        // --- Kode penghapusan dijalankan HANYA jika user klik tombol YES ---
+        
+        const l = data.loans.find(x => x.id === loanId);
+        if (!l) return;
+
+        const paymentAmount = l.history[historyIndex].amount;
+
+        l.paid -= paymentAmount;
+        if (l.paid < 0) l.paid = 0; 
+
+        l.history.splice(historyIndex, 1);
+
+        if (l.paid < l.total) {
+            l.status = 'active';
+        }
+
+        saveData();
+        updateUI(); 
+        showLoanDetail(loanId); 
+        
+        showToast(t('msg_pay_deleted'));
+    });
+}
+
 
 // --- FEATURE: CALCULATOR ---
 function toggleDcaInput() {
@@ -829,7 +1239,6 @@ function calculateCompound() {
     if(t === 0) return showToast(t('msg_fill_year'), 'error');
 
     let n = 1; 
-
     if (method === 'daily') n = 365;
     else if (method === 'weekly') n = 52;
     else if (method === 'monthly') n = 12;
@@ -838,15 +1247,14 @@ function calculateCompound() {
     let futureValue = 0;
     let totalContributions = 0;
     
+    // Perhitungan Total Akhir
     if (method === 'none') {
         futureValue = P * Math.pow((1 + r), t);
     } else {
         const ratePerPeriod = r / n;
         const totalPeriods = n * t;
-
         const fvLumpSum = P * Math.pow((1 + ratePerPeriod), totalPeriods);
         const fvSeries = PMT * ((Math.pow((1 + ratePerPeriod), totalPeriods) - 1) / ratePerPeriod);
-        
         futureValue = fvLumpSum + fvSeries;
         totalContributions = PMT * totalPeriods;
     }
@@ -854,34 +1262,114 @@ function calculateCompound() {
     const totalInvested = P + totalContributions;
     const totalInterest = futureValue - totalInvested;
     
+    // Tampilkan Hasil
     document.getElementById('calc-result').classList.remove('hidden');
     document.getElementById('calc-total-display').textContent = fmtMoney(futureValue);
     document.getElementById('calc-principal-display').textContent = fmtMoney(totalInvested);
     document.getElementById('calc-interest-display').textContent = fmtMoney(totalInterest);
 
-    document.getElementById('calc-principal').value = '';
-    document.getElementById('calc-contribution').value = '';
-    document.getElementById('calc-rate').value = '';
-    document.getElementById('calc-years').value = '';
+    // [BARU] Tambahkan tombol "Lihat Rincian" di bawah hasil
+    // Kita cek apakah tombol sudah ada, jika belum kita buat
+    let btnDetail = document.getElementById('btn-calc-detail');
+    if(!btnDetail) {
+        const resultBox = document.querySelector('.calc-details'); 
+        btnDetail = document.createElement('button');
+        btnDetail.id = 'btn-calc-detail';
+        btnDetail.className = 'btn-xs full-width mt-10';
+        btnDetail.innerHTML = '<i class="fas fa-list-ol"></i> Lihat Progres Tahunan';
+        btnDetail.onclick = showCalcDetail; // Panggil fungsi baru
+        resultBox.after(btnDetail);
+    }
 }
 
 function resetCalc() {
     document.getElementById('calc-result').classList.add('hidden');
 }
 
-// --- SYSTEM ---
-function deleteItem(collection, id) {
-    if(!confirm(t('msg_confirm_del'))) return;
-    data[collection] = data[collection].filter(x => x.id !== id);
-    saveData();
-    if(document.getElementById('modal-detail').classList.contains('active')) closeModal('modal-detail');
+// [BARU] Fungsi untuk menampilkan Modal Rincian Tahunan
+function showCalcDetail() {
+    // Ambil nilai input lagi
+    const P = parseMoney(document.getElementById('calc-principal').value) || 0;
+    const rRaw = parseFloat(document.getElementById('calc-rate').value) || 0;
+    const r = rRaw / 100;
+    const t = parseFloat(document.getElementById('calc-years').value) || 0;
+    const method = document.getElementById('calc-method').value;
+    const PMT = parseMoney(document.getElementById('calc-contribution').value) || 0;
+
+    let n = 1; 
+    if (method === 'daily') n = 365;
+    else if (method === 'weekly') n = 52;
+    else if (method === 'monthly') n = 12;
+    else if (method === 'yearly') n = 1;
+
+    const tbody = document.getElementById('calc-breakdown-list');
+    tbody.innerHTML = ''; // Kosongkan tabel dulu
+
+    // Loop per tahun
+    for (let i = 1; i <= t; i++) {
+        let fvYear = 0;
+        let investedYear = 0;
+
+        // Hitung FV untuk tahun ke-i
+        if (method === 'none') {
+            fvYear = P * Math.pow((1 + r), i);
+            investedYear = P;
+        } else {
+            const ratePerPeriod = r / n;
+            const periodsNow = n * i; // Periode sampai tahun ke-i
+            
+            const fvLumpSum = P * Math.pow((1 + ratePerPeriod), periodsNow);
+            const fvSeries = PMT * ((Math.pow((1 + ratePerPeriod), periodsNow) - 1) / ratePerPeriod);
+            
+            fvYear = fvLumpSum + fvSeries;
+            investedYear = P + (PMT * periodsNow);
+        }
+
+        // Render Baris Tabel
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${i}</td>
+            <td>${fmtMoney(investedYear)}</td>
+            <td class="text-right highlight">${fmtMoney(fvYear)}</td>
+        `;
+        tbody.appendChild(row);
+    }
+
+    openModal('modal-calc-detail');
 }
 
-function resetData() {
-    if(confirm(t('msg_confirm_reset'))) {
-        localStorage.removeItem(APP_KEY);
-        location.reload();
-    }
+// --- SYSTEM ---
+// [UPDATE FINAL] Fungsi Hapus Item Universal dengan Modal Custom
+function deleteItem(collection, id) {
+    // Gunakan Modal Custom
+    showConfirmDialog(t('msg_confirm_del'), function() {
+        
+        // --- Logika Penghapusan ---
+        if (collection === 'budget') {
+            const item = data.budget.find(x => x.id === id);
+            if (item && item.walletId) {
+                const wallet = data.wallets.find(w => w.id === item.walletId);
+                if (wallet) {
+                    // Balikkan saldo dompet
+                    if (item.type === 'income') wallet.balance -= item.amount;
+                    else wallet.balance += item.amount;
+                }
+            }
+        }
+
+        // Hapus item dari array
+        data[collection] = data[collection].filter(x => x.id !== id);
+        
+        saveData();
+        updateUI(); 
+
+        // Jika sedang membuka modal detail (misal di Hutang), tutup modalnya
+        if(document.getElementById('modal-detail').classList.contains('active')) {
+            closeModal('modal-detail');
+        }
+        
+        showToast("Item berhasil dihapus");
+    });
 }
 
 function exportCSV(type) {
@@ -925,11 +1413,14 @@ function toggleTheme() {
 }
 
 function updateUI() {
-    renderLanguage(); // RENDER BAHASA DULUAN
+    renderLanguage();
+    renderWallets(); 
     renderBudget();
+    renderBills();
     renderLoans();
     renderGoals();
     renderEmergency();
+
 }
 
 let chartInstance = null;
@@ -942,7 +1433,7 @@ function renderChart(income, expense) {
         expense = 0;
     }
 
-    const labels = [t('lbl_income_type'), t('lbl_expense_type')]; // Translate chart labels
+    const labels = [t('lbl_income_type'), t('lbl_expense_type')]; 
 
     chartInstance = new Chart(ctx, {
         type: 'doughnut',
@@ -963,3 +1454,389 @@ function renderChart(income, expense) {
         }
     });
 }
+
+// Variable global untuk menyimpan fungsi yang akan dijalankan jika user klik YES
+let onConfirmAction = null;
+
+function showConfirmDialog(message, actionCallback) {
+    // 1. Set teks pesan sesuai parameter
+    document.getElementById('confirm-msg').innerText = message;
+    
+    // 2. Update bahasa judul & tombol
+    document.getElementById('confirm-title').innerText = t('lbl_confirm_title');
+    document.getElementById('btn-conf-cancel').innerText = t('btn_cancel');
+    document.getElementById('btn-conf-yes-text').innerText = t('btn_yes');
+
+    // 3. Simpan aksi yang mau dilakukan
+    onConfirmAction = actionCallback;
+
+    // 4. Buka Modal
+    openModal('modal-confirm');
+}
+
+// Pasang event listener untuk tombol YES
+document.getElementById('btn-conf-yes').onclick = function() {
+    if (onConfirmAction) {
+        onConfirmAction(); // Jalankan fungsi yang disimpan tadi
+    }
+    closeModal('modal-confirm'); // Tutup modal
+};
+
+// --- FITUR KEAMANAN: PIN LOCK ---
+let currentPinInput = "";
+let isSettingUpPin = false;
+
+function checkPinLock() {
+    const savedPin = data.settings.pin;
+    const overlay = document.getElementById('pin-overlay');
+    
+    if (savedPin) {
+        overlay.classList.remove('hidden');
+        document.getElementById('pin-title').innerText = t('enter_pin');
+        document.getElementById('btn-forgot-pin').style.display = 'inline-block';
+        isSettingUpPin = false;
+    } else {
+        overlay.classList.add('hidden');
+    }
+}
+
+function pressPin(key) {
+    const dots = document.querySelectorAll('.dot');
+    
+    if (key === 'c') {
+        currentPinInput = currentPinInput.slice(0, -1);
+    } else if (key === 'enter') {
+        // Optional logic for enter
+    } else {
+        if (currentPinInput.length < 4) {
+            currentPinInput += key;
+        }
+    }
+
+    dots.forEach((dot, index) => {
+        if (index < currentPinInput.length) dot.classList.add('filled');
+        else dot.classList.remove('filled');
+    });
+
+    if (currentPinInput.length === 4) {
+        setTimeout(validatePin, 200);
+    }
+}
+
+function validatePin() {
+    const savedPin = data.settings.pin;
+    const dots = document.querySelectorAll('.dot');
+
+    if (isSettingUpPin) {
+        data.settings.pin = currentPinInput;
+        saveData();
+        showToast(t('pin_set'), "success");
+        document.getElementById('pin-overlay').classList.add('hidden');
+        currentPinInput = "";
+        isSettingUpPin = false;
+        updatePinButtonText();
+    } else {
+        if (currentPinInput === savedPin) {
+            document.getElementById('pin-overlay').classList.add('hidden');
+            currentPinInput = "";
+        } else {
+            dots.forEach(d => d.classList.add('error'));
+            setTimeout(() => {
+                dots.forEach(d => {
+                    d.classList.remove('error');
+                    d.classList.remove('filled');
+                });
+                currentPinInput = "";
+            }, 400);
+            showToast(t('pin_wrong'), "error");
+        }
+    }
+}
+
+function togglePinSetup() {
+    const overlay = document.getElementById('pin-overlay');
+    currentPinInput = "";
+    
+    if (data.settings.pin) {
+        // [UPDATE] Pakai Modal Custom untuk konfirmasi matikan PIN
+        showConfirmDialog(t('confirm_disable_pin'), function() {
+            data.settings.pin = null;
+            saveData();
+            showToast(t('pin_unset'));
+            updatePinButtonText();
+        });
+    } else {
+        isSettingUpPin = true;
+        overlay.classList.remove('hidden');
+        document.getElementById('pin-title').innerText = t('setup_pin');
+        document.getElementById('btn-forgot-pin').style.display = 'none';
+        document.querySelectorAll('.dot').forEach(d => d.classList.remove('filled'));
+    }
+}
+
+function updatePinButtonText() {
+    const btn = document.getElementById('btn-toggle-pin');
+    if(btn) {
+        // Update Teks
+        btn.innerText = data.settings.pin ? t('disable_pin') : t('enable_pin');
+        
+        // Update Style: Hapus 'full-width', gunakan style tombol kecil (btn-xs)
+        // Jika PIN aktif -> Merah (btn-toggle-inactive)
+        // Jika PIN mati -> Biru (btn-toggle-active)
+        if (data.settings.pin) {
+            btn.className = "btn-xs btn-toggle-inactive"; 
+        } else {
+            btn.className = "btn-xs btn-toggle-active";
+        }
+    }
+}
+
+// --- BACKUP & RESTORE SYSTEM ---
+function downloadBackup() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    const date = new Date().toISOString().split('T')[0];
+    downloadAnchorNode.setAttribute("download", `finpro_backup_${date}.json`);
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+
+function restoreBackup(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const json = JSON.parse(e.target.result);
+            
+            if (json.budget && json.settings) {
+                // [UPDATE] Pakai Modal Custom
+                const msg = data.settings.lang === 'en' 
+                    ? "Current data will be replaced with backup data. Continue?" 
+                    : "Data saat ini akan ditimpa dengan data backup. Lanjutkan?";
+
+                showConfirmDialog(msg, function() {
+                    data = json;
+                    saveData();
+                    alert("Restore Berhasil! Aplikasi akan dimuat ulang.");
+                    location.reload();
+                });
+            } else {
+                alert("File backup tidak valid!");
+            }
+        } catch (err) {
+            alert("Error membaca file JSON!");
+            console.error(err);
+        }
+    };
+    reader.readAsText(file);
+    // Reset input agar bisa pilih file yang sama lagi jika perlu
+    input.value = ''; 
+}
+
+// --- FEATURE: RECURRING BILLS ---
+function toggleAddBill() {
+    document.getElementById('add-bill-form').classList.toggle('hidden');
+}
+
+function saveBill() {
+    const name = document.getElementById('bill-name').value;
+    const amount = parseMoney(document.getElementById('bill-amount').value);
+    const dueDay = parseInt(document.getElementById('bill-date').value);
+
+    if(!name || !amount) return showToast(t('msg_complete_data'), 'error');
+
+    // lastPaidMonth format: "YYYY-MM" (contoh: "2023-11")
+    data.bills.push({
+        id: Date.now(),
+        name,
+        amount,
+        dueDay,
+        lastPaidMonth: null 
+    });
+
+    saveData();
+    toggleAddBill();
+    document.getElementById('bill-name').value = '';
+    document.getElementById('bill-amount').value = '';
+    showToast(t('msg_trans_saved'));
+    renderBills();
+    renderLanguage();
+    updateUI();
+}
+
+function renderBills() {
+    const list = document.getElementById('bill-list');
+    if(!list) return;
+    list.innerHTML = '';
+
+    const today = new Date();
+    const currentMonthStr = today.toISOString().slice(0, 7); // "YYYY-MM"
+    const currentDay = today.getDate();
+    
+    let paidCount = 0;
+
+    // Urutkan berdasarkan tanggal jatuh tempo
+    data.bills.sort((a, b) => a.dueDay - b.dueDay);
+
+    data.bills.forEach(bill => {
+        const isPaid = bill.lastPaidMonth === currentMonthStr;
+        if(isPaid) paidCount++;
+
+        let statusHTML = '';
+        let btnHTML = '';
+        let borderClass = '';
+
+        if (isPaid) {
+            statusHTML = `<span class="badge-gray" style="background:var(--success-bg); color:var(--success);"><i class="fas fa-check"></i> ${t('status_paid')}</span>`;
+            borderClass = 'border-left-green'; // Styling CSS tambahan nanti
+        } else {
+            // Cek Telat
+            if (currentDay > bill.dueDay) {
+                statusHTML = `<span class="badge-gray" style="background:var(--danger-bg); color:var(--danger);">${t('status_overdue')}</span>`;
+                borderClass = 'border-left-red'; // Styling CSS tambahan nanti
+            } else {
+                statusHTML = `<span class="badge-gray">${t('status_unpaid')}</span>`;
+            }
+            
+            // Tombol Bayar
+            btnHTML = `<button class="btn-xs text-primary" onclick="payBill(${bill.id})" style="margin-top:8px;">${t('btn_pay_bill')}</button>`;
+        }
+
+        const el = document.createElement('div');
+        el.className = `card list-item ${borderClass}`;
+        el.style.display = 'block'; 
+        el.innerHTML = `
+            <div class="flex-between">
+                <div>
+                    <strong>${bill.name}</strong>
+                    <div style="font-size:0.8rem; margin-top:4px;" class="text-muted">
+                        ${t('lbl_due_date')} <b>${bill.dueDay}</b>
+                    </div>
+                </div>
+                <div style="text-align:right">
+                    <strong>${fmtMoney(bill.amount)}</strong><br>
+                    ${statusHTML}
+                </div>
+            </div>
+            <div class="flex-between" style="align-items:flex-end">
+                 <i class="fas fa-trash text-muted" onclick="deleteItem('bills', ${bill.id})" style="font-size:0.8rem; cursor:pointer; margin-top:15px;"></i>
+                 ${btnHTML}
+            </div>
+        `;
+        list.appendChild(el);
+    });
+
+    document.getElementById('bill-status-summary').textContent = `${paidCount}/${data.bills.length} ${t('status_paid')}`;
+    renderEmptyState('bill-list', 'msg_empty_bill', 'fa-file-invoice');
+    
+}
+
+function payBill(id) {
+    // 1. Cari data tagihan
+    const bill = data.bills.find(b => b.id === id);
+    if(!bill) return;
+
+    // 2. Tanya user mau pakai dompet mana (Simple prompt dulu atau default dompet utama)
+    // Untuk simplifikasi UX PWA, kita anggap pakai dompet pertama yang punya saldo cukup, 
+    // atau user harus manual catat pengeluaran? 
+    // LEBIH BAIK: Kita catat otomatis sebagai Transaksi Pengeluaran.
+    
+    // Kita cek wallet mana yang paling banyak isinya (Auto-select) atau default ID 1
+    // Agar simple, kita masukkan ke wallet ID 1 (Cash) atau ID 2 (Bank) 
+    // (Ide pengembangan: Munculkan modal pilih dompet. Tapi biar cepat, kita pakai Wallet Bank/ATM sebagai default bayar tagihan).
+    const defaultWalletId = 2; // Asumsi bayar tagihan via Transfer/Bank
+    
+    const wallet = data.wallets.find(w => w.id === defaultWalletId);
+    if(wallet) {
+        wallet.balance -= bill.amount;
+    }
+
+    // 3. Catat di history transaksi (Budget)
+    const todayStr = new Date().toISOString().split('T')[0];
+    data.budget.unshift({
+        id: Date.now(),
+        type: 'expense',
+        amount: bill.amount,
+        desc: `[Tagihan] ${bill.name}`,
+        date: todayStr,
+        walletId: defaultWalletId
+    });
+
+    // 4. Update status tagihan jadi Lunas bulan ini
+    bill.lastPaidMonth = new Date().toISOString().slice(0, 7);
+
+    saveData();
+    showToast(t('msg_bill_paid'));
+    updateUI(); // Refresh semua (saldo berkurang, tagihan jadi hijau, history nambah)
+}
+
+// Fungsi Reset Data (Versi Modal Custom)
+function resetData() {
+    showConfirmDialog(t('msg_confirm_reset'), function() {
+        localStorage.removeItem(APP_KEY);
+        location.reload();
+    });
+}
+
+// [BARU] Fungsi Helper untuk menampilkan status kosong
+function renderEmptyState(containerId, messageKey, iconClass = 'fa-clipboard-list') {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // Cek apakah wadah kosong (tidak punya anak elemen)
+    if (container.children.length === 0) {
+        container.innerHTML = `
+            <div style="text-align:center; padding: 40px 20px; opacity:0.6; animation: fadeIn 0.5s;">
+                <i class="fas ${iconClass}" style="font-size:3rem; margin-bottom:15px; color:var(--text-muted);"></i>
+                <p class="text-muted" style="font-size:0.95rem;">${t(messageKey)}</p>
+            </div>
+        `;
+    }
+}
+
+// [BARU] Fungsi Smart-Load Iklan (Dengan Pengecekan Lebar & Retry)
+function refreshAds(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // Cari semua slot iklan di dalam halaman ini
+    const ads = container.querySelectorAll('ins.adsbygoogle');
+    
+    ads.forEach(ad => {
+        // 1. Cek apakah iklan SUDAH pernah dimuat? (Biar tidak double)
+        if (ad.getAttribute('data-adsbygoogle-status')) return;
+
+        // 2. [PENTING] Cek apakah slot iklan sudah punya lebar (Sudah Tampil)?
+        // Jika offsetWidth === 0, berarti masih hidden/loading. Kita tunda.
+        if (ad.offsetWidth === 0) {
+            // Coba panggil fungsi ini lagi setelah 300ms (0.3 detik)
+            setTimeout(() => {
+                refreshAds(containerId);
+            }, 300);
+            return; // Stop proses kali ini
+        }
+
+        // 3. Jika sudah punya lebar, baru kita Request ke Google
+        try {
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {
+            // Error handling diam-diam agar tidak mengganggu user
+            console.log("AdSense pending layout...");
+        }
+    });
+}
+
+ // [UPDATE] Tambahkan try-catch lebih aman
+        try {
+            // Cek apakah adsbygoogle sudah siap
+            if (typeof window.adsbygoogle !== 'undefined') {
+                window.adsbygoogle.push({});
+            }
+        } catch (e) {
+            // Sembunyikan error AdSense agar tidak memenuhi console saat testing
+            console.warn("AdSense belum siap (Abaikan jika di Emulator)");
+        }
