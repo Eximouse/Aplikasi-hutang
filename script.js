@@ -1,3 +1,42 @@
+// --- FIREBASE CONFIGURATION ---
+const firebaseConfig = {
+    apiKey: "AIzaSyBX0zJR2ea2mqPHnEIdcsfd8TAKGwQ7Z0o",
+    authDomain: "finansial-pro.firebaseapp.com",
+    projectId: "finansial-pro",
+    storageBucket: "finansial-pro.firebasestorage.app",
+    messagingSenderId: "762074207570",
+    appId: "1:762074207570:web:908377e788bdfe11e6968b"
+  };
+
+// Variabel Global
+let auth, db, currentUser;
+
+// Menunggu Library dari HTML siap
+window.addEventListener('load', () => {
+    if(window.firebaseLib) {
+        const { initializeApp, getAuth, getFirestore, onAuthStateChanged } = window.firebaseLib;
+        
+        // Mulai Firebase
+        const app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+
+        // Cek apakah user sedang Login atau Belum
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // SUDAH LOGIN
+                currentUser = user;
+                document.getElementById('login-screen').style.display = 'none'; // Tutup layar login
+                initializeAppLogic(true); // Jalankan aplikasi mode Cloud
+            } else {
+                // BELUM LOGIN
+                document.getElementById('login-screen').style.display = 'flex'; // Munculkan layar login
+                document.getElementById('login-status').innerText = "";
+            }
+        });
+    }
+});
+
 // --- DICTIONARY BAHASA (Language Resources) ---
 const RESOURCES = {
     id: {
@@ -463,40 +502,26 @@ function selectLang(langCode) {
 }
 
 // --- INITIALIZATION ---
-document.addEventListener('DOMContentLoaded', () => {
-    loadData();
-    
-    // [BARU] Migrasi data lama jika belum ada dompet
-    if (!data.wallets || data.wallets.length === 0) {
-        data.wallets = [
-            { id: 1, name: 'Tunai', type: 'cash', balance: 0 },
-            { id: 2, name: 'Bank/ATM', type: 'bank', balance: 0 },
-            { id: 3, name: 'E-Wallet', type: 'ewallet', balance: 0 }
-        ];
-    }
-       
-        if (!data.bills) {
-            data.bills = [];
-        }
-        
+// [BARU] Fungsi Start Aplikasi (Dipanggil setelah Login sukses)
+async function initializeAppLogic(isCloud) {
+    // Jika mode cloud, kita tunggu download data dulu
+    if(isCloud) await loadData(); 
+
     initTheme();
     checkPinLock();
     
-    if (!data.emergency) {
-        data.emergency = { saved: 0, expense: 0, job: 'stable', dependents: '0', targetMonths: 6, targetAmount: 0 };
-    }
-
+    // Setup tanggal hari ini di input date
     const today = new Date().toISOString().split('T')[0];
-    const dateInputs = document.querySelectorAll('input[type="date"]');
-    dateInputs.forEach(input => {
+    document.querySelectorAll('input[type="date"]').forEach(input => {
         if (!input.value) input.value = today;
     });
 
     initMoneyInputs();
     renderWallets();
-    // Isi dropdown tanggal 1-31 untuk form tagihan
+    
+    // Setup dropdown tanggal tagihan (1-31)
     const dateSelect = document.getElementById('bill-date');
-    if(dateSelect) {
+    if(dateSelect && dateSelect.children.length === 0) { 
         for(let i=1; i<=31; i++) {
             const opt = document.createElement('option');
             opt.value = i;
@@ -504,21 +529,72 @@ document.addEventListener('DOMContentLoaded', () => {
             dateSelect.appendChild(opt);
         }
     }
-    // Panggil renderBills agar data tagihan muncul saat aplikasi dibuka
+    
     renderBills();
     updateUI();
+    
+    // Panggil Iklan (jika ada fungsi refreshAds)
     setTimeout(() => {
-        refreshAds('page-home');
+        if(typeof refreshAds === "function") refreshAds('page-home');
     }, 500);
-});
-
-function loadData() {
-    const saved = localStorage.getItem(APP_KEY);
-    if (saved) data = JSON.parse(saved);
 }
 
-function saveData() {
+// [UPDATE] Load Data (Cek Cloud dulu, kalau kosong cek Local)
+async function loadData() {
+    if (!currentUser || !window.firebaseLib) return; 
+    const { doc, getDoc } = window.firebaseLib;
+
+    try {
+        // Ambil data dari Cloud Firestore
+        const docRef = doc(db, "users", currentUser.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            // KASUS 1: Data ada di Cloud -> Pakai data Cloud
+            data = docSnap.data();
+            console.log("Data loaded from Cloud");
+        } else {
+            // KASUS 2: User Baru di Cloud -> Cek HP lama
+            const localData = localStorage.getItem(APP_KEY);
+            if (localData) {
+                // Ada data di HP -> Upload ke Cloud (Migrasi)
+                data = JSON.parse(localData);
+                saveData(); 
+                console.log("Migrating Local Data to Cloud...");
+            }
+            // Kalau di HP juga kosong, berarti user benar-benar baru (pakai data default)
+        }
+        
+        // Safety Check: Pastikan struktur data lengkap (biar gak error)
+        if (!data.bills) data.bills = [];
+        if (!data.wallets || data.wallets.length === 0) {
+             data.wallets = [{ id: 1, name: 'Tunai', type: 'cash', balance: 0 }];
+        }
+        if (!data.emergency) {
+             data.emergency = { saved: 0, expense: 0, job: 'stable', dependents: '0', targetMonths: 6, targetAmount: 0 };
+        }
+
+    } catch (error) {
+        console.error("Error loading data:", error);
+        showToast("Gagal koneksi ke server", "error");
+    }
+}
+
+// [UPDATE] Save Data (Simpan ke Local DAN Cloud)
+async function saveData() {
+    // 1. Simpan ke HP (Backup Offline & Cache Cepat)
     localStorage.setItem(APP_KEY, JSON.stringify(data));
+
+    // 2. Simpan ke Cloud (Jika ada internet & login)
+    if (currentUser && window.firebaseLib) {
+        const { doc, setDoc } = window.firebaseLib;
+        try {
+            await setDoc(doc(db, "users", currentUser.uid), data);
+            console.log("Data synced to Cloud");
+        } catch (error) {
+            console.error("Gagal sync ke cloud:", error);
+        }
+    }
 }
 
 // --- MONEY & DATE FORMATTER HELPER ---
@@ -1850,3 +1926,38 @@ function refreshAds(containerId) {
             // Sembunyikan error AdSense agar tidak memenuhi console saat testing
             console.warn("AdSense belum siap (Abaikan jika di Emulator)");
         }
+  
+// --- AUTHENTICATION HANDLERS ---
+
+// Tombol Login Google
+const btnLogin = document.getElementById('btn-google-login');
+if(btnLogin) {
+    btnLogin.addEventListener('click', () => {
+        if(!window.firebaseLib) return;
+        const { signInWithPopup, GoogleAuthProvider } = window.firebaseLib;
+        const provider = new GoogleAuthProvider();
+        
+        document.getElementById('login-status').innerText = "Menghubungkan ke Google...";
+        
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                showToast("Login Berhasil!");
+                // Tidak perlu reload, onAuthStateChanged di atas akan otomatis jalan
+            }).catch((error) => {
+                document.getElementById('login-status').innerText = "Gagal: " + error.message;
+            });
+    });
+}
+
+// Tombol Logout
+function logoutUser() {
+    showConfirmDialog("Keluar dari akun? Data di HP ini tetap ada, tapi sinkronisasi berhenti.", function() {
+        if(!window.firebaseLib) return;
+        const { signOut } = window.firebaseLib;
+        
+        signOut(auth).then(() => {
+            location.reload(); // Refresh halaman agar kembali ke layar login
+        });
+    });
+}
+        

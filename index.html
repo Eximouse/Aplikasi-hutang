@@ -24,6 +24,22 @@
     </head>
 <body>
 
+        <div id="login-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-body); z-index:99999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
+        <div class="balance-card glass-effect" style="width:100%; max-width:350px; margin-bottom:30px; padding:40px 20px;">
+            <div style="font-size:3rem; margin-bottom:10px;">💎</div>
+            <h1 style="margin-bottom:10px;">Finansial Pro</h1>
+            <p style="opacity:0.8; font-size:0.9rem; margin-bottom:30px;">Kelola keuanganmu dengan aman, tersinkronisasi di awan.</p>
+            
+            <button id="btn-google-login" class="btn-primary full-width" style="background: white; color: #333; display:flex; align-items:center; justify-content:center; gap:10px;">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
+                Masuk dengan Google
+            </button>
+            
+            <p id="login-status" class="text-muted mt-20" style="font-size:0.8rem;"></p>
+        </div>
+        <small class="text-muted">v4.2 (Cloud Enabled)</small>
+    </div>
+
     <header class="top-bar">
         <div class="user-info">
             <small class="text-muted" data-i18n="welcome_msg">Selamat Datang di Aplikasi Finansial Pro</small>
@@ -359,7 +375,13 @@
                 </div>
                 <div class="setting-item">
                     <span>Finansial Pro</span>
-                    <small class="badge-gray">Version: 4.1</small>
+                    <small class="badge-gray">Version: 4.2</small>
+                </div>
+            </div>
+                        <div class="card mt-20">
+                <div class="setting-item">
+                    <span>Akun Google</span>
+                    <button class="btn-xs" onclick="logoutUser()" style="background:var(--bg-input); border:1px solid var(--border);">Keluar / Logout</button>
                 </div>
             </div>
             
@@ -633,6 +655,15 @@
             </div>
         </div>
     </div>
+    
+        <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        
+        // Mengekspos library ke window agar bisa dipakai di script.js biasa
+        window.firebaseLib = { initializeApp, getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, getFirestore, doc, getDoc, setDoc };
+    </script>
 
     <script src="sw-register.js"></script>
     <script src="script.js"></script>    
