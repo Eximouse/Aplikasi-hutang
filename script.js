@@ -982,6 +982,7 @@ function renderLoans() {
     today.setHours(0,0,0,0);
 
     data.loans.forEach(l => {
+        // Hitung Sisa untuk Header Total
         if(l.status === 'active') {
             const remaining = l.total - l.paid;
             if(l.type === 'piutang') totPiutang += remaining; else totHutang += remaining;
@@ -989,46 +990,52 @@ function renderLoans() {
 
         if(!l.person.toLowerCase().includes(search)) return;
 
-        // --- [LOGIKA SIKLUS BULANAN] ---
+        // --- [LOGIKA BARU: SISTEM CICILAN PINJOL] ---
         let dueStatusHTML = '';
+        let progressLabel = ''; // Label misal: Cicilan 1/6
         
         if (l.status === 'active') {
             const transDate = new Date(l.date);
             transDate.setHours(0,0,0,0);
 
-            let maxDueDate = new Date(transDate);
-            maxDueDate.setMonth(transDate.getMonth() + (l.tenor || 1));
+            // 1. Hitung Nominal Per Cicilan
+            // (Jika tenor 0/null, dianggap 1 bulan)
+            const tenor = parseInt(l.tenor) || 1;
+            const installmentAmount = l.total / tenor;
+
+            // 2. Hitung Sudah Lunas Berapa Bulan?
+            // Math.floor digunakan agar kalau bayar setengah, belum dihitung lunas bulan itu
+            // Ditambah sedikit buffer (100 perak) untuk toleransi koma
+            let monthsPaid = Math.floor((l.paid + 100) / installmentAmount);
             
-            let targetDueDate = new Date(today.getFullYear(), today.getMonth(), transDate.getDate());
+            // Batasi agar tidak melebihi tenor (jika ada kelebihan bayar sedikit)
+            if (monthsPaid >= tenor) monthsPaid = tenor - 1;
 
-            if (targetDueDate.getMonth() !== today.getMonth()) {
-                targetDueDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-            }
+            // 3. Tentukan Jatuh Tempo Berikutnya (Next Due Date)
+            // Rumus: Tanggal Transaksi + (Bulan yang sudah lunas + 1)
+            let nextDueDate = new Date(transDate);
+            nextDueDate.setMonth(transDate.getMonth() + (monthsPaid + 1));
 
-            if (targetDueDate <= transDate) {
-                targetDueDate.setMonth(targetDueDate.getMonth() + 1);
-            }
-            
-            let thisMonthDue = new Date(today.getFullYear(), today.getMonth(), transDate.getDate());
-            if (today > thisMonthDue && thisMonthDue > transDate && thisMonthDue <= maxDueDate) {
-                targetDueDate = thisMonthDue;
-            }
+            // Label Cicilan (Misal: Cicilan ke-2 dari 6)
+            const currentInstallmentNo = monthsPaid + 1;
+            progressLabel = `Cicilan ${currentInstallmentNo}/${tenor}`;
 
-            if (targetDueDate > maxDueDate) {
-                targetDueDate = maxDueDate;
-            }
-
-            const diffTime = targetDueDate - today;
+            // 4. Hitung Selisih Hari (Jatuh Tempo Berikutnya vs Hari Ini)
+            const diffTime = nextDueDate - today;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
 
+            // Format Tanggal Pendek
             const lang = data.settings.lang === 'id' ? 'id-ID' : 'en-US';
-            const shortDate = targetDueDate.toLocaleDateString(lang, { day: 'numeric', month: 'short', year: '2-digit' });
+            const shortDate = nextDueDate.toLocaleDateString(lang, { day: 'numeric', month: 'short', year: '2-digit' });
 
+            // --- RENDER STATUS ---
             if (diffDays === 0) {
+                // HARI INI
                 dueStatusHTML = `<small class="badge-gray" style="background:rgba(247, 183, 51, 0.15); color:var(--warning); font-weight:700; animation: pulse 1.5s infinite;">
                                     <i class="fas fa-exclamation-circle"></i> ${t('sts_due_today')}
                                  </small>`;
             } else if (diffDays > 0) {
+                // BELUM JATUH TEMPO (H-xx)
                 const prefix = data.settings.lang === 'id' ? 'H-' : 'Due ';
                 const color = diffDays <= 7 ? 'var(--primary)' : 'var(--text-muted)';
                 const bg = diffDays <= 7 ? 'rgba(68, 129, 235, 0.1)' : 'var(--bg-input)';
@@ -1037,12 +1044,15 @@ function renderLoans() {
                                     <i class="fas fa-clock"></i> ${prefix}${diffDays} &bull; ${shortDate}
                                  </small>`;
             } else {
+                // TELAT (Lewat Tanggal)
                 dueStatusHTML = `<small class="badge-gray" style="background:var(--danger-bg); color:var(--danger); font-weight:700;">
                                     ${t('sts_late')} ${Math.abs(diffDays)} ${t('sts_day')}
                                  </small>`;
             }
         } else {
+            // LUNAS
             dueStatusHTML = `<small class="badge-gray" style="background:var(--success-bg); color:var(--success); font-weight:700;"><i class="fas fa-check"></i> LUNAS</small>`;
+            progressLabel = "Selesai";
         }
         // -------------------------------------------
 
@@ -1050,8 +1060,8 @@ function renderLoans() {
         const remainingLabel = t('word_remaining');
         const progress = Math.min(100, (l.paid / l.total) * 100);
         
-        // [UPDATE] Format Label Tenor (Contoh: "6 Bulan")
-        const tenorLabel = (l.tenor || 1) + ' ' + t('month');
+        // Jika data lama tidak punya tenor, default 1 Bulan
+        const displayTenor = (l.tenor || 1) + ' ' + t('month');
 
         const el = document.createElement('div');
         el.className = 'card list-item';
@@ -1069,15 +1079,15 @@ function renderLoans() {
                             ${typeLabel} 
                         </span><br>
                         
-                        <small class="text-muted" style="font-size:0.7rem;">
-                            ${tenorLabel} &bull; ${Math.round(progress)}%
+                        <small class="text-muted" style="font-size:0.7rem; font-weight:600;">
+                            ${l.status === 'active' ? progressLabel : displayTenor}
                         </small>
                     </div>
                 </div>
 
                 <div class="flex-between text-muted mt-10" style="font-size:0.85rem; border-top:1px dashed var(--border); padding-top:8px;">
                     <small>${remainingLabel}: <b style="color:var(--text-main)">${fmtMoney(l.total - l.paid)}</b></small>
-                    <small>Total: ${fmtMoney(l.total)}</small>
+                    <small>${Math.round(progress)}%</small>
                 </div>
                 <div class="goal-progress-bg" style="height:6px; margin-top:8px;">
                     <div class="goal-progress-bar" style="width:${progress}%; background:${l.type==='piutang'?'var(--success)':'var(--danger)'}"></div>
