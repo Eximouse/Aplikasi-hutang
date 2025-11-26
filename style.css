@@ -1,417 +1,383 @@
 :root {
-    /* --- PALET WARNA UTAMA (GRADASI) --- */
-    --gradient-primary: linear-gradient(135deg, #4481eb 0%, #04befe 100%);
-    --gradient-card: linear-gradient(135deg, #4481eb 0%, #005bea 100%);
+    /* --- PALET WARNA "MODERN FINTECH" --- */
     
-    --primary: #4481eb;
-    --secondary: #a8c0ff;
+    /* Primary Brand: Biru Laut yang Terpercaya (Mirip BCA/PayPal) */
+    --primary: #0056b3; 
+    --primary-light: #e7f1ff; /* Untuk background icon */
     
-    /* Status Colors */
-    --success: #00b09b; 
-    --success-bg: rgba(0, 176, 155, 0.1);
-    --danger: #fc5c7d; 
-    --danger-bg: rgba(252, 92, 125, 0.1);
-    --warning: #f7b733;
+    /* Gradient Khusus Kartu Saldo (Tetap Mewah tapi tidak norak) */
+    --gradient-primary: linear-gradient(135deg, #0061f2 0%, #00c6f9 100%);
     
-    /* --- MODE TERANG --- */
-    --bg-body: #f4f7f6; 
-    --bg-card: #ffffff;
-    --bg-input: #f8f9fa;
+    /* Status Colors (Lebih Soft) */
+    --success: #10b981; /* Hijau Emerald */
+    --success-bg: #d1fae5;
     
-    --text-main: #2d3436; 
-    --text-muted: #636e72;
+    --danger: #ef4444; /* Merah Rose */
+    --danger-bg: #fee2e2;
     
-    --border: #dfe6e9;
-    --shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    --shadow-active: 0 4px 15px rgba(68, 129, 235, 0.25); 
+    --warning: #f59e0b; /* Amber */
+    --warning-bg: #fef3c7;
     
-    --radius: 20px;
-    --nav-height: 75px;
+    /* --- SISTEM WARNA NETRAL (60-30-10) --- */
+    --bg-body: #f8f9fd; /* Abu-abu sangat muda (hampir putih) */
+    --bg-card: #ffffff; /* Putih Bersih */
+    --bg-input: #f1f5f9; /* Abu-abu dingin untuk input */
+    
+    --text-main: #1e293b; /* Biru kehitaman (Lebih enak dibaca drpd hitam pekat) */
+    --text-muted: #64748b; /* Abu-abu kebiruan */
+    
+    --border: #e2e8f0;
+    
+    /* Shadow yang sangat halus (Elevasi modern) */
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    --shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.06);
+    
+    --radius: 16px; /* Radius sedikit lebih kotak agar terlihat serius */
+    --nav-height: 70px;
 }
 
+/* --- DARK MODE (Elegant Slate) --- */
 [data-theme="dark"] {
-    --bg-body: #1e272e; 
-    --bg-card: #2d3436;
-    --bg-input: #1e272e;
+    --bg-body: #0f172a; /* Slate sangat gelap */
+    --bg-card: #1e293b; /* Slate gelap */
+    --bg-input: #334155;
     
-    --text-main: #dfe6e9;
-    --text-muted: #b2bec3;
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
     
-    --border: #485460;
-    --shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    --shadow-active: 0 4px 20px rgba(4, 190, 254, 0.2);
+    --border: #334155;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    
+    /* Penyesuaian warna background pastel di dark mode */
+    --primary-light: rgba(56, 189, 248, 0.15);
+    --success-bg: rgba(16, 185, 129, 0.15);
+    --danger-bg: rgba(239, 68, 68, 0.15);
+    --warning-bg: rgba(245, 158, 11, 0.15);
 }
 
+/* --- GLOBAL RESET & TYPOGRAPHY --- */
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
-/* [MODIFIED FOR ADSENSE] Padding bawah diperbesar agar konten tidak ketutup iklan anchor/navigasi */
-body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 140px; transition: background 0.3s ease, color 0.3s ease; }
+body { 
+    background-color: var(--bg-body); 
+    color: var(--text-main); 
+    /* [PENTING] Padding bawah diperbesar agar konten tidak ketutup iklan anchor */
+    padding-bottom: 140px; 
+    transition: background 0.3s ease, color 0.3s ease;
+    line-height: 1.5;
+}
 
 /* Utilities */
 .text-green { color: var(--success) !important; }
 .text-red { color: var(--danger) !important; }
 .text-primary { color: var(--primary) !important; }
-.text-muted { color: var(--text-muted) !important; font-size: 0.9em; }
+.text-muted { color: var(--text-muted) !important; font-size: 0.85rem; font-weight: 500; }
 .text-center { text-align: center; }
+.text-right { text-align: right; }
 .hidden { display: none !important; }
 .mt-10 { margin-top: 10px; }
 .mt-20 { margin-top: 20px; }
+.mb-10 { margin-bottom: 10px; }
 .mb-20 { margin-bottom: 20px; }
 .full-width { width: 100%; }
 .flex-between { display: flex; justify-content: space-between; align-items: center; }
 
-/* [NEW] Class Khusus Wadah Iklan Manual (Opsional) */
+/* [PENTING] Wadah Iklan Manual - JANGAN DIHAPUS */
 .ad-slot {
     width: 100%;
     min-height: 100px; /* Tinggi minimal agar tidak layout shift */
-    background: transparent;
+    background: rgba(0,0,0,0.02); /* Sedikit background biar kelihatan area iklan */
     margin: 20px 0;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 16px;
+    border: 1px dashed var(--border);
 }
 
-/* Header */
-.top-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(255, 255, 255, 0.8); position: sticky; top: 0; z-index: 50; backdrop-filter: blur(12px); border-bottom: 1px solid transparent; }
-[data-theme="dark"] .top-bar { background: rgba(30, 39, 46, 0.8); border-bottom: 1px solid var(--border); }
-
-.icon-btn { background: var(--bg-card); border: 1px solid var(--border); font-size: 1.1rem; color: var(--text-main); cursor: pointer; padding: 10px; border-radius: 50%; box-shadow: var(--shadow); transition: 0.3s; }
-.icon-btn:active { transform: scale(0.9); }
-
-/* Container & Page */
-.app-container { padding: 0 20px; max-width: 600px; margin: 0 auto; }
-.page { display: none; animation: fadeIn 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
+/* Container */
+.app-container { padding: 0 20px; max-width: 500px; margin: 0 auto; } /* Max width diperkecil sedikit agar lebih padat di desktop */
+.page { display: none; animation: fadeIn 0.3s ease; }
 .page.active { display: block; }
 
-/* Cards */
-/* [MODIFIED FOR ADSENSE] Margin diperbesar ke 30px agar ada celah untuk Auto Ads */
-.card { background: var(--bg-card); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 30px; border: 1px solid var(--border); }
+/* --- HEADER (Clean) --- */
+.top-bar { 
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 20px; background: var(--bg-body); /* Menyatu dengan body */
+    position: sticky; top: 0; z-index: 50; 
+}
 
-/* [MODIFIED FOR ADSENSE] Margin diperbesar */
-.balance-card { background: var(--gradient-card); padding: 25px; border-radius: 24px; color: white; margin-bottom: 30px; box-shadow: 0 10px 25px rgba(68, 129, 235, 0.4); position: relative; overflow: hidden; }
-.balance-card h1 { font-size: 2.4rem; margin: 10px 0; font-weight: 700; letter-spacing: -1px; }
-.balance-row { display: flex; gap: 15px; font-size: 0.9rem; background: rgba(255, 255, 255, 0.15); padding: 12px; border-radius: 16px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2); }
-.balance-card .text-green, .balance-card .text-red { color: #fff !important; font-weight: bold; } 
+.user-info h2 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text-main); }
+.user-info small { font-size: 0.9rem; }
 
-/* [MODIFIED FOR ADSENSE] Margin diperbesar */
+.icon-btn { 
+    background: var(--bg-card); 
+    border: 1px solid var(--border); 
+    width: 40px; height: 40px; 
+    border-radius: 12px; 
+    color: var(--text-main); 
+    cursor: pointer; 
+    display: grid; place-items: center;
+    transition: 0.2s; 
+    box-shadow: var(--shadow);
+}
+.icon-btn:active { transform: scale(0.95); }
+
+/* --- CARDS (Professional Look) --- */
+.card { 
+    background: var(--bg-card); 
+    padding: 20px; 
+    border-radius: var(--radius); 
+    box-shadow: var(--shadow); 
+    /* [PENTING] Margin diperbesar ke 30px agar ada celah untuk Auto Ads */
+    margin-bottom: 30px; 
+    border: 1px solid transparent; /* Border transparan untuk dark mode */
+}
+[data-theme="dark"] .card { border-color: var(--border); }
+
+/* Hero Section: Kartu Saldo Utama */
+.balance-card { 
+    background: var(--gradient-primary); 
+    padding: 25px; 
+    border-radius: 24px; 
+    color: white; 
+    /* [PENTING] Margin diperbesar */
+    margin-bottom: 30px; 
+    box-shadow: 0 15px 30px rgba(0, 97, 242, 0.25); /* Shadow biru */
+    position: relative; 
+    overflow: hidden; 
+}
+/* Pattern hiasan di kartu saldo */
+.balance-card::after {
+    content: ''; position: absolute; top: -50px; right: -50px;
+    width: 150px; height: 150px; background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+}
+
+.balance-card h1 { font-size: 2.2rem; margin: 15px 0; font-weight: 800; letter-spacing: -1px; }
+.balance-row { 
+    display: flex; gap: 15px; font-size: 0.9rem; 
+    background: rgba(255, 255, 255, 0.15); 
+    padding: 12px 15px; border-radius: 14px; 
+    backdrop-filter: blur(5px); 
+    border: 1px solid rgba(255,255,255,0.2); 
+}
+.balance-card .text-green, .balance-card .text-red { color: #fff !important; font-weight: 700; }
+
+/* --- QUICK STATS (Clean Grid) --- */
+/* [PENTING] Margin diperbesar */
 .quick-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
-.stat-card { background: var(--bg-card); padding: 15px; border-radius: 16px; display: flex; align-items: center; gap: 15px; box-shadow: var(--shadow); border: 1px solid var(--border); position: relative; overflow: hidden; }
-.stat-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
-.border-left-green::before { background: var(--success); }
-.border-left-red::before { background: var(--danger); }
-.stat-card i { font-size: 1.4rem; }
-
-/* Inputs & Buttons */
-input, select { width: 100%; padding: 15px 16px; border: 2px solid transparent; border-radius: 16px; background: var(--bg-input); color: var(--text-main); font-size: 1rem; margin-bottom: 15px; transition: 0.3s; font-weight: 500; }
-input:focus, select:focus { outline: none; background: var(--bg-card); border-color: var(--primary); box-shadow: var(--shadow-active); }
-.input-lg { font-size: 1.6rem; font-weight: bold; padding: 18px; text-align: center; color: var(--primary); }
-
-.btn-primary { background: var(--gradient-primary); color: white; padding: 16px; border: none; border-radius: 16px; font-weight: 700; cursor: pointer; font-size: 1rem; box-shadow: 0 8px 20px rgba(68, 129, 235, 0.3); transition: 0.3s; transform: translateY(0); }
-.btn-primary:active { transform: translateY(2px); box-shadow: 0 4px 10px rgba(68, 129, 235, 0.2); }
-
-.btn-danger { background: var(--danger); color: white; padding: 14px; border: none; border-radius: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 5px 15px rgba(252, 92, 125, 0.3); }
-.btn-xs { padding: 8px 16px; border-radius: 10px; border: none; background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border); font-size: 0.85rem; cursor: pointer; font-weight: 600; }
-
-/* Tabs */
-.tabs { display: flex; background: var(--bg-input); padding: 6px; border-radius: 18px; margin-bottom: 25px; }
-.tab { flex: 1; padding: 12px; border: none; background: transparent; border-radius: 14px; color: var(--text-muted); cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 0.95rem; }
-.tab.active { background: var(--bg-card); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-.tab-content { display: none; }
-.tab-content.active { display: block; animation: slideUp 0.3s ease; }
-
-/* Lists */
-.transaction-list, .loan-grid, .goal-list { display: flex; flex-direction: column; gap: 15px; }
-.list-item { background: var(--bg-card); padding: 18px; border-radius: 20px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); box-shadow: var(--shadow); }
-.list-item.income i { color: var(--success); background: var(--success-bg); padding: 10px; border-radius: 12px; font-size: 1.1rem; }
-.list-item.expense i { color: var(--danger); background: var(--danger-bg); padding: 10px; border-radius: 12px; font-size: 1.1rem; }
-
-/* FAB */
-.fab-wrapper { position: fixed; bottom: 95px; right: 20px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
-.fab-main { width: 65px; height: 65px; border-radius: 50%; background: var(--gradient-primary); color: white; border: none; font-size: 1.8rem; box-shadow: 0 10px 25px rgba(4, 190, 254, 0.4); cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: grid; place-items: center; }
-.fab-main:active { transform: scale(0.9); }
-.fab-menu { display: none; flex-direction: column; gap: 15px; align-items: flex-end; margin-bottom: 5px; }
-.fab-menu.active { display: flex; animation: slideUp 0.3s; }
-.fab-menu button { width: 55px; height: 55px; border-radius: 50%; border: none; background: var(--bg-card); color: var(--primary); box-shadow: 0 5px 20px rgba(0,0,0,0.1); cursor: pointer; position: relative; display: grid; place-items: center; font-size: 1.2rem; }
-.fab-menu button::after { content: attr(data-label); position: absolute; right: 70px; top: 14px; background: var(--bg-card); color: var(--text-main); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; white-space: nowrap; font-weight: 600; box-shadow: var(--shadow); }
-
-/* Bottom Nav */
-.bottom-nav { position: fixed; bottom: 0; width: 100%; height: var(--nav-height); background: rgba(255, 255, 255, 0.9); display: grid; grid-template-columns: repeat(5, 1fr); box-shadow: 0 -10px 30px rgba(0,0,0,0.03); z-index: 90; backdrop-filter: blur(10px); border-top: 1px solid var(--border); }
-[data-theme="dark"] .bottom-nav { background: rgba(45, 52, 54, 0.9); }
-.nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); text-decoration: none; font-size: 0.75rem; gap: 6px; font-weight: 600; transition: 0.3s; }
-.nav-item i { font-size: 1.4rem; opacity: 0.7; transition: 0.3s; }
-.nav-item.active i { transform: translateY(-5px); opacity: 1; color: var(--primary); }
-.nav-item.active span { color: var(--primary); }
-
-/* Modals */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
-.modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
-.modal-card { background: var(--bg-card); width: 100%; max-width: 400px; border-radius: 28px; padding: 30px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-.modal-header h3 { font-size: 1.4rem; color: var(--text-main); }
-.close-icon { font-size: 1.5rem; cursor: pointer; color: var(--text-muted); background: var(--bg-input); padding: 8px; border-radius: 50%; }
-
-/* Type Selector */
-.type-selector { display: flex; gap: 10px; margin-bottom: 25px; background: var(--bg-input); padding: 6px; border-radius: 18px; }
-.type-selector input { display: none; }
-.type-btn { flex: 1; padding: 12px; text-align: center; border-radius: 14px; cursor: pointer; font-weight: 600; color: var(--text-muted); transition: 0.3s; }
-input:checked + .type-btn { color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-input:checked + .type-btn.income { background: var(--success); }
-input:checked + .type-btn.expense { background: var(--danger); }
-
-/* Goal Progress */
-.goal-progress-bg { background: var(--bg-input); height: 12px; border-radius: 6px; margin-top: 12px; overflow: hidden; }
-.goal-progress-bar { height: 100%; background: var(--gradient-primary); transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1); border-radius: 6px; }
-
-/* Calculator */
-.calc-details { background: var(--bg-input); padding: 20px; border-radius: 20px; margin-top: 20px; border: 1px solid var(--border); }
-.detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.95rem; }
-
-/* Toast */
-#toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 12px; width: 90%; max-width: 350px; }
-.toast { padding: 16px 24px; border-radius: 16px; color: white; font-size: 0.95rem; box-shadow: 0 10px 25px rgba(0,0,0,0.15); animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 12px; font-weight: 600; backdrop-filter: blur(5px); }
-.toast.success { background: rgba(0, 176, 155, 0.95); }
-.toast.error { background: rgba(252, 92, 125, 0.95); }
-
-/* Animations */
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-.fade-in { animation: fadeIn 0.5s ease; }
-
-/* --- TAMBAHAN UNTUK HALAMAN DANA DARURAT --- */
-.progress-circle-conic {
-    width: 200px; height: 200px; border-radius: 50%;
-    background: conic-gradient(var(--primary) 0%, #e0e0e0 0%);
-    margin: 0 auto 10px; display: flex; justify-content: center; align-items: center;
-    position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    transition: background 0.5s ease;
-}
-.progress-circle-conic .inner-circle {
-    width: 170px; height: 170px; background: var(--bg-card);
-    border-radius: 50%; position: absolute; display: flex;
-    flex-direction: column; justify-content: center; align-items: center;
-}
-.progress-circle-conic .percentage { font-size: 2.5rem; font-weight: 800; color: var(--primary); line-height: 1; }
-.progress-circle-conic .status-text { font-size: 0.9rem; color: var(--text-muted); margin-top: 5px; }
-
-.info-box {
-    background: rgba(255, 193, 7, 0.1); color: #e67e22; padding: 12px;
-    border-radius: 12px; font-size: 0.9rem; line-height: 1.4;
-    border: 1px solid rgba(255, 193, 7, 0.3);
-}
-
-[data-theme="dark"] .progress-circle-conic { background: conic-gradient(var(--primary) 0%, #444 0%); }
-[data-theme="dark"] .progress-circle-conic .inner-circle { background: var(--bg-card); }
-
-/* --- PIN LOCK SCREEN --- */
-.pin-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: var(--gradient-primary); z-index: 9999;
-    display: flex; align-items: center; justify-content: center;
-    backdrop-filter: blur(10px); transition: opacity 0.3s;
-}
-
-.pin-card {
-    background: rgba(255, 255, 255, 0.15);
-    padding: 30px; border-radius: 30px;
-    text-align: center; width: 320px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.2);
-}
-
-.pin-dots { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
-.dot { width: 15px; height: 15px; border-radius: 50%; background: rgba(255,255,255,0.3); transition: 0.2s; border: 2px solid rgba(255,255,255,0.5); }
-.dot.filled { background: white; transform: scale(1.2); box-shadow: 0 0 10px rgba(255,255,255,0.5); }
-.dot.error { background: #fc5c7d; border-color: #fc5c7d; animation: shake 0.3s; }
-
-.pin-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-.pin-keypad button {
-    background: rgba(255,255,255,0.1); border: none;
-    color: white; font-size: 1.5rem; height: 65px; width: 65px;
-    border-radius: 50%; cursor: pointer; margin: 0 auto;
-    transition: 0.2s; display: grid; place-items: center;
-}
-.pin-keypad button:active { background: rgba(255,255,255,0.4); transform: scale(0.9); }
-.btn-enter { background: rgba(0, 176, 155, 0.4) !important; }
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    75% { transform: translateX(10px); }
-}
-
-/* --- PERBAIKAN TAMPILAN SETTINGS (Rapi & Satu Baris) --- */
-
-/* Membuat item pengaturan berjejer ke samping (Kiri: Teks, Kanan: Tombol) */
-.setting-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border); /* Garis pemisah tipis */
-}
-
-/* Menghilangkan garis di item terakhir */
-.setting-item:last-child {
-    border-bottom: none;
-}
-
-/* Styling teks label */
-.setting-item span {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text-main);
-    flex: 1; /* Mengambil ruang sisa di kiri */
-}
-
-/* Merapikan Dropdown Bahasa */
-.setting-item select {
-    width: auto !important; /* Supaya tidak full width */
-    margin-bottom: 0 !important;
-    padding: 8px 35px 8px 15px;
-    font-size: 0.85rem;
-    background-color: var(--bg-input);
+.stat-card { 
+    background: var(--bg-card); 
+    padding: 15px; 
+    border-radius: 16px; 
+    display: flex; align-items: center; gap: 15px; 
+    box-shadow: var(--shadow); 
     border: 1px solid var(--border);
+    transition: transform 0.2s;
 }
+.stat-card:active { transform: scale(0.98); }
 
-/* Merapikan Tombol Kecil di Settings */
-.setting-item .btn-xs {
-    margin: 0;
-    padding: 8px 20px;
-    font-size: 0.85rem;
-    border-radius: 12px;
+/* Ikon di dalam lingkaran (Soft Icon Style) */
+.stat-card i { 
+    width: 40px; height: 40px; 
+    display: grid; place-items: center; 
+    border-radius: 50%; font-size: 1.1rem; 
 }
+.border-left-green i { background: var(--success-bg); color: var(--success); }
+.border-left-red i { background: var(--danger-bg); color: var(--danger); }
 
-/* Styling Khusus Tombol Aktifkan PIN (agar biru/merah tapi kecil) */
-.btn-toggle-active {
-    background-color: var(--primary) !important;
-    color: white !important;
-    border: none !important;
-    box-shadow: 0 4px 10px rgba(68, 129, 235, 0.3);
+/* --- LIST ITEMS (Flat & Clean) --- */
+.transaction-list, .loan-grid, .goal-list { display: flex; flex-direction: column; gap: 12px; }
+
+.list-item { 
+    background: var(--bg-card); 
+    padding: 16px; 
+    border-radius: 16px; 
+    display: flex; justify-content: space-between; align-items: center; 
+    border: 1px solid var(--border); /* Border tipis menggantikan shadow tebal */
+    box-shadow: none; /* Hilangkan shadow agar mata rileks */
+    transition: 0.2s;
 }
+.list-item:active { background-color: var(--bg-input); }
 
-.btn-toggle-inactive {
-    background-color: var(--danger) !important;
-    color: white !important;
-    border: none !important;
-    box-shadow: 0 4px 10px rgba(252, 92, 125, 0.3);
+/* Ikon Transaksi (Soft Style) */
+.list-item i { 
+    width: 42px; height: 42px; 
+    border-radius: 12px; 
+    display: grid; place-items: center; 
+    font-size: 1.1rem; margin-right: 5px;
 }
+.list-item.income i { color: var(--success); background: var(--success-bg); }
+.list-item.expense i { color: var(--danger); background: var(--danger-bg); }
 
-/* File Input Wrapper agar rapi */
-.file-label {
-    display: inline-block;
-    cursor: pointer;
-}
-
-/* --- FITUR DOMPET (WALLETS) --- */
+/* --- WALLETS (Horizontal Scroll) --- */
 .wallet-container-scroll {
-    overflow-x: auto;
-    padding-bottom: 5px;
-    margin: 0 -10px 20px -10px; /* Agar sedikit melebar keluar */
-    padding: 0 10px;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    overflow-x: auto; padding-bottom: 10px; margin: 0 -20px 20px -20px; padding-left: 20px;
+    scrollbar-width: none; -ms-overflow-style: none;
 }
-.wallet-container-scroll::-webkit-scrollbar {
-    display: none;
-}
-
-.wallet-list-row {
-    display: flex;
-    gap: 12px;
-    width: max-content;
-}
+.wallet-container-scroll::-webkit-scrollbar { display: none; }
+.wallet-list-row { display: flex; gap: 12px; width: max-content; padding-right: 20px; }
 
 .wallet-card-mini {
-    background: var(--bg-card);
-    padding: 15px;
-    border-radius: 18px;
-    min-width: 140px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    transition: 0.2s;
+    background: rgba(255,255,255,0.15); /* Transparan di atas kartu biru */
+    padding: 15px; border-radius: 16px;
+    min-width: 130px;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white; display: flex; flex-direction: column;
 }
-
-.wallet-card-mini small { font-size: 0.75rem; color: var(--text-muted); }
-.wallet-card-mini strong { font-size: 1rem; margin-top: 5px; color: var(--text-main); }
+.wallet-card-mini small { color: rgba(255,255,255,0.8); font-size: 0.75rem; }
+.wallet-card-mini strong { font-size: 1rem; margin-top: 5px; color: white; }
 .wallet-card-mini .icon { 
-    margin-bottom: 8px; 
-    font-size: 1.2rem; 
-    color: var(--primary);
-    background: rgba(68, 129, 235, 0.1);
-    width: 35px; height: 35px;
-    display: grid; place-items: center;
-    border-radius: 10px;
+    width: 32px; height: 32px; background: rgba(255,255,255,0.2); 
+    border-radius: 8px; display: grid; place-items: center; margin-bottom: 8px; color: white;
 }
 
-/* Update tabs agar muat 3 kolom */
-.tabs { gap: 5px; }
-.tab { padding: 10px 5px; font-size: 0.85rem; }
+/* --- FORMS & BUTTONS --- */
+input, select { 
+    width: 100%; padding: 14px 16px; 
+    border: 1px solid var(--border); 
+    border-radius: 14px; 
+    background: var(--bg-input); 
+    color: var(--text-main); 
+    font-size: 0.95rem; margin-bottom: 15px; 
+    transition: 0.3s; font-weight: 500; 
+}
+input:focus, select:focus { 
+    outline: none; border-color: var(--primary); 
+    background: var(--bg-card); 
+    box-shadow: 0 0 0 4px var(--primary-light); /* Efek fokus modern */
+}
+.input-lg { font-size: 1.5rem; font-weight: 700; padding: 20px; text-align: center; color: var(--primary); letter-spacing: -0.5px; }
 
-/* Tambahan styling untuk indikator tagihan */
-.border-left-green { border-left: 4px solid var(--success) !important; }
-.border-left-red { border-left: 4px solid var(--danger) !important; }
+.btn-primary { 
+    background: var(--primary); 
+    color: white; padding: 16px; 
+    border: none; border-radius: 14px; 
+    font-weight: 600; cursor: pointer; font-size: 1rem; 
+    box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3); 
+    transition: 0.2s; width: 100%;
+}
+.btn-primary:active { transform: scale(0.98); box-shadow: none; }
 
-/* Table Styles untuk Rincian Kalkulator */
-.table-responsive {
-    overflow-x: auto;
-}
-#calc-breakdown-list tr {
-    border-bottom: 1px solid var(--border);
-}
-#calc-breakdown-list tr:nth-child(even) {
-    background-color: var(--bg-input);
-}
-#calc-breakdown-list td {
-    padding: 12px 5px;
-    color: var(--text-main);
-}
-#calc-breakdown-list td.highlight {
-    font-weight: bold;
-    color: var(--primary);
-}
+.btn-danger { background: var(--danger); color: white; padding: 14px; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; width: 100%; }
+.btn-xs { padding: 8px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); font-size: 0.8rem; font-weight: 600; }
 
-/* Styling Modal Bahasa */
-.lang-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    transition: 0.2s;
-    border-radius: 12px;
+/* --- TABS (Segmented Control Style) --- */
+.tabs { 
+    display: flex; background: var(--bg-input); 
+    padding: 4px; border-radius: 16px; margin-bottom: 25px; 
 }
-.lang-item:hover {
-    background-color: var(--bg-input);
+.tab { 
+    flex: 1; padding: 10px; border: none; 
+    background: transparent; border-radius: 12px; 
+    color: var(--text-muted); cursor: pointer; 
+    font-weight: 600; font-size: 0.9rem; transition: 0.3s; 
 }
-.lang-item:last-child {
-    border-bottom: none;
-}
-.check-icon {
-    display: none; /* Sembunyikan centang secara default */
-}
-.lang-item.active .check-icon {
-    display: block; /* Munculkan centang jika aktif */
-}
-.lang-item.active {
-    background-color: var(--bg-input);
-    font-weight: 600;
+.tab.active { 
+    background: var(--bg-card); color: var(--text-main); 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
 }
 
-/* Animasi Kedap-Kedip untuk Jatuh Tempo Hari Ini */
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.6; }
-    100% { opacity: 1; }
+/* --- BOTTOM NAV (Minimalist) --- */
+.bottom-nav { 
+    position: fixed; bottom: 0; width: 100%; height: var(--nav-height); 
+    background: var(--bg-card); 
+    display: grid; grid-template-columns: repeat(5, 1fr); 
+    border-top: 1px solid var(--border); 
+    z-index: 90; padding-bottom: 5px; /* Untuk iPhone X+ */
+}
+.nav-item { 
+    display: flex; flex-direction: column; align-items: center; justify-content: center; 
+    color: var(--text-muted); text-decoration: none; 
+    font-size: 0.7rem; gap: 4px; font-weight: 500; transition: 0.2s; 
+}
+.nav-item i { font-size: 1.3rem; margin-bottom: 2px; }
+.nav-item.active { color: var(--primary); }
+.nav-item.active i { transform: translateY(-2px); }
+
+/* --- FAB (Floating Action Button) --- */
+.fab-wrapper { position: fixed; bottom: 90px; right: 20px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+.fab-main { 
+    width: 60px; height: 60px; border-radius: 50%; 
+    background: var(--primary); color: white; border: none; 
+    font-size: 1.5rem; box-shadow: 0 8px 20px rgba(0, 86, 179, 0.4); 
+    cursor: pointer; display: grid; place-items: center; transition: 0.2s;
+}
+.fab-main:active { transform: scale(0.9); }
+.fab-menu { display: none; flex-direction: column; gap: 12px; align-items: flex-end; margin-bottom: 5px; }
+.fab-menu.active { display: flex; animation: slideUp 0.2s; }
+.fab-menu button { 
+    width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--border);
+    background: var(--bg-card); color: var(--text-main); 
+    box-shadow: var(--shadow); cursor: pointer; position: relative; 
+    display: grid; place-items: center; font-size: 1.1rem; 
+}
+.fab-menu button::after { 
+    content: attr(data-label); position: absolute; right: 60px; top: 12px; 
+    background: var(--text-main); color: white; padding: 4px 10px; 
+    border-radius: 6px; font-size: 0.8rem; white-space: nowrap; 
 }
 
-/* Animasi Loading Awal */
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+/* --- MODALS (Clean Popup) --- */
+.modal-overlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(0,0,0,0.5); /* Gelap tapi tidak blur berlebih */
+    backdrop-filter: blur(3px); z-index: 200; 
+    display: none; align-items: center; justify-content: center; padding: 20px; 
 }
+.modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
+.modal-card { 
+    background: var(--bg-card); width: 100%; max-width: 400px; 
+    border-radius: 24px; padding: 25px; 
+    max-height: 90vh; overflow-y: auto; 
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
+}
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+.modal-header h3 { font-size: 1.2rem; font-weight: 700; }
+
+/* Type Selector di Modal */
+.type-selector { display: flex; gap: 8px; margin-bottom: 20px; background: var(--bg-input); padding: 4px; border-radius: 14px; }
+.type-btn { flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: 600; color: var(--text-muted); transition: 0.2s; font-size: 0.9rem; }
+input:checked + .type-btn { background: var(--bg-card); color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+input:checked + .type-btn.income { color: var(--success); border: 1px solid var(--success-bg); }
+input:checked + .type-btn.expense { color: var(--danger); border: 1px solid var(--danger-bg); }
+
+/* Goal Progress */
+.goal-progress-bg { background: var(--bg-input); height: 8px; border-radius: 4px; margin-top: 12px; overflow: hidden; }
+.goal-progress-bar { height: 100%; background: var(--primary); border-radius: 4px; transition: width 0.5s ease; }
+
+/* Settings Item */
+.setting-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); }
+.setting-item:last-child { border-bottom: none; }
+.setting-item span { font-weight: 500; }
+
+/* Chart Container */
+.chart-container { position: relative; height: 250px; width: 100%; margin-top: 10px; }
+
+/* Badge Status */
+.badge-gray { background: var(--bg-input); color: var(--text-muted); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+
+/* Toast */
+#toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 350px; }
+.toast { padding: 14px 20px; border-radius: 50px; color: white; font-size: 0.9rem; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; font-weight: 500; justify-content: center; }
+.toast.success { background: #1e293b; } /* Toast hitam elegan */
+.toast.error { background: var(--danger); }
+
+/* Animation Keyframes */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+
+/* Loading Overlay */
+#loading-overlay { background: var(--bg-body) !important; }
+.loader { border: 3px solid var(--border) !important; border-top: 3px solid var(--primary) !important; }
+
+/* Lang Option */
+.lang-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); cursor: pointer; border-radius: 12px; }
+.lang-item:hover { background-color: var(--bg-input); }
+.check-icon { display: none; color: var(--primary); }
+.lang-item.active .check-icon { display: block; }
+.lang-item.active { background-color: var(--primary-light); color: var(--primary); font-weight: 600; }
