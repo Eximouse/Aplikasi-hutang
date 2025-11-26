@@ -409,3 +409,9 @@ input:checked + .type-btn.expense { background: var(--danger); }
     50% { opacity: 0.6; }
     100% { opacity: 1; }
 }
+
+/* Animasi Loading Awal */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
