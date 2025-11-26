@@ -56,28 +56,18 @@ window.addEventListener('load', () => {
 
         setupAuthListeners(auth);
 
-                // [UPDATE LOGIKA]
         onAuthStateChanged(auth, (user) => {
-            // 1. Hilangkan Loading Overlay (karena firebase sudah selesai cek)
-            const loadingOverlay = document.getElementById('loading-overlay');
-            if(loadingOverlay) loadingOverlay.style.display = 'none';
-
             if (user) {
-                // KASUS: SUDAH LOGIN
                 window.currentUser = user;
-                
-                // Pastikan login screen TETAP sembunyi
                 document.getElementById('login-screen').style.display = 'none';
-                
-                // Jalankan Aplikasi
                 startApp();
             } else {
-                // KASUS: BELUM LOGIN / LOGOUT
-                // Baru kita munculkan layar login sekarang
                 document.getElementById('login-screen').style.display = 'flex';
                 document.getElementById('login-status').innerText = "";
             }
         });
+    }
+});
 
 async function startApp() {
     await loadAppData(window.currentUser, db);
