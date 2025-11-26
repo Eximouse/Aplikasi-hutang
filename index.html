@@ -21,6 +21,7 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4170035550920357"
      crossorigin="anonymous"></script>
     
+    
     </head>
 <body>       
         <div id="loading-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-body); z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center;">
@@ -669,8 +670,26 @@
         window.firebaseLib = { initializeApp, getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, getFirestore, doc, getDoc, setDoc };
     </script>
 
-    <script src="sw-register.js"></script>
+    
     <script type="module" src="js/main.js"></script>
+    <script>
+    // SCRIPT DETEKTIF ERROR
+    // 1. Paksa matikan loading setelah 5 detik
+    setTimeout(() => {
+        const overlay = document.getElementById('loading-overlay');
+        if(overlay && overlay.style.display !== 'none') {
+            overlay.style.display = 'none';
+            alert("Waktu habis! Aplikasi macet. Kemungkinan ada Error di Script JS.");
+        }
+    }, 5000);
+
+    // 2. Tangkap Error Layar
+    window.onerror = function(message, source, lineno, colno, error) {
+        alert("ERROR TERDETEKSI:\n" + message + "\nDi file: " + source + "\nBaris: " + lineno);
+        document.getElementById('loading-overlay').style.display = 'none';
+    };
+</script>
+
     
 </body>
 </html>
