@@ -33,7 +33,7 @@ window.openLangModal = UI.openLangModal;
 window.selectLang = UI.selectLang;
 window.logoutUser = () => logoutUser(auth);
 
-// Fungsi Kalkulator
+// Fungsi Kalkulator (Wrapper)
 window.calculateCompound = UI.calculateCompound; 
 window.toggleDcaInput = UI.toggleDcaInput;
 window.resetCalc = UI.resetCalc;
@@ -45,6 +45,7 @@ window.calcLoanPreview = UI.calcLoanPreview;
 let auth, db;
 
 window.addEventListener('load', () => {
+    // Cek apakah Library Firebase berhasil dimuat dari index.html?
     if(window.firebaseLib) {
         const { initializeApp, getAuth, getFirestore, onAuthStateChanged } = window.firebaseLib;
         
@@ -57,15 +58,26 @@ window.addEventListener('load', () => {
         setupAuthListeners(auth);
 
         onAuthStateChanged(auth, (user) => {
+            // 1. Hilangkan Loading Overlay (karena firebase sudah selesai cek)
+            const loadingOverlay = document.getElementById('loading-overlay');
+            if(loadingOverlay) loadingOverlay.style.display = 'none';
+
             if (user) {
+                // KASUS: SUDAH LOGIN
                 window.currentUser = user;
                 document.getElementById('login-screen').style.display = 'none';
                 startApp();
             } else {
+                // KASUS: BELUM LOGIN
                 document.getElementById('login-screen').style.display = 'flex';
                 document.getElementById('login-status').innerText = "";
             }
         });
+    } else {
+        // Error Handling jika Firebase Library gagal load dari HTML
+        alert("FATAL: Library Firebase TIDAK DITEMUKAN!\nCek koneksi internet atau file index.html Anda.");
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if(loadingOverlay) loadingOverlay.style.display = 'none';
     }
 });
 
