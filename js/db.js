@@ -1,6 +1,6 @@
 // js/db.js
 import { APP_KEY } from './config.js';
-import { showToast } from './ui.js'; // Circular dependency? Hati-hati. 
+//Circular dependency? Hati-hati. 
 // Sebaiknya showToast dipindah ke utils atau ui.js jangan import db.js dulu.
 // Untuk amannya, kita pakai console.error dulu di sini, atau oper fungsi showToast.
 
