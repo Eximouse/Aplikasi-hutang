@@ -5,28 +5,32 @@ import { setupAuthListeners, logoutUser } from './auth.js';
 import * as UI from './ui.js'; 
 import { initMoneyInputs } from './utils.js';
 
-// Inisialisasi Event Listener UI
+// Inisialisasi Event Listener UI (Tombol Konfirmasi)
 UI.setupConfirmListener();
 
 // --- BRIDGE KE WINDOW (Agar onclick di HTML berfungsi) ---
+// Navigasi & Modal
 window.navTo = UI.navTo;
 window.switchTab = UI.switchTab;
 window.openModal = UI.openModal;
 window.closeModal = UI.closeModal;
+
+// Fitur Simpan Data
 window.saveBudget = UI.saveBudget;
 window.saveBill = UI.saveBill;
 window.saveLoan = UI.saveLoan;
 window.addGoal = UI.addGoal;
 window.addEmergencyFund = UI.addEmergencyFund;
 window.saveEmergencyProfile = UI.saveEmergencyProfile;
+
+// Fitur Aksi (Bayar, Hapus, Detail)
 window.payBill = UI.payBill;
 window.payLoan = UI.payLoan;
-
-// [UPDATE: Menambahkan fungsi yang hilang]
-window.showLoanDetail = UI.showLoanDetail;
-window.deletePayment = UI.deletePayment;
-
+window.showLoanDetail = UI.showLoanDetail; // <-- INI YANG TADI HILANG
+window.deletePayment = UI.deletePayment;   // <-- INI JUGA PENTING
 window.deleteItem = UI.deleteItem;
+
+// Fitur Sistem & Tampilan
 window.toggleFab = UI.toggleFab;
 window.toggleTheme = UI.toggleTheme;
 window.togglePinSetup = UI.togglePinSetup;
@@ -38,18 +42,21 @@ window.openLangModal = UI.openLangModal;
 window.selectLang = UI.selectLang;
 window.logoutUser = () => logoutUser(auth);
 
-// Fungsi Kalkulator
+// Fungsi Kalkulator Investasi
 window.calculateCompound = UI.calculateCompound; 
 window.toggleDcaInput = UI.toggleDcaInput;
 window.resetCalc = UI.resetCalc;
 window.showCalcDetail = UI.showCalcDetail;
 
-// Fungsi Kalkulator Pinjaman
+// Fungsi Kalkulator Pinjaman (Preview saat ngetik)
 window.calcLoanPreview = UI.calcLoanPreview;
 
+// Variabel Global Auth & DB
 let auth, db;
 
+// --- LOGIKA UTAMA SAAT APLIKASI DIMUAT ---
 window.addEventListener('load', () => {
+    // Cek apakah Library Firebase berhasil dimuat dari index.html?
     if(window.firebaseLib) {
         const { initializeApp, getAuth, getFirestore, onAuthStateChanged } = window.firebaseLib;
         
@@ -57,37 +64,48 @@ window.addEventListener('load', () => {
         auth = getAuth(app);
         db = getFirestore(app);
         
+        // Simpan instance DB ke window agar bisa diakses UI.js saat save
         window.dbInstance = db; 
 
+        // Pasang listener tombol login
         setupAuthListeners(auth);
 
+        // Cek Status Login Pengguna
         onAuthStateChanged(auth, (user) => {
+            // Matikan Loading Overlay
             const loadingOverlay = document.getElementById('loading-overlay');
             if(loadingOverlay) loadingOverlay.style.display = 'none';
 
             if (user) {
+                // KASUS: SUDAH LOGIN
                 window.currentUser = user;
                 document.getElementById('login-screen').style.display = 'none';
-                startApp();
+                startApp(); // Jalankan aplikasi
             } else {
+                // KASUS: BELUM LOGIN
                 document.getElementById('login-screen').style.display = 'flex';
                 document.getElementById('login-status').innerText = "";
             }
         });
     } else {
-        alert("FATAL: Library Firebase TIDAK DITEMUKAN!\nCek index.html Anda.");
+        // Error Handling jika Firebase Library gagal load
+        alert("FATAL: Library Firebase TIDAK DITEMUKAN!\nCek koneksi internet atau file index.html Anda.");
         const loadingOverlay = document.getElementById('loading-overlay');
         if(loadingOverlay) loadingOverlay.style.display = 'none';
     }
 });
 
+// --- FUNGSI START APLIKASI ---
 async function startApp() {
+    // 1. Load Data dari Cloud
     await loadAppData(window.currentUser, db);
     
+    // 2. Inisialisasi Komponen UI
     UI.initTheme();
     UI.checkPinLock();
     initMoneyInputs(UI.calcLoanPreview); 
     
+    // 3. Render Semua Halaman
     UI.renderWallets();
     UI.renderBills();
     UI.renderBudget();
@@ -96,7 +114,10 @@ async function startApp() {
     UI.renderEmergency();
     UI.updateUI(); 
 
+    // 4. Panggil Iklan (Lazy Load)
     setTimeout(() => {
-        UI.refreshAds('page-home');
+        if (typeof UI.refreshAds === 'function') {
+            UI.refreshAds('page-home');
+        }
     }, 500);
 }
