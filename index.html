@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<script>
-        window.onerror = function(message, source, lineno, colno, error) {
-            alert("ERROR:\n" + message + "\nFile: " + source + "\nBaris: " + lineno);
-            // Paksa matikan loading biar kelihatan isinya
-            const overlay = document.getElementById('loading-overlay');
-            if(overlay) overlay.style.display = 'none';
-        };
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#2b2d42">
@@ -24,20 +16,16 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<meta name="google-adsense-account" content="ca-pub-4170035550920357">
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4170035550920357"
-     crossorigin="anonymous"></script>
-    
-    
-    </head>
-<body>       
-        <div id="loading-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-body); z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+    <meta name="google-adsense-account" content="ca-pub-4170035550920357">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4170035550920357" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="loading-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-body); z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center;">
         <div class="loader" style="border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;"></div>
         <p style="margin-top:15px; color:var(--text-muted); font-size:0.9rem;">Memuat data...</p>
     </div>
 
-        <div id="login-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-body); z-index:99999; display:none; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
+    <div id="login-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-body); z-index:99999; display:none; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
         <div class="balance-card glass-effect" style="width:100%; max-width:350px; margin-bottom:30px; padding:40px 20px;">
             <div style="font-size:3rem; margin-bottom:10px;">💎</div>
             <h1 style="margin-bottom:10px;">Finansial Pro</h1>
@@ -64,14 +52,11 @@
     </header>
 
     <main class="app-container">
-        
         <section id="page-home" class="page active">
             <div class="balance-card glass-effect">
                 <div class="wallet-container-scroll mb-20">
-                    <div id="wallet-list" class="wallet-list-row">
-                        </div>
+                    <div id="wallet-list" class="wallet-list-row"></div>
                 </div>
-
                 <span style="opacity: 0.8;" data-i18n="total_net_worth">Total Kekayaan Bersih</span>
                 <h1 id="main-balance">Rp 0</h1>
                 <div class="balance-row">
@@ -83,35 +68,24 @@
             <div class="quick-stats-grid">
                 <div class="stat-card border-left-green">
                     <i class="fas fa-hand-holding-usd text-green"></i>
-                    <div>
-                        <small data-i18n="total_receivable">Total Piutang</small>
-                        <strong id="main-piutang">Rp 0</strong>
-                    </div>
+                    <div><small data-i18n="total_receivable">Total Piutang</small><strong id="main-piutang">Rp 0</strong></div>
                 </div>
                 <div class="stat-card border-left-red">
                     <i class="fas fa-file-invoice-dollar text-red"></i>
-                    <div>
-                        <small data-i18n="total_debt">Total Hutang</small>
-                        <strong id="main-hutang">Rp 0</strong>
-                    </div>
+                    <div><small data-i18n="total_debt">Total Hutang</small><strong id="main-hutang">Rp 0</strong></div>
                 </div>
             </div>
 
             <div class="ad-slot">
                 <small style="display:block; font-size:0.6rem; color:#ccc; margin-bottom:5px;">Advertisement</small>
-                
                 <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fs+3n+7a-ag-4h" data-ad-client="ca-pub-4170035550920357" data-ad-slot="6949327399"></ins> 
-                
-                </div>
+            </div>
             
             <div class="card" onclick="navTo('page-tools'); switchTab('tools', 'tab-emergency')" style="cursor: pointer; background: var(--bg-input);">
                 <div class="flex-between">
                     <div style="display:flex; align-items:center; gap:10px;">
                         <i class="fas fa-shield-alt text-primary" style="font-size: 1.2rem;"></i>
-                        <div>
-                            <strong data-i18n="em_fund_title">Dana Darurat</strong><br>
-                            <small class="text-muted" id="home-emergency-status" data-i18n="em_check_status">Cek Status Aman</small>
-                        </div>
+                        <div><strong data-i18n="em_fund_title">Dana Darurat</strong><br><small class="text-muted" id="home-emergency-status" data-i18n="em_check_status">Cek Status Aman</small></div>
                     </div>
                     <i class="fas fa-chevron-right text-muted"></i>
                 </div>
@@ -119,9 +93,7 @@
 
             <div class="chart-section mt-20">
                 <h3><i class="fas fa-chart-pie"></i> <span data-i18n="cashflow_title">Arus Kas Bulan Ini</span></h3>
-                <div class="chart-container">
-                    <canvas id="mainChart"></canvas>
-                </div>
+                <div class="chart-container"><canvas id="mainChart"></canvas></div>
             </div>
         </section>
 
@@ -137,17 +109,9 @@
                     <h3 data-i18n="recent_history">Riwayat Terakhir</h3>
                     <button class="btn-xs" onclick="exportCSV('budget')"><i class="fas fa-download"></i> CSV</button>
                 </div>
-
                 <div class="ad-slot" style="margin: 10px 0;">
-                    <ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-4170035550920357"
-     data-ad-slot="1369506733"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-
-                    </div>
-
+                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4170035550920357" data-ad-slot="1369506733" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                </div>
                 <div id="budget-list" class="transaction-list mt-10"></div>
             </div>
 
@@ -157,25 +121,21 @@
                         <h3><i class="fas fa-file-invoice"></i> <span data-i18n="add_bill_title">Tambah Tagihan</span></h3>
                         <i class="fas fa-plus-circle text-primary"></i>
                     </div>
-                    
                     <div id="add-bill-form" class="hidden mt-20">
                         <div class="form-group">
                             <input type="text" id="bill-name" data-i18n-ph="ph_bill_name" placeholder="Nama (cth: WiFi, Listrik)">
                             <input type="text" inputmode="numeric" class="money-input" id="bill-amount" placeholder="Nominal Rutin (Rp)">
                             <label style="font-size:0.8rem; color:var(--text-muted);" data-i18n="lbl_due_date">Setiap Tanggal:</label>
-                            <select id="bill-date" style="margin-top:5px;">
-                                </select>
+                            <select id="bill-date" style="margin-top:5px;"></select>
                             <button class="btn-primary full-width mt-10" onclick="saveBill()" data-i18n="btn_save">Simpan Tagihan</button>
                         </div>
                     </div>
                 </div>
-
                 <div class="list-header mt-20">
                     <h3 data-i18n="bill_list_title">Tagihan Bulan Ini</h3>
                     <small id="bill-status-summary" class="badge-gray">0 Lunas</small>
                 </div>
-                <div id="bill-list" class="transaction-list mt-10">
-                    </div>
+                <div id="bill-list" class="transaction-list mt-10"></div>
             </div>
 
             <div id="tab-budget-plan" class="tab-content">
@@ -187,9 +147,7 @@
                         <button class="btn-primary full-width" onclick="addGoal()" data-i18n="btn_save">Simpan</button>
                     </div>
                 </div>
-                <div class="mt-20">
-                    <small class="text-muted" data-i18n="goal_hint">Klik pada kartu target untuk menambah tabungan.</small>
-                </div>
+                <div class="mt-20"><small class="text-muted" data-i18n="goal_hint">Klik pada kartu target untuk menambah tabungan.</small></div>
                 <div id="goal-list" class="goal-list mt-10"></div>
             </div>
         </section>
@@ -199,26 +157,16 @@
                 <button class="tab active" onclick="switchTab('loans', 'tab-loans-active')" data-i18n="tab_active">Aktif</button>
                 <button class="tab" onclick="switchTab('loans', 'tab-loans-history')" data-i18n="tab_history">Riwayat Lunas</button>
             </div>
-
             <div class="search-wrapper mb-20">
                 <i class="fas fa-search"></i>
                 <input type="text" id="loan-search" data-i18n-ph="ph_search_name" placeholder="Cari nama..." onkeyup="renderLoans()">
             </div>
-
             <div class="ad-slot" style="margin: 10px 0;">
-                <ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-4170035550920357"
-     data-ad-slot="3450258051"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-
-                </div>
-
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4170035550920357" data-ad-slot="3450258051" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
             <div id="tab-loans-active" class="tab-content active">
                 <div id="loan-list-active" class="loan-grid"></div>
             </div>
-
             <div id="tab-loans-history" class="tab-content">
                  <div class="list-header">
                     <h3 data-i18n="archive_paid">Arsip Lunas</h3>
@@ -242,7 +190,6 @@
                             <span class="status-text" data-i18n="collected">Terkumpul</span>
                         </div>
                     </div>
-                    
                     <div class="quick-stats-grid mt-20">
                         <div class="stat-card" style="display:block; padding:10px;">
                             <small class="text-muted" data-i18n="your_target">Target Kamu</small><br>
@@ -254,34 +201,21 @@
                             <strong id="em-current-rp" class="text-green">Rp 0</strong>
                         </div>
                     </div>
-
-                    <button class="btn-primary full-width mt-10" onclick="openModal('modal-emergency-add')">
-                        <i class="fas fa-plus-circle"></i> <span data-i18n="btn_add_savings">Tambah Tabungan</span>
-                    </button>
+                    <button class="btn-primary full-width mt-10" onclick="openModal('modal-emergency-add')"><i class="fas fa-plus-circle"></i> <span data-i18n="btn_add_savings">Tambah Tabungan</span></button>
                 </div>
 
                 <div class="ad-slot">
                      <small style="display:block; font-size:0.6rem; color:#ccc; margin-bottom:5px;">Advertisement</small>
-                     
-                     <ins class="adsbygoogle"
-     style="display:block"
-     data-ad-format="fluid"
-     data-ad-layout-key="-fs+3n+7a-ag-4h"
-     data-ad-client="ca-pub-4170035550920357"
-     data-ad-slot="4634047443"></ins>
-
-                     </div>
+                     <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fs+3n+7a-ag-4h" data-ad-client="ca-pub-4170035550920357" data-ad-slot="4634047443"></ins>
+                </div>
 
                 <div class="card mt-20">
                     <div class="flex-between" onclick="toggleEmergencySettings()" style="cursor: pointer;">
                         <h3><i class="fas fa-sliders-h"></i> <span data-i18n="risk_profile_title">Atur Profil Risiko</span></h3>
                         <i class="fas fa-chevron-down" id="em-settings-icon"></i>
                     </div>
-                    
                     <div id="emergency-settings-form" class="hidden mt-20">
-                        <div class="info-box mb-20" data-i18n="risk_profile_desc">
-                            Aplikasi akan menghitung target ideal berdasarkan profil risiko hidup Anda secara otomatis.
-                        </div>
+                        <div class="info-box mb-20" data-i18n="risk_profile_desc">Aplikasi akan menghitung target ideal berdasarkan profil risiko hidup Anda secara otomatis.</div>
                         <div class="form-group">
                             <label data-i18n="lbl_expense">Pengeluaran Bulanan (Rata-rata)</label>
                             <input type="text" inputmode="numeric" class="money-input" id="em-expense" data-i18n-ph="ph_expense" placeholder="Contoh: 3.000.000">
@@ -308,11 +242,8 @@
 
             <div id="tab-calc" class="tab-content">
                 <div class="card luxury-card">
-                    <div class="card-header-icon">
-                        <i class="fas fa-calculator"></i>
-                    </div>
+                    <div class="card-header-icon"><i class="fas fa-calculator"></i></div>
                     <h3 class="text-center mb-20">Compound Interest</h3>
-                    
                     <div class="form-group">
                         <label data-i18n="lbl_principal">Modal Awal/Modal Saat Ini (Rp)</label>
                         <input type="text" inputmode="numeric" class="money-input" id="calc-principal" placeholder="10.000.000">
@@ -343,7 +274,6 @@
                     </div>
                     <button class="btn-primary full-width mt-10" onclick="calculateCompound()" data-i18n="btn_calc_sim">Hitung Simulasi</button>
                 </div>
-
                 <div id="calc-result" class="result-box hidden mt-20 fade-in">
                     <div class="flex-between mb-10">
                         <small data-i18n="est_total">Estimasi Total Akhir:</small>
@@ -368,16 +298,13 @@
                         <i class="fas fa-chevron-right text-muted"></i>
                     </div>
                 </div>
-
                 <div class="setting-item">
                     <span data-i18n="security_title">Keamanan Aplikasi</span>
                     <button id="btn-toggle-pin" class="btn-xs" onclick="togglePinSetup()" data-i18n="enable_pin">Aktifkan PIN</button>
                 </div>
                 <div class="setting-item">
                     <span>Backup Data (JSON)</span>
-                   <button class="btn-xs" onclick="downloadBackup()">
-                        <i class="fas fa-download"></i> <span data-i18n="btn_download">Simpan</span>
-                    </button>
+                   <button class="btn-xs" onclick="downloadBackup()"><i class="fas fa-download"></i> <span data-i18n="btn_download">Simpan</span></button>
                 </div>
                 <div class="setting-item">
                     <span>Restore Data (JSON)</span>
@@ -391,62 +318,37 @@
                     <small class="badge-gray">Version: 4.2</small>
                 </div>
             </div>
-                        <div class="card mt-20">
+            <div class="card mt-20">
                 <div class="setting-item">
                     <span>Akun Google</span>
                     <button class="btn-xs" onclick="logoutUser()" style="background:var(--bg-input); border:1px solid var(--border);">Keluar / Logout</button>
                 </div>
             </div>
-            
             <div class="card mt-20 border-red">
                 <h3><span data-i18n="danger_zone_title">Hapus Data !</span></h3>
                 <p class="text-muted text-sm mb-10" data-i18n="danger_zone_desc">Data yang dihapus tidak bisa dipulihkan.</p>
                 <button class="btn-danger full-width" onclick="resetData()" data-i18n="btn_reset_data">Reset Semua Data</button>
             </div>
         </section>
-
     </main>
 
     <div id="toast-container"></div>
 
     <div class="fab-wrapper">
         <div class="fab-menu" id="fab-menu">
-            <button onclick="openModal('modal-budget')" data-label="Catat Transaksi" data-i18n-label="fab_trans">
-                <i class="fas fa-wallet"></i>
-            </button>
-            <button onclick="openModal('modal-loan')" data-label="Catat Hutang/Piutang" data-i18n-label="fab_loan">
-                <i class="fas fa-handshake"></i>
-            </button>
-            <button onclick="openModal('modal-emergency-add')" data-label="Tabung Dana Darurat" data-i18n-label="fab_emergency">
-                <i class="fas fa-shield-alt"></i>
-            </button>
+            <button onclick="openModal('modal-budget')" data-label="Catat Transaksi" data-i18n-label="fab_trans"><i class="fas fa-wallet"></i></button>
+            <button onclick="openModal('modal-loan')" data-label="Catat Hutang/Piutang" data-i18n-label="fab_loan"><i class="fas fa-handshake"></i></button>
+            <button onclick="openModal('modal-emergency-add')" data-label="Tabung Dana Darurat" data-i18n-label="fab_emergency"><i class="fas fa-shield-alt"></i></button>
         </div>
-        <button class="fab-main" onclick="toggleFab()">
-            <i class="fas fa-plus" id="fab-icon"></i>
-        </button>
+        <button class="fab-main" onclick="toggleFab()"><i class="fas fa-plus" id="fab-icon"></i></button>
     </div>
 
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active" onclick="navTo('page-home')">
-            <i class="fas fa-home"></i>
-            <span data-i18n="nav_home">Beranda</span>
-        </a>
-        <a href="#" class="nav-item" onclick="navTo('page-budget')">
-            <i class="fas fa-wallet"></i>
-            <span data-i18n="nav_budget">BudgetKu</span>
-        </a>
-        <a href="#" class="nav-item" onclick="navTo('page-tools')">
-            <i class="fas fa-layer-group"></i>
-            <span data-i18n="nav_tools">Tools</span>
-        </a>
-        <a href="#" class="nav-item" onclick="navTo('page-loans')">
-            <i class="fas fa-file-invoice-dollar"></i>
-            <span data-i18n="nav_loans">Pinjaman</span>
-        </a>
-        <a href="#" class="nav-item" onclick="navTo('page-settings')">
-            <i class="fas fa-cog"></i>
-            <span data-i18n="nav_settings">Setelan</span>
-        </a>
+        <a href="#" class="nav-item active" onclick="navTo('page-home')"><i class="fas fa-home"></i><span data-i18n="nav_home">Beranda</span></a>
+        <a href="#" class="nav-item" onclick="navTo('page-budget')"><i class="fas fa-wallet"></i><span data-i18n="nav_budget">BudgetKu</span></a>
+        <a href="#" class="nav-item" onclick="navTo('page-tools')"><i class="fas fa-layer-group"></i><span data-i18n="nav_tools">Tools</span></a>
+        <a href="#" class="nav-item" onclick="navTo('page-loans')"><i class="fas fa-file-invoice-dollar"></i><span data-i18n="nav_loans">Pinjaman</span></a>
+        <a href="#" class="nav-item" onclick="navTo('page-settings')"><i class="fas fa-cog"></i><span data-i18n="nav_settings">Setelan</span></a>
     </nav>
 
     <div class="modal-overlay" id="modal-budget">
@@ -459,16 +361,12 @@
                 <div class="type-selector">
                     <input type="radio" name="b-type" id="t-out" value="expense" checked>
                     <label for="t-out" class="type-btn expense" data-i18n="lbl_expense_type">Pengeluaran</label>
-                    
                     <input type="radio" name="b-type" id="t-in" value="income">
                     <label for="t-in" class="type-btn income" data-i18n="lbl_income_type">Pemasukan</label>
                 </div>
-                
                 <div class="form-group" style="margin-bottom: 10px;">
-                    <select id="b-wallet" style="padding: 10px; border-radius: 12px; background: var(--bg-input);">
-                        </select>
+                    <select id="b-wallet" style="padding: 10px; border-radius: 12px; background: var(--bg-input);"></select>
                 </div>
-
                 <input type="text" inputmode="numeric" class="money-input input-lg" id="b-amount" placeholder="Nominal (Rp)">
                 <input type="text" id="b-desc" data-i18n-ph="ph_desc" placeholder="Keterangan (cth: Makan Siang)">
                 <input type="date" id="b-date">
@@ -499,7 +397,7 @@
                     <label data-i18n="lbl_principal_loan">Pokok Pinjaman</label>
                     <input type="text" inputmode="numeric" class="money-input" id="l-principal" oninput="calcLoanPreview()" placeholder="0">
                 </div>
-                                <div class="form-row">
+                <div class="form-row">
                     <div class="form-group">
                         <label data-i18n="lbl_interest_rate">Bunga (%/bln)</label>
                         <input type="number" id="l-rate" placeholder="0" oninput="calcLoanPreview()">
@@ -509,7 +407,6 @@
                         <input type="number" id="l-tenor" value="1" oninput="calcLoanPreview()">
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label data-i18n="lbl_trans_date">Tanggal Transaksi</label>
                     <input type="date" id="l-date">
@@ -578,11 +475,9 @@
                 <i class="fas fa-lock" style="font-size: 2rem; color: white;"></i>
             </div>
             <h3 id="pin-title" style="color: white; margin-bottom: 20px;">Masukkan PIN</h3>
-            
             <div class="pin-dots">
                 <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
             </div>
-
             <div class="pin-keypad">
                 <button onclick="pressPin(1)">1</button>
                 <button onclick="pressPin(2)">2</button>
@@ -597,7 +492,6 @@
                 <button onclick="pressPin(0)">0</button>
                 <button onclick="pressPin('enter')" class="btn-enter"><i class="fas fa-check"></i></button>
             </div>
-            
             <button class="btn-xs mt-20" id="btn-forgot-pin" onclick="resetData()" style="background: rgba(255,0,0,0.3); color: white; border:none; display:none;">Lupa PIN? Reset Data</button>
         </div>
     </div>
@@ -618,15 +512,15 @@
                                 <th style="padding:10px 5px; text-align:right;">Saldo Akhir</th>
                             </tr>
                         </thead>
-                        <tbody id="calc-breakdown-list">
-                            </tbody>
+                        <tbody id="calc-breakdown-list"></tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="modal-confirm" style="z-index: 99999;"> <div class="modal-card" style="max-width: 320px; text-align: center;">
+    <div class="modal-overlay" id="modal-confirm" style="z-index: 99999;">
+        <div class="modal-card" style="max-width: 320px; text-align: center;">
             <div class="mb-20">
                 <i class="fas fa-exclamation-circle text-warning" style="font-size: 3rem; margin-bottom: 15px;"></i>
                 <h3 id="confirm-title" style="margin-bottom: 10px;">Konfirmasi</h3>
@@ -657,7 +551,6 @@
                     </div>
                     <i class="fas fa-check text-primary check-icon" id="check-id"></i>
                 </div>
-
                 <div class="lang-item" onclick="selectLang('en')">
                     <div style="display:flex; align-items:center; gap:12px;">
                         <span style="font-size:1.5rem">🇺🇸</span>
@@ -668,35 +561,18 @@
             </div>
         </div>
     </div>
-    
-        <script type="module">
+
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         
-        // Mengekspos library ke window agar bisa dipakai di script.js biasa
         window.firebaseLib = { initializeApp, getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, getFirestore, doc, getDoc, setDoc };
     </script>
 
-    
-    <script type="module" src="js/main.js"></script>
-    <script>
-    // SCRIPT DETEKTIF ERROR
-    // 1. Paksa matikan loading setelah 5 detik
-    setTimeout(() => {
-        const overlay = document.getElementById('loading-overlay');
-        if(overlay && overlay.style.display !== 'none') {
-            overlay.style.display = 'none';
-            alert("Waktu habis! Aplikasi macet. Kemungkinan ada Error di Script JS.");
-        }
-    }, 5000);
+    <script src="sw-register.js"></script>
 
-    // 2. Tangkap Error Layar
-    window.onerror = function(message, source, lineno, colno, error) {
-        alert("ERROR TERDETEKSI:\n" + message + "\nDi file: " + source + "\nBaris: " + lineno);
-        document.getElementById('loading-overlay').style.display = 'none';
-    };
-</script>
+    <script type="module" src="js/main.js"></script>
     
 </body>
 </html>
