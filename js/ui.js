@@ -5,6 +5,7 @@ import { APP_KEY } from './config.js';
 
 // --- VARIABLES ---
 let chartInstance = null;
+let trendChartInstance = null;
 let currentPinInput = "";
 let isSettingUpPin = false;
 let onConfirmAction = null;
@@ -213,6 +214,70 @@ export function renderBudget() {
         }
     });
     renderEmptyState('budget-list', 'msg_empty_trans');
+}
+
+// [BARU] Fungsi Render Grafik Tren Pengeluaran
+export function renderTrendChart() {
+    const ctx = document.getElementById('trendChart');
+    if(!ctx) return; // Safety check
+
+    // 1. Siapkan Label 6 Bulan Terakhir (Mundur dari bulan ini)
+    const labels = [];
+    const dataPoints = [];
+    const today = new Date();
+    
+    for (let i = 5; i >= 0; i--) {
+        const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+        // Format label: "Nov 2025" atau "11/25"
+        const monthName = d.toLocaleDateString(data.settings.lang === 'id' ? 'id-ID' : 'en-US', { month: 'short', year: '2-digit' });
+        labels.push(monthName);
+        
+        // Kunci pencarian: "2025-11" (YYYY-MM)
+        const searchKey = d.toISOString().slice(0, 7); 
+        
+        // 2. Hitung Total Pengeluaran di Bulan Tersebut
+        let monthlyTotal = 0;
+        data.budget.forEach(b => {
+            if (b.type === 'expense' && b.date.startsWith(searchKey)) {
+                monthlyTotal += b.amount;
+            }
+        });
+        dataPoints.push(monthlyTotal);
+    }
+
+    // 3. Gambar Grafik
+    if(trendChartInstance) trendChartInstance.destroy();
+
+    trendChartInstance = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: t('lbl_expense_type', data.settings.lang),
+                data: dataPoints,
+                backgroundColor: 'rgba(252, 92, 125, 0.6)', // Merah transparan
+                borderColor: 'rgba(252, 92, 125, 1)',
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        // Format angka sumbu Y jadi ringkas (cth: 1jt)
+                        callback: function(value) {
+                            return (value / 1000).toLocaleString() + 'k';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false } // Sembunyikan legenda biar bersih
+            }
+        }
+    });
 }
 
 export function saveBudget() {
@@ -909,6 +974,7 @@ export function updateUI() {
     renderLoans();
     renderGoals();
     renderEmergency();
+    renderTrendChart();
 }
 
 export function setupConfirmListener() {
@@ -1077,4 +1143,104 @@ export function refreshAds(containerId) {
             console.warn("AdSense pending...");
         }
     });
+}
+
+// --- PDF GENERATOR SYSTEM ---
+export function generatePDF() {
+    // Cek apakah library sudah siap
+    if (!window.jspdf) {
+        showToast("Library PDF belum siap. Coba refresh.", "error");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // 1. KOP SURAT & JUDUL
+    doc.setFontSize(18);
+    doc.setTextColor(68, 129, 235); // Warna Biru Primary
+    doc.text("Finansial Pro", 14, 20);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text("Laporan Keuangan Pribadi", 14, 26);
+    doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 32);
+
+    // 2. RINGKASAN SALDO (Kotak Info)
+    let totalIncome = 0;
+    let totalExpense = 0;
+    data.budget.forEach(b => {
+        if (b.type === 'income') totalIncome += b.amount;
+        else totalExpense += b.amount;
+    });
+    const balance = totalIncome - totalExpense;
+
+    // Gambar Kotak Ringkasan
+    doc.setDrawColor(200);
+    doc.setFillColor(245, 247, 250);
+    doc.roundedRect(14, 40, 180, 25, 3, 3, 'FD');
+
+    doc.setFontSize(10);
+    doc.setTextColor(50);
+    doc.text("Pemasukan", 20, 48);
+    doc.text("Pengeluaran", 80, 48);
+    doc.text("Sisa Saldo", 140, 48);
+
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 176, 155); // Hijau
+    doc.text(fmtMoney(totalIncome), 20, 58);
+    
+    doc.setTextColor(252, 92, 125); // Merah
+    doc.text(fmtMoney(totalExpense), 80, 58);
+    
+    doc.setTextColor(68, 129, 235); // Biru
+    doc.text(fmtMoney(balance), 140, 58);
+
+    // 3. TABEL TRANSAKSI
+    // Siapkan data untuk tabel
+    const tableRows = data.budget.map(b => {
+        // Cari nama dompet
+        const wallet = data.wallets.find(w => w.id === b.walletId);
+        const walletName = wallet ? wallet.name : '-';
+        
+        return [
+            fmtDate(b.date),
+            b.desc,
+            walletName,
+            b.type === 'income' ? 'Masuk' : 'Keluar',
+            fmtMoney(b.amount)
+        ];
+    });
+
+    // Gambar Tabel menggunakan autoTable
+    doc.autoTable({
+        startY: 75,
+        head: [['Tanggal', 'Keterangan', 'Dompet', 'Tipe', 'Nominal']],
+        body: tableRows,
+        theme: 'grid',
+        headStyles: { fillColor: [68, 129, 235] }, // Header Biru
+        styles: { fontSize: 8, cellPadding: 3 },
+        columnStyles: {
+            4: { halign: 'right', fontStyle: 'bold' } // Kolom Nominal rata kanan
+        },
+        didParseCell: function(data) {
+            // Warnai teks nominal (Hijau/Merah)
+            if (data.section === 'body' && data.column.index === 4) {
+                const type = tableRows[data.row.index][3]; // Cek kolom Tipe
+                if (type === 'Masuk') data.cell.styles.textColor = [0, 176, 155];
+                else data.cell.styles.textColor = [252, 92, 125];
+            }
+        }
+    });
+
+    // 4. FOOTER & SIMPAN
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text("Dibuat otomatis oleh Finansial Pro", 14, finalY);
+
+    // Simpan File
+    doc.save(`Laporan_Keuangan_${Date.now()}.pdf`);
+    showToast("Laporan PDF berhasil diunduh!");
 }

@@ -15,6 +15,8 @@
     
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
     <meta name="google-adsense-account" content="ca-pub-4170035550920357">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4170035550920357" crossorigin="anonymous"></script>
@@ -91,10 +93,20 @@
                 </div>
             </div>
 
-            <div class="chart-section mt-20">
+                        <div class="chart-section mt-20">
                 <h3><i class="fas fa-chart-pie"></i> <span data-i18n="cashflow_title">Arus Kas Bulan Ini</span></h3>
-                <div class="chart-container"><canvas id="mainChart"></canvas></div>
+                <div class="chart-container">
+                    <canvas id="mainChart"></canvas>
+                </div>
             </div>
+
+            <div class="chart-section mt-20">
+                <h3><i class="fas fa-chart-line"></i> Tren Pengeluaran (6 Bulan)</h3>
+                <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+
         </section>
 
         <section id="page-budget" class="page">
@@ -105,10 +117,14 @@
             </div>
 
             <div id="tab-budget-list" class="tab-content active">
-                <div class="list-header">
-                    <h3 data-i18n="recent_history">Riwayat Terakhir</h3>
-                    <button class="btn-xs" onclick="exportCSV('budget')"><i class="fas fa-download"></i> CSV</button>
-                </div>
+ <div class="list-header">
+    <h3 data-i18n="recent_history">Riwayat Terakhir</h3>
+    <div style="display:flex; gap:5px;">
+        <button class="btn-xs" onclick="exportCSV('budget')" style="background:#eee; color:#333;"><i class="fas fa-file-csv"></i> CSV</button>
+        <button class="btn-xs" onclick="generatePDF()" style="background:var(--primary); color:white; border:none;"><i class="fas fa-file-pdf"></i> PDF</button>
+    </div>
+</div>
+
                 <div class="ad-slot" style="margin: 10px 0;">
                     <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4170035550920357" data-ad-slot="1369506733" data-ad-format="auto" data-full-width-responsive="true"></ins>
                 </div>
@@ -562,13 +578,16 @@
         </div>
     </div>
 
-    <script type="module">
+        <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        // [UPDATE] Tambahkan onSnapshot di sini
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         
-        window.firebaseLib = { initializeApp, getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, getFirestore, doc, getDoc, setDoc };
+        // [UPDATE] Masukkan onSnapshot ke window.firebaseLib
+        window.firebaseLib = { initializeApp, getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, getFirestore, doc, getDoc, setDoc, onSnapshot };
     </script>
+    
 
     <script src="sw-register.js"></script>
 

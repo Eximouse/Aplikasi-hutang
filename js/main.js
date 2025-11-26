@@ -1,6 +1,6 @@
 // js/main.js
 import { firebaseConfig } from './config.js';
-import { data, loadAppData, saveAppData } from './db.js';
+import { data, loadAppData, saveAppData, setupRealtimeListener } from './db.js';
 import { setupAuthListeners, logoutUser } from './auth.js';
 import * as UI from './ui.js'; 
 import { initMoneyInputs } from './utils.js';
@@ -38,9 +38,12 @@ window.pressPin = UI.pressPin;
 window.resetData = UI.resetData;
 window.downloadBackup = UI.downloadBackup;
 window.restoreBackup = UI.restoreBackup;
+window.generatePDF = UI.generatePDF;
 window.openLangModal = UI.openLangModal;
 window.selectLang = UI.selectLang;
-window.logoutUser = () => logoutUser(auth);
+window.logoutUser = () => { logoutUser(auth);
+if (unsubscribeListener) unsubscribeListener();
+};
 
 // Fungsi Kalkulator Investasi
 window.calculateCompound = UI.calculateCompound; 
@@ -53,6 +56,7 @@ window.calcLoanPreview = UI.calcLoanPreview;
 
 // Variabel Global Auth & DB
 let auth, db;
+let unsubscribeListener;
 
 // --- LOGIKA UTAMA SAAT APLIKASI DIMUAT ---
 window.addEventListener('load', () => {
@@ -97,15 +101,28 @@ window.addEventListener('load', () => {
 
 // --- FUNGSI START APLIKASI ---
 async function startApp() {
-    // 1. Load Data dari Cloud
+    // 1. Load Data Awal
     await loadAppData(window.currentUser, db);
     
-    // 2. Inisialisasi Komponen UI
+    // 2. [LEVEL 3] Aktifkan Real-time Listener
+    // PERBAIKAN: Hapus 'data.' di depan setupRealtimeListener
+    unsubscribeListener = setupRealtimeListener(window.currentUser, db, () => {
+        // Refresh SEMUA Tampilan saat data berubah
+        UI.renderWallets();
+        UI.renderBills();
+        UI.renderBudget();
+        UI.renderLoans();
+        UI.renderGoals();
+        UI.renderEmergency();
+        UI.updateUI();
+    });
+    
+    // 3. Inisialisasi Komponen UI
     UI.initTheme();
     UI.checkPinLock();
     initMoneyInputs(UI.calcLoanPreview); 
     
-    // 3. Render Semua Halaman
+    // 4. Render Awal
     UI.renderWallets();
     UI.renderBills();
     UI.renderBudget();
@@ -114,7 +131,6 @@ async function startApp() {
     UI.renderEmergency();
     UI.updateUI(); 
 
-    // 4. Panggil Iklan (Lazy Load)
     setTimeout(() => {
         if (typeof UI.refreshAds === 'function') {
             UI.refreshAds('page-home');

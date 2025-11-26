@@ -71,3 +71,36 @@ export async function saveAppData(currentUser, db) {
         }
     }
 }
+
+// [BARU] Real-time Listener (Level 3 Feature)
+export function setupRealtimeListener(currentUser, db, onUpdateCallback) {
+    if (!currentUser || !window.firebaseLib) return;
+    
+    const { doc, onSnapshot } = window.firebaseLib;
+    const docRef = doc(db, "users", currentUser.uid);
+
+    // Fungsi onSnapshot ini akan berjalan TERUS MENERUS di background
+    // Setiap ada perubahan di server (cloud), fungsi ini otomatis jalan.
+    const unsubscribe = onSnapshot(docRef, (docSnap) => {
+        if (docSnap.exists()) {
+            const cloudData = docSnap.data();
+            
+            // Update variabel 'data' lokal dengan data terbaru dari cloud
+            // Kita gunakan Object.assign agar referensi variabel tidak putus
+            Object.assign(data, cloudData);
+            
+            console.log("⚡ Real-time update received!");
+            
+            // Panggil fungsi update UI agar tampilan berubah otomatis
+            if (onUpdateCallback) onUpdateCallback();
+            
+            // Update backup lokal juga biar sinkron
+            localStorage.setItem(APP_KEY, JSON.stringify(data));
+        }
+    }, (error) => {
+        console.error("Real-time sync error:", error);
+    });
+
+    // Kembalikan fungsi 'unsubscribe' agar bisa dimatikan saat logout
+    return unsubscribe;
+}
