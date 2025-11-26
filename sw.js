@@ -4,13 +4,20 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js');
 
 // --- VARIABEL CACHING ---
-const ASSET_CACHE_NAME = 'finpro-v1';
+const ASSET_CACHE_NAME = 'finpro-v2-modular';
 const ASSETS = [
     './',
     './index.html',
     './style.css',
-    './script.js',
     './sw-register.js',
+    './manifest.json',
+    './js/main.js',
+    './js/config.js',
+    './js/auth.js',
+    './js/db.js',
+    './js/ui.js',
+    './js/utils.js',
+    './js/resources.js',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
     'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap',
     'https://cdn.jsdelivr.net/npm/chart.js'
