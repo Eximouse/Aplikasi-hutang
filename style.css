@@ -1,383 +1,259 @@
 :root {
-    /* --- PALET WARNA "MODERN FINTECH" --- */
+    /* --- WARNA BRAND (Lebih Hidup) --- */
+    --primary: #2962ff; /* Biru yang lebih vivid/cerah untuk Android */
+    --primary-dark: #0039cb;
+    --primary-light: #e3f2fd; /* Biru sangat muda untuk background icon */
     
-    /* Primary Brand: Biru Laut yang Terpercaya (Mirip BCA/PayPal) */
-    --primary: #0056b3; 
-    --primary-light: #e7f1ff; /* Untuk background icon */
+    /* Gradient Saldo (Kembali ke gaya modern tapi smooth) */
+    --gradient-card: linear-gradient(135deg, #2962ff 0%, #2979ff 100%);
     
-    /* Gradient Khusus Kartu Saldo (Tetap Mewah tapi tidak norak) */
-    --gradient-primary: linear-gradient(135deg, #0061f2 0%, #00c6f9 100%);
+    /* Status Colors (Solid & Jelas) */
+    --success: #00c853; 
+    --success-bg: #e8f5e9;
+    --danger: #d50000; 
+    --danger-bg: #ffebee;
+    --warning: #ffab00; 
     
-    /* Status Colors (Lebih Soft) */
-    --success: #10b981; /* Hijau Emerald */
-    --success-bg: #d1fae5;
+    /* --- BACKGROUND & TEXT --- */
+    --bg-body: #f5f7fa; /* Abu-abu kebiruan, tidak putih mati */
+    --bg-card: #ffffff;
+    --bg-input: #f0f2f5; /* Warna input ala Facebook/WA (familiar di Android) */
     
-    --danger: #ef4444; /* Merah Rose */
-    --danger-bg: #fee2e2;
+    --text-main: #212121; /* Hitam material design */
+    --text-muted: #757575;
     
-    --warning: #f59e0b; /* Amber */
-    --warning-bg: #fef3c7;
+    --border: #e0e0e0;
     
-    /* --- SISTEM WARNA NETRAL (60-30-10) --- */
-    --bg-body: #f8f9fd; /* Abu-abu sangat muda (hampir putih) */
-    --bg-card: #ffffff; /* Putih Bersih */
-    --bg-input: #f1f5f9; /* Abu-abu dingin untuk input */
+    /* Shadow yang lebih 'Pop-up' (Material Design style) */
+    --shadow: 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-active: 0 4px 12px rgba(41, 98, 255, 0.2);
     
-    --text-main: #1e293b; /* Biru kehitaman (Lebih enak dibaca drpd hitam pekat) */
-    --text-muted: #64748b; /* Abu-abu kebiruan */
-    
-    --border: #e2e8f0;
-    
-    /* Shadow yang sangat halus (Elevasi modern) */
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-    --shadow-hover: 0 10px 25px rgba(0, 0, 0, 0.06);
-    
-    --radius: 16px; /* Radius sedikit lebih kotak agar terlihat serius */
-    --nav-height: 70px;
+    --radius: 16px; 
+    --nav-height: 65px; /* Sedikit lebih pendek agar layar lega */
 }
 
-/* --- DARK MODE (Elegant Slate) --- */
+/* Dark Mode Support */
 [data-theme="dark"] {
-    --bg-body: #0f172a; /* Slate sangat gelap */
-    --bg-card: #1e293b; /* Slate gelap */
-    --bg-input: #334155;
+    --bg-body: #121212; 
+    --bg-card: #1e1e1e;
+    --bg-input: #2c2c2c;
+    --text-main: #ffffff;
+    --text-muted: #b0b0b0;
+    --border: #333333;
+    --shadow: 0 4px 10px rgba(0,0,0,0.5);
     
-    --text-main: #f1f5f9;
-    --text-muted: #94a3b8;
-    
-    --border: #334155;
-    --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    
-    /* Penyesuaian warna background pastel di dark mode */
-    --primary-light: rgba(56, 189, 248, 0.15);
-    --success-bg: rgba(16, 185, 129, 0.15);
-    --danger-bg: rgba(239, 68, 68, 0.15);
-    --warning-bg: rgba(245, 158, 11, 0.15);
+    --primary-light: rgba(41, 98, 255, 0.15);
+    --success-bg: rgba(0, 200, 83, 0.15);
+    --danger-bg: rgba(213, 0, 0, 0.15);
 }
 
-/* --- GLOBAL RESET & TYPOGRAPHY --- */
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+/* --- RESET & BASE --- */
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 body { 
+    font-family: 'Plus Jakarta Sans', 'Roboto', sans-serif; /* Fallback ke Roboto (Android default) */
     background-color: var(--bg-body); 
     color: var(--text-main); 
-    /* [PENTING] Padding bawah diperbesar agar konten tidak ketutup iklan anchor */
-    padding-bottom: 140px; 
-    transition: background 0.3s ease, color 0.3s ease;
-    line-height: 1.5;
+    padding-bottom: 110px; /* Pas untuk iklan + nav */
+    line-height: 1.4;
+    font-size: 14px; /* Ukuran standar Android */
+    overflow-x: hidden; /* Mencegah geser samping tidak sengaja */
 }
 
-/* Utilities */
-.text-green { color: var(--success) !important; }
-.text-red { color: var(--danger) !important; }
-.text-primary { color: var(--primary) !important; }
-.text-muted { color: var(--text-muted) !important; font-size: 0.85rem; font-weight: 500; }
-.text-center { text-align: center; }
-.text-right { text-align: right; }
-.hidden { display: none !important; }
-.mt-10 { margin-top: 10px; }
-.mt-20 { margin-top: 20px; }
-.mb-10 { margin-bottom: 10px; }
-.mb-20 { margin-bottom: 20px; }
-.full-width { width: 100%; }
-.flex-between { display: flex; justify-content: space-between; align-items: center; }
-
-/* [PENTING] Wadah Iklan Manual - JANGAN DIHAPUS */
-.ad-slot {
-    width: 100%;
-    min-height: 100px; /* Tinggi minimal agar tidak layout shift */
-    background: rgba(0,0,0,0.02); /* Sedikit background biar kelihatan area iklan */
-    margin: 20px 0;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 16px;
-    border: 1px dashed var(--border);
+/* --- HEADER --- */
+.top-bar { 
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 16px 20px; background: var(--bg-body); 
+    position: sticky; top: 0; z-index: 50; 
+    /* Efek blur agar konten di bawahnya samar saat di-scroll */
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
 }
 
-/* Container */
-.app-container { padding: 0 20px; max-width: 500px; margin: 0 auto; } /* Max width diperkecil sedikit agar lebih padat di desktop */
+.user-info h2 { font-size: 1.4rem; margin-top: 2px; font-weight: 800; color: var(--text-main); }
+.icon-btn { 
+    background: var(--bg-card); border: 1px solid var(--border); 
+    width: 38px; height: 38px; border-radius: 12px; 
+    color: var(--text-main); display: grid; place-items: center;
+}
+
+/* --- CARDS --- */
+.app-container { padding: 0 16px; max-width: 100%; } /* Full width di HP */
 .page { display: none; animation: fadeIn 0.3s ease; }
 .page.active { display: block; }
 
-/* --- HEADER (Clean) --- */
-.top-bar { 
-    display: flex; justify-content: space-between; align-items: center; 
-    padding: 20px; background: var(--bg-body); /* Menyatu dengan body */
-    position: sticky; top: 0; z-index: 50; 
-}
-
-.user-info h2 { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text-main); }
-.user-info small { font-size: 0.9rem; }
-
-.icon-btn { 
-    background: var(--bg-card); 
-    border: 1px solid var(--border); 
-    width: 40px; height: 40px; 
-    border-radius: 12px; 
-    color: var(--text-main); 
-    cursor: pointer; 
-    display: grid; place-items: center;
-    transition: 0.2s; 
-    box-shadow: var(--shadow);
-}
-.icon-btn:active { transform: scale(0.95); }
-
-/* --- CARDS (Professional Look) --- */
+/* Kartu Dasar */
 .card { 
-    background: var(--bg-card); 
-    padding: 20px; 
-    border-radius: var(--radius); 
-    box-shadow: var(--shadow); 
-    /* [PENTING] Margin diperbesar ke 30px agar ada celah untuk Auto Ads */
-    margin-bottom: 30px; 
-    border: 1px solid transparent; /* Border transparan untuk dark mode */
+    background: var(--bg-card); padding: 16px; 
+    border-radius: var(--radius); box-shadow: var(--shadow); 
+    margin-bottom: 20px; border: 1px solid transparent;
 }
 [data-theme="dark"] .card { border-color: var(--border); }
 
-/* Hero Section: Kartu Saldo Utama */
+/* KARTU SALDO UTAMA (Perbaikan Layout) */
 .balance-card { 
-    background: var(--gradient-primary); 
-    padding: 25px; 
-    border-radius: 24px; 
-    color: white; 
-    /* [PENTING] Margin diperbesar */
-    margin-bottom: 30px; 
-    box-shadow: 0 15px 30px rgba(0, 97, 242, 0.25); /* Shadow biru */
-    position: relative; 
-    overflow: hidden; 
-}
-/* Pattern hiasan di kartu saldo */
-.balance-card::after {
-    content: ''; position: absolute; top: -50px; right: -50px;
-    width: 150px; height: 150px; background: rgba(255,255,255,0.1);
-    border-radius: 50%;
+    background: var(--gradient-card); 
+    padding: 20px; border-radius: 24px; 
+    color: white; margin-bottom: 24px; 
+    box-shadow: 0 10px 25px rgba(41, 98, 255, 0.3); 
+    position: relative; overflow: visible; /* Agar wallet bisa di-scroll nyaman */
 }
 
-.balance-card h1 { font-size: 2.2rem; margin: 15px 0; font-weight: 800; letter-spacing: -1px; }
+.balance-card h1 { font-size: 2rem; margin: 10px 0 15px 0; font-weight: 700; }
+
 .balance-row { 
-    display: flex; gap: 15px; font-size: 0.9rem; 
+    display: flex; gap: 10px; font-size: 0.85rem; 
     background: rgba(255, 255, 255, 0.15); 
-    padding: 12px 15px; border-radius: 14px; 
-    backdrop-filter: blur(5px); 
-    border: 1px solid rgba(255,255,255,0.2); 
+    padding: 12px; border-radius: 14px; 
 }
-.balance-card .text-green, .balance-card .text-red { color: #fff !important; font-weight: 700; }
+/* Pastikan ikon panah di dalam kartu saldo berwarna putih agar kontras */
+.balance-card .text-green, .balance-card .text-red { color: #fff !important; } 
 
-/* --- QUICK STATS (Clean Grid) --- */
-/* [PENTING] Margin diperbesar */
-.quick-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+/* --- DOMPET (Wallet Scroll - Perbaikan Video) --- */
+/* Kita buat ini di DALAM Balance Card tapi tampilannya seperti 'Chips' */
+.wallet-container-scroll {
+    display: flex; gap: 10px; overflow-x: auto; 
+    padding-bottom: 5px; margin-bottom: 15px;
+    scrollbar-width: none; /* Hide scrollbar Firefox */
+}
+.wallet-container-scroll::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Android */
+
+.wallet-card-mini {
+    background: rgba(255,255,255,0.2); 
+    border: 1px solid rgba(255,255,255,0.3);
+    min-width: 110px; padding: 10px; border-radius: 14px;
+    color: white; flex-shrink: 0; /* JANGAN MENYUSUT */
+    display: flex; flex-direction: column; justify-content: center;
+}
+.wallet-card-mini .icon { 
+    background: rgba(255,255,255,0.3); width: 28px; height: 28px; 
+    border-radius: 8px; display: grid; place-items: center; margin-bottom: 5px;
+}
+.wallet-card-mini small { font-size: 0.7rem; opacity: 0.9; }
+.wallet-card-mini strong { font-size: 0.9rem; white-space: nowrap; }
+
+/* --- STATISTIK (Grid Perbaikan) --- */
+.quick-stats-grid { 
+    display: grid; grid-template-columns: 1fr 1fr; 
+    gap: 12px; margin-bottom: 24px; 
+}
 .stat-card { 
-    background: var(--bg-card); 
-    padding: 15px; 
-    border-radius: 16px; 
-    display: flex; align-items: center; gap: 15px; 
-    box-shadow: var(--shadow); 
-    border: 1px solid var(--border);
-    transition: transform 0.2s;
+    background: var(--bg-card); padding: 14px; 
+    border-radius: 16px; box-shadow: var(--shadow);
+    display: flex; flex-direction: column; /* Ubah ke kolom agar muat di HP kecil */
+    align-items: flex-start; gap: 10px;
+    border-left: 4px solid transparent; /* Reset border lama */
+    position: relative; overflow: hidden;
 }
-.stat-card:active { transform: scale(0.98); }
+/* Indikator warna kecil di pojok */
+.stat-card.border-left-green::after { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--success); }
+.stat-card.border-left-red::after { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--danger); }
 
-/* Ikon di dalam lingkaran (Soft Icon Style) */
 .stat-card i { 
-    width: 40px; height: 40px; 
-    display: grid; place-items: center; 
-    border-radius: 50%; font-size: 1.1rem; 
+    font-size: 1.2rem; padding: 8px; border-radius: 10px;
 }
-.border-left-green i { background: var(--success-bg); color: var(--success); }
-.border-left-red i { background: var(--danger-bg); color: var(--danger); }
+.border-left-green i { color: var(--success); background: var(--success-bg); }
+.border-left-red i { color: var(--danger); background: var(--danger-bg); }
 
-/* --- LIST ITEMS (Flat & Clean) --- */
-.transaction-list, .loan-grid, .goal-list { display: flex; flex-direction: column; gap: 12px; }
+.stat-card div { width: 100%; }
+.stat-card small { font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 2px; }
+.stat-card strong { font-size: 0.95rem; display: block; word-wrap: break-word; } /* Cegah teks kepotong */
 
+/* --- LIST (Daftar Transaksi) --- */
+.transaction-list { display: flex; flex-direction: column; gap: 10px; }
 .list-item { 
-    background: var(--bg-card); 
-    padding: 16px; 
-    border-radius: 16px; 
-    display: flex; justify-content: space-between; align-items: center; 
-    border: 1px solid var(--border); /* Border tipis menggantikan shadow tebal */
-    box-shadow: none; /* Hilangkan shadow agar mata rileks */
-    transition: 0.2s;
+    background: var(--bg-card); padding: 14px; 
+    border-radius: 16px; display: flex; justify-content: space-between; align-items: center; 
+    border: 1px solid var(--border); box-shadow: none; 
 }
-.list-item:active { background-color: var(--bg-input); }
-
-/* Ikon Transaksi (Soft Style) */
 .list-item i { 
-    width: 42px; height: 42px; 
-    border-radius: 12px; 
-    display: grid; place-items: center; 
-    font-size: 1.1rem; margin-right: 5px;
+    font-size: 1.1rem; width: 40px; height: 40px; 
+    display: grid; place-items: center; border-radius: 12px; margin-right: 10px;
 }
 .list-item.income i { color: var(--success); background: var(--success-bg); }
 .list-item.expense i { color: var(--danger); background: var(--danger-bg); }
 
-/* --- WALLETS (Horizontal Scroll) --- */
-.wallet-container-scroll {
-    overflow-x: auto; padding-bottom: 10px; margin: 0 -20px 20px -20px; padding-left: 20px;
-    scrollbar-width: none; -ms-overflow-style: none;
-}
-.wallet-container-scroll::-webkit-scrollbar { display: none; }
-.wallet-list-row { display: flex; gap: 12px; width: max-content; padding-right: 20px; }
-
-.wallet-card-mini {
-    background: rgba(255,255,255,0.15); /* Transparan di atas kartu biru */
-    padding: 15px; border-radius: 16px;
-    min-width: 130px;
-    border: 1px solid rgba(255,255,255,0.2);
-    color: white; display: flex; flex-direction: column;
-}
-.wallet-card-mini small { color: rgba(255,255,255,0.8); font-size: 0.75rem; }
-.wallet-card-mini strong { font-size: 1rem; margin-top: 5px; color: white; }
-.wallet-card-mini .icon { 
-    width: 32px; height: 32px; background: rgba(255,255,255,0.2); 
-    border-radius: 8px; display: grid; place-items: center; margin-bottom: 8px; color: white;
+/* --- WADAH IKLAN (Aman) --- */
+.ad-slot {
+    width: 100%; min-height: 90px;
+    background: var(--bg-input); /* Abu-abu samar biar gak aneh kalau kosong */
+    margin: 20px 0; border-radius: 12px;
+    display: flex; justify-content: center; align-items: center;
+    border: 1px dashed var(--border);
 }
 
-/* --- FORMS & BUTTONS --- */
-input, select { 
-    width: 100%; padding: 14px 16px; 
-    border: 1px solid var(--border); 
-    border-radius: 14px; 
-    background: var(--bg-input); 
-    color: var(--text-main); 
-    font-size: 0.95rem; margin-bottom: 15px; 
-    transition: 0.3s; font-weight: 500; 
-}
-input:focus, select:focus { 
-    outline: none; border-color: var(--primary); 
-    background: var(--bg-card); 
-    box-shadow: 0 0 0 4px var(--primary-light); /* Efek fokus modern */
-}
-.input-lg { font-size: 1.5rem; font-weight: 700; padding: 20px; text-align: center; color: var(--primary); letter-spacing: -0.5px; }
-
-.btn-primary { 
-    background: var(--primary); 
-    color: white; padding: 16px; 
-    border: none; border-radius: 14px; 
-    font-weight: 600; cursor: pointer; font-size: 1rem; 
-    box-shadow: 0 4px 15px rgba(0, 86, 179, 0.3); 
-    transition: 0.2s; width: 100%;
-}
-.btn-primary:active { transform: scale(0.98); box-shadow: none; }
-
-.btn-danger { background: var(--danger); color: white; padding: 14px; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; width: 100%; }
-.btn-xs { padding: 8px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); font-size: 0.8rem; font-weight: 600; }
-
-/* --- TABS (Segmented Control Style) --- */
-.tabs { 
-    display: flex; background: var(--bg-input); 
-    padding: 4px; border-radius: 16px; margin-bottom: 25px; 
-}
-.tab { 
-    flex: 1; padding: 10px; border: none; 
-    background: transparent; border-radius: 12px; 
-    color: var(--text-muted); cursor: pointer; 
-    font-weight: 600; font-size: 0.9rem; transition: 0.3s; 
-}
-.tab.active { 
-    background: var(--bg-card); color: var(--text-main); 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
-}
-
-/* --- BOTTOM NAV (Minimalist) --- */
+/* --- NAVIGASI BAWAH (Android Style) --- */
 .bottom-nav { 
     position: fixed; bottom: 0; width: 100%; height: var(--nav-height); 
-    background: var(--bg-card); 
+    background: var(--bg-card); z-index: 90;
     display: grid; grid-template-columns: repeat(5, 1fr); 
-    border-top: 1px solid var(--border); 
-    z-index: 90; padding-bottom: 5px; /* Untuk iPhone X+ */
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
 }
 .nav-item { 
     display: flex; flex-direction: column; align-items: center; justify-content: center; 
     color: var(--text-muted); text-decoration: none; 
-    font-size: 0.7rem; gap: 4px; font-weight: 500; transition: 0.2s; 
+    font-size: 0.7rem; gap: 4px; 
 }
-.nav-item i { font-size: 1.3rem; margin-bottom: 2px; }
+.nav-item i { font-size: 1.2rem; margin-bottom: 2px; transition: 0.2s; }
 .nav-item.active { color: var(--primary); }
 .nav-item.active i { transform: translateY(-2px); }
 
-/* --- FAB (Floating Action Button) --- */
-.fab-wrapper { position: fixed; bottom: 90px; right: 20px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
-.fab-main { 
-    width: 60px; height: 60px; border-radius: 50%; 
-    background: var(--primary); color: white; border: none; 
-    font-size: 1.5rem; box-shadow: 0 8px 20px rgba(0, 86, 179, 0.4); 
-    cursor: pointer; display: grid; place-items: center; transition: 0.2s;
+/* --- TOMBOL & INPUT --- */
+.btn-primary { 
+    background: var(--primary); color: white; padding: 14px; 
+    border-radius: 12px; font-weight: 600; border: none; width: 100%;
+    box-shadow: 0 4px 12px rgba(41, 98, 255, 0.3);
 }
-.fab-main:active { transform: scale(0.9); }
-.fab-menu { display: none; flex-direction: column; gap: 12px; align-items: flex-end; margin-bottom: 5px; }
-.fab-menu.active { display: flex; animation: slideUp 0.2s; }
-.fab-menu button { 
-    width: 50px; height: 50px; border-radius: 50%; border: 1px solid var(--border);
-    background: var(--bg-card); color: var(--text-main); 
-    box-shadow: var(--shadow); cursor: pointer; position: relative; 
-    display: grid; place-items: center; font-size: 1.1rem; 
-}
-.fab-menu button::after { 
-    content: attr(data-label); position: absolute; right: 60px; top: 12px; 
-    background: var(--text-main); color: white; padding: 4px 10px; 
-    border-radius: 6px; font-size: 0.8rem; white-space: nowrap; 
-}
+.btn-danger { background: var(--danger); color: white; padding: 14px; border-radius: 12px; border: none; width: 100%; font-weight: 600;}
+.btn-xs { padding: 6px 12px; font-size: 0.75rem; border-radius: 8px; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); }
 
-/* --- MODALS (Clean Popup) --- */
-.modal-overlay { 
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-    background: rgba(0,0,0,0.5); /* Gelap tapi tidak blur berlebih */
-    backdrop-filter: blur(3px); z-index: 200; 
-    display: none; align-items: center; justify-content: center; padding: 20px; 
+input, select { 
+    width: 100%; padding: 12px 14px; border-radius: 12px; 
+    border: 1px solid var(--border); background: var(--bg-input); 
+    color: var(--text-main); font-size: 1rem; margin-bottom: 15px;
 }
+input:focus { border-color: var(--primary); outline: none; background: var(--bg-card); }
+
+/* --- FAB (Floating Button) --- */
+.fab-wrapper { position: fixed; bottom: 80px; right: 16px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+.fab-main { width: 56px; height: 56px; border-radius: 16px; background: var(--primary); color: white; border: none; font-size: 1.5rem; box-shadow: 0 4px 12px rgba(41, 98, 255, 0.4); display: grid; place-items: center; }
+.fab-menu button { width: 48px; height: 48px; border-radius: 12px; background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); display: grid; place-items: center; box-shadow: var(--shadow); }
+.fab-menu button::after { content: attr(data-label); position: absolute; right: 60px; background: var(--bg-card); padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; white-space: nowrap; box-shadow: var(--shadow); border: 1px solid var(--border); }
+
+/* --- MODALS & HELPERS --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: center; justify-content: center; padding: 16px; }
 .modal-overlay.active { display: flex; animation: fadeIn 0.2s; }
-.modal-card { 
-    background: var(--bg-card); width: 100%; max-width: 400px; 
-    border-radius: 24px; padding: 25px; 
-    max-height: 90vh; overflow-y: auto; 
-    box-shadow: 0 20px 50px rgba(0,0,0,0.2); 
-}
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-.modal-header h3 { font-size: 1.2rem; font-weight: 700; }
+.modal-card { background: var(--bg-card); width: 100%; border-radius: 20px; padding: 24px; max-height: 85vh; overflow-y: auto; }
+.modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center; }
 
-/* Type Selector di Modal */
-.type-selector { display: flex; gap: 8px; margin-bottom: 20px; background: var(--bg-input); padding: 4px; border-radius: 14px; }
-.type-btn { flex: 1; padding: 10px; text-align: center; border-radius: 10px; cursor: pointer; font-weight: 600; color: var(--text-muted); transition: 0.2s; font-size: 0.9rem; }
-input:checked + .type-btn { background: var(--bg-card); color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-input:checked + .type-btn.income { color: var(--success); border: 1px solid var(--success-bg); }
-input:checked + .type-btn.expense { color: var(--danger); border: 1px solid var(--danger-bg); }
+/* Type Selector */
+.type-selector { display: flex; gap: 8px; background: var(--bg-input); padding: 4px; border-radius: 12px; margin-bottom: 15px; }
+.type-btn { flex: 1; padding: 8px; text-align: center; border-radius: 8px; font-weight: 600; color: var(--text-muted); font-size: 0.9rem; }
+input:checked + .type-btn { background: var(--bg-card); color: var(--text-main); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+input:checked + .type-btn.income { color: var(--success); }
+input:checked + .type-btn.expense { color: var(--danger); }
 
-/* Goal Progress */
-.goal-progress-bg { background: var(--bg-input); height: 8px; border-radius: 4px; margin-top: 12px; overflow: hidden; }
-.goal-progress-bar { height: 100%; background: var(--primary); border-radius: 4px; transition: width 0.5s ease; }
+/* Chart */
+.chart-container { position: relative; height: 220px; width: 100%; }
 
-/* Settings Item */
-.setting-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); }
-.setting-item:last-child { border-bottom: none; }
-.setting-item span { font-weight: 500; }
-
-/* Chart Container */
-.chart-container { position: relative; height: 250px; width: 100%; margin-top: 10px; }
-
-/* Badge Status */
-.badge-gray { background: var(--bg-input); color: var(--text-muted); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+/* Utilities Text */
+.badge-gray { background: var(--bg-input); color: var(--text-muted); padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; }
 
 /* Toast */
-#toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 350px; }
-.toast { padding: 14px 20px; border-radius: 50px; color: white; font-size: 0.9rem; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 10px; font-weight: 500; justify-content: center; }
-.toast.success { background: #1e293b; } /* Toast hitam elegan */
+#toast-container { position: fixed; top: 40px; left: 50%; transform: translateX(-50%); z-index: 10000; width: 90%; max-width: 300px; }
+.toast { padding: 12px 20px; border-radius: 50px; background: #323232; color: white; font-size: 0.9rem; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); margin-bottom: 10px; }
 .toast.error { background: var(--danger); }
 
-/* Animation Keyframes */
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-
-/* Loading Overlay */
+/* Loading & Anim */
 #loading-overlay { background: var(--bg-body) !important; }
 .loader { border: 3px solid var(--border) !important; border-top: 3px solid var(--primary) !important; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-/* Lang Option */
-.lang-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); cursor: pointer; border-radius: 12px; }
-.lang-item:hover { background-color: var(--bg-input); }
+/* Lang/Settings */
+.setting-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.lang-item { padding: 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
 .check-icon { display: none; color: var(--primary); }
 .lang-item.active .check-icon { display: block; }
-.lang-item.active { background-color: var(--primary-light); color: var(--primary); font-weight: 600; }
