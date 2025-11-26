@@ -670,26 +670,9 @@
         window.firebaseLib = { initializeApp, getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, getFirestore, doc, getDoc, setDoc };
     </script>
 
-    
+    <script src="sw-register.js"></script>
     <script type="module" src="js/main.js"></script>
-    <script>
-    // SCRIPT DETEKTIF ERROR
-    // 1. Paksa matikan loading setelah 5 detik
-    setTimeout(() => {
-        const overlay = document.getElementById('loading-overlay');
-        if(overlay && overlay.style.display !== 'none') {
-            overlay.style.display = 'none';
-            alert("Waktu habis! Aplikasi macet. Kemungkinan ada Error di Script JS.");
-        }
-    }, 5000);
-
-    // 2. Tangkap Error Layar
-    window.onerror = function(message, source, lineno, colno, error) {
-        alert("ERROR TERDETEKSI:\n" + message + "\nDi file: " + source + "\nBaris: " + lineno);
-        document.getElementById('loading-overlay').style.display = 'none';
-    };
-</script>
-
+    
     
 </body>
 </html>
