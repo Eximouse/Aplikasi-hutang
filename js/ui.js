@@ -90,22 +90,22 @@ export function closeModal(id) {
 function resetInputs(containerId) {
     const container = document.getElementById(containerId);
     if(!container) return;
-    container.querySelectorAll('input').forEach(input => input.value = '');
+    
+    // 1. Kosongkan semua input teks
+    container.querySelectorAll('input:not([type="radio"]):not([type="hidden"])').forEach(input => input.value = '');
+    
+    // 2. Reset Tanggal ke Hari Ini
     const today = new Date().toISOString().split('T')[0];
     const dateInput = container.querySelector('input[type="date"]');
     if(dateInput) dateInput.value = today;
-}
 
-function renderEmptyState(containerId, messageKey, iconClass = 'fa-clipboard-list') {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    if (container.children.length === 0) {
-        container.innerHTML = `
-            <div style="text-align:center; padding: 40px 20px; opacity:0.6; animation: fadeIn 0.5s;">
-                <i class="fas ${iconClass}" style="font-size:3rem; margin-bottom:15px; color:var(--text-muted);"></i>
-                <p class="text-muted" style="font-size:0.95rem;">${t(messageKey, data.settings.lang)}</p>
-            </div>
-        `;
+    // 3. [PERBAIKAN PENTING] Reset Radio Button ke "Pengeluaran" (Default)
+    if(containerId === 'modal-budget') {
+        const defaultRadio = document.getElementById('t-out');
+        if(defaultRadio) defaultRadio.checked = true;
+        
+        // Hapus ID Rahasia (biar gak jadi mode edit)
+        document.getElementById('b-id').value = ''; 
     }
 }
 
@@ -280,7 +280,10 @@ export function editBudget(id) {
     if (item.type === 'income') {
         document.getElementById('t-in').checked = true;
     } else {
+        document.getElementById('t-out').checked = false;
+    } else {
         document.getElementById('t-out').checked = true;
+        document.getElementById('t-in').checked = false;
     }
 
     openModal('modal-budget');
@@ -352,8 +355,10 @@ export function renderTrendChart() {
 
 // [UPDATE] Fungsi Simpan Budget (Bisa Baru, Bisa Edit)
 export function saveBudget() {
-    const id = document.getElementById('b-id').value; // Cek ID Rahasia
-    const type = document.querySelector('input[name="b-type"]:checked').value;
+    const id = document.getElementById('b-id').value; 
+    // Cek ID Rahasia
+        const typeRadio = document.querySelector('input[name="b-type"]:checked');
+        const type = typeRadio ? typeRadio.value : 'expense';
     const amountRaw = document.getElementById('b-amount').value;
     const amount = parseMoney(amountRaw);
     const desc = document.getElementById('b-desc').value;
