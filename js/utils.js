@@ -1,11 +1,8 @@
 // js/utils.js
 import { RESOURCES } from './resources.js';
 
-// Helper Terjemahan
-export function t(key, lang) {
-    // Kita butuh lang dipass dari luar (karena data ada di db.js)
-    const currentLang = lang || 'id';
-    return RESOURCES[currentLang][key] || key;
+export function t(key, lang = 'id') {
+    return RESOURCES[lang][key] || key;
 }
 
 export function parseMoney(str) {
@@ -30,7 +27,7 @@ export function fmtDate(dateString, lang = 'id') {
     return formatted;
 }
 
-// Inisialisasi Input Uang (Auto titik)
+// [PENTING] Menerima parameter callbackCalc
 export function initMoneyInputs(callbackCalc) {
     const inputs = document.querySelectorAll('.money-input');
     inputs.forEach(input => {
@@ -43,7 +40,8 @@ export function initMoneyInputs(callbackCalc) {
             } else {
                 this.value = '';
             }
-            // Panggil callback jika ada (untuk kalkulator pinjaman)
+            
+            // Panggil callback jika input pinjaman berubah
             if(callbackCalc && (this.id === 'l-principal' || this.id === 'l-rate' || this.id === 'l-tenor')) {
                 callbackCalc();
             }
