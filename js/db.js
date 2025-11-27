@@ -1,8 +1,5 @@
 // js/db.js
 import { APP_KEY } from './config.js';
-//Circular dependency? Hati-hati. 
-// Sebaiknya showToast dipindah ke utils atau ui.js jangan import db.js dulu.
-// Untuk amannya, kita pakai console.error dulu di sini, atau oper fungsi showToast.
 
 // State Data Utama
 export let data = {
@@ -41,7 +38,7 @@ export async function loadAppData(currentUser, db) {
             }
         }
         
-        // Validasi Struktur Data
+        // Validasi Struktur Data agar tidak error null
         if (!data.bills) data.bills = [];
         if (!data.wallets || data.wallets.length === 0) {
              data.wallets = [{ id: 1, name: 'Tunai', type: 'cash', balance: 0 }];
@@ -57,10 +54,8 @@ export async function loadAppData(currentUser, db) {
 
 // Save Data Logic
 export async function saveAppData(currentUser, db) {
-    // 1. Simpan Local
     localStorage.setItem(APP_KEY, JSON.stringify(data));
 
-    // 2. Simpan Cloud
     if (currentUser && window.firebaseLib && db) {
         const { doc, setDoc } = window.firebaseLib;
         try {
@@ -72,35 +67,23 @@ export async function saveAppData(currentUser, db) {
     }
 }
 
-// [BARU] Real-time Listener (Level 3 Feature)
+// [PENTING] Real-time Listener (Ini yang dicari main.js)
 export function setupRealtimeListener(currentUser, db, onUpdateCallback) {
     if (!currentUser || !window.firebaseLib) return;
     
     const { doc, onSnapshot } = window.firebaseLib;
     const docRef = doc(db, "users", currentUser.uid);
 
-    // Fungsi onSnapshot ini akan berjalan TERUS MENERUS di background
-    // Setiap ada perubahan di server (cloud), fungsi ini otomatis jalan.
     const unsubscribe = onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
             const cloudData = docSnap.data();
-            
-            // Update variabel 'data' lokal dengan data terbaru dari cloud
-            // Kita gunakan Object.assign agar referensi variabel tidak putus
-            Object.assign(data, cloudData);
-            
-            console.log("⚡ Real-time update received!");
-            
-            // Panggil fungsi update UI agar tampilan berubah otomatis
-            if (onUpdateCallback) onUpdateCallback();
-            
-            // Update backup lokal juga biar sinkron
-            localStorage.setItem(APP_KEY, JSON.stringify(data));
+            Object.assign(data, cloudData); // Update data lokal
+            localStorage.setItem(APP_KEY, JSON.stringify(data)); // Backup lokal
+            if (onUpdateCallback) onUpdateCallback(); // Refresh UI
         }
     }, (error) => {
         console.error("Real-time sync error:", error);
     });
 
-    // Kembalikan fungsi 'unsubscribe' agar bisa dimatikan saat logout
     return unsubscribe;
 }
