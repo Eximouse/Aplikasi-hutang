@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            alert("ERROR:\n" + message + "\nFile: " + source + "\nBaris: " + lineno);
+            // Matikan loading paksa biar tidak stuck
+            const overlay = document.getElementById('loading-overlay');
+            if(overlay) overlay.style.display = 'none';
+        };
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#2b2d42">
