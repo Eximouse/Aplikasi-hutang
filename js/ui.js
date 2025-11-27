@@ -1203,3 +1203,22 @@ export function refreshAds(containerId) {
         }
     });
 }
+// [BARU] Deteksi Koneksi Internet
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+function updateOnlineStatus() {
+    const status = navigator.onLine ? "online" : "offline";
+    const container = document.getElementById('toast-container');
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${status === 'online' ? 'success' : 'error'}`;
+    toast.style.background = status === 'online' ? '#10b981' : '#64748b'; // Hijau / Abu
+    
+    const icon = status === 'online' ? 'fa-wifi' : 'fa-plane';
+    const text = status === 'online' ? 'Kembali Online' : 'Mode Offline';
+    
+    toast.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}

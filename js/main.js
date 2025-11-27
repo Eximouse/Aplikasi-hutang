@@ -70,6 +70,16 @@ window.addEventListener('load', () => {
         const app = initializeApp(firebaseConfig);
         auth = getAuth(app);
         db = getFirestore(app);
+     
+       // [BARU] AKTIFKAN OFFLINE PERSISTENCE
+        const { enableIndexedDbPersistence } = window.firebaseLib;
+        enableIndexedDbPersistence(db).catch((err) => {
+            if (err.code == 'failed-precondition') {
+                console.log('Persistence failed: Multiple tabs open');
+            } else if (err.code == 'unimplemented') {
+                console.log('Persistence not supported by browser');
+            }
+        });
         
         // Simpan instance DB ke window agar bisa diakses UI.js saat save
         window.dbInstance = db; 

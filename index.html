@@ -598,13 +598,12 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         // [UPDATE] Tambahkan onSnapshot di sini
-        import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         
         // [UPDATE] Masukkan onSnapshot ke window.firebaseLib
-        window.firebaseLib = { initializeApp, getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, getFirestore, doc, getDoc, setDoc, onSnapshot };
+        window.firebaseLib = { initializeApp, getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, getFirestore, doc, getDoc, setDoc, onSnapshot, enableIndexedDbPersistence };
     </script>
     
-
     <script src="sw-register.js"></script>
 
     <script type="module" src="js/main.js"></script>
