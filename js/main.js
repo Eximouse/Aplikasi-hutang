@@ -1,15 +1,15 @@
 // js/main.js
 import { firebaseConfig } from './config.js';
-import { data, loadAppData, saveAppData, setupRealtimeListener } from './db.js';
+import { data, loadAppData, saveAppData } from './db.js';
 import { setupAuthListeners, logoutUser } from './auth.js';
 import * as UI from './ui.js'; 
 import { initMoneyInputs } from './utils.js';
+import { setupRealtimeListener } from './db.js'; // Import Realtime Listener
 
-// Inisialisasi Event Listener UI (Tombol Konfirmasi)
+// Inisialisasi Event Listener UI
 UI.setupConfirmListener();
 
 // --- BRIDGE KE WINDOW (Agar onclick di HTML berfungsi) ---
-// Navigasi & Modal
 window.navTo = UI.navTo;
 window.switchTab = UI.switchTab;
 window.openModal = UI.openModal;
@@ -23,13 +23,18 @@ window.addGoal = UI.addGoal;
 window.addEmergencyFund = UI.addEmergencyFund;
 window.saveEmergencyProfile = UI.saveEmergencyProfile;
 
-// Fitur Aksi (Bayar, Hapus, Detail)
+// Fitur Aksi (Bayar, Hapus, Detail, Edit, PDF)
 window.payBill = UI.payBill;
 window.payLoan = UI.payLoan;
-window.editBudget = UI.editBudget;
-window.showLoanDetail = UI.showLoanDetail; // <-- INI YANG TADI HILANG
-window.deletePayment = UI.deletePayment;   // <-- INI JUGA PENTING
+window.showLoanDetail = UI.showLoanDetail;
+window.deletePayment = UI.deletePayment;
 window.deleteItem = UI.deleteItem;
+
+// [BARU DITAMBAHKAN] Jembatan untuk Pencarian & Edit & PDF
+window.renderBudget = UI.renderBudget; // <-- PENTING UNTUK PENCARIAN
+window.editBudget = UI.editBudget;     // <-- PENTING UNTUK EDIT
+window.generatePDF = UI.generatePDF;   // <-- PENTING UNTUK PDF
+// ---------------------------------------------------------
 
 // Fitur Sistem & Tampilan
 window.toggleFab = UI.toggleFab;
@@ -39,29 +44,25 @@ window.pressPin = UI.pressPin;
 window.resetData = UI.resetData;
 window.downloadBackup = UI.downloadBackup;
 window.restoreBackup = UI.restoreBackup;
-window.generatePDF = UI.generatePDF;
 window.openLangModal = UI.openLangModal;
 window.selectLang = UI.selectLang;
-window.logoutUser = () => { logoutUser(auth);
-if (unsubscribeListener) unsubscribeListener();
+window.logoutUser = () => {
+    if (unsubscribeListener) unsubscribeListener();
+    logoutUser(auth);
 };
 
-// Fungsi Kalkulator Investasi
+// Fungsi Kalkulator
 window.calculateCompound = UI.calculateCompound; 
 window.toggleDcaInput = UI.toggleDcaInput;
 window.resetCalc = UI.resetCalc;
 window.showCalcDetail = UI.showCalcDetail;
-
-// Fungsi Kalkulator Pinjaman (Preview saat ngetik)
 window.calcLoanPreview = UI.calcLoanPreview;
 
-// Variabel Global Auth & DB
 let auth, db;
 let unsubscribeListener;
 
-// --- LOGIKA UTAMA SAAT APLIKASI DIMUAT ---
+// --- LOGIKA UTAMA ---
 window.addEventListener('load', () => {
-    // Cek apakah Library Firebase berhasil dimuat dari index.html?
     if(window.firebaseLib) {
         const { initializeApp, getAuth, getFirestore, onAuthStateChanged } = window.firebaseLib;
         
@@ -69,56 +70,47 @@ window.addEventListener('load', () => {
         auth = getAuth(app);
         db = getFirestore(app);
         
-        // Simpan instance DB ke window agar bisa diakses UI.js saat save
         window.dbInstance = db; 
 
-        // Pasang listener tombol login
         setupAuthListeners(auth);
 
-        // Cek Status Login Pengguna
         onAuthStateChanged(auth, (user) => {
-            // Matikan Loading Overlay
             const loadingOverlay = document.getElementById('loading-overlay');
             if(loadingOverlay) loadingOverlay.style.display = 'none';
 
             if (user) {
-                // KASUS: SUDAH LOGIN
                 window.currentUser = user;
                 document.getElementById('login-screen').style.display = 'none';
-                startApp(); // Jalankan aplikasi
+                startApp();
             } else {
-                // KASUS: BELUM LOGIN
                 document.getElementById('login-screen').style.display = 'flex';
                 document.getElementById('login-status').innerText = "";
             }
         });
     } else {
-        // Error Handling jika Firebase Library gagal load
-        alert("FATAL: Library Firebase TIDAK DITEMUKAN!\nCek koneksi internet atau file index.html Anda.");
+        alert("FATAL: Library Firebase TIDAK DITEMUKAN!\nCek index.html Anda.");
         const loadingOverlay = document.getElementById('loading-overlay');
         if(loadingOverlay) loadingOverlay.style.display = 'none';
     }
 });
 
-// --- FUNGSI START APLIKASI ---
 async function startApp() {
     // 1. Load Data Awal
     await loadAppData(window.currentUser, db);
     
-    // 2. [LEVEL 3] Aktifkan Real-time Listener
-    // PERBAIKAN: Hapus 'data.' di depan setupRealtimeListener
+    // 2. Aktifkan Real-time Listener
     unsubscribeListener = setupRealtimeListener(window.currentUser, db, () => {
-        // Refresh SEMUA Tampilan saat data berubah
+        // Refresh UI saat data berubah di cloud
         UI.renderWallets();
         UI.renderBills();
-        UI.renderBudget();
+        UI.renderBudget(); // Ini akan otomatis memuat ulang list sesuai pencarian
         UI.renderLoans();
         UI.renderGoals();
         UI.renderEmergency();
         UI.updateUI();
     });
     
-    // 3. Inisialisasi Komponen UI
+    // 3. Inisialisasi UI
     UI.initTheme();
     UI.checkPinLock();
     initMoneyInputs(UI.calcLoanPreview); 
@@ -130,8 +122,9 @@ async function startApp() {
     UI.renderLoans();
     UI.renderGoals();
     UI.renderEmergency();
-    UI.updateUI(); 
+    UI.updateUI(); // Termasuk renderTrendChart
 
+    // 5. Panggil Iklan
     setTimeout(() => {
         if (typeof UI.refreshAds === 'function') {
             UI.refreshAds('page-home');

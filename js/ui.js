@@ -147,13 +147,25 @@ export function renderWallets() {
     document.getElementById('main-balance').textContent = fmtMoney(globalTotal);
 }
 
-// --- FEATURE: BUDGET ---
+// [UPDATE] Render Budget dengan Fitur Pencarian
 export function renderBudget() {
     const list = document.getElementById('budget-list');
+    // Ambil kata kunci pencarian (jika ada), ubah ke huruf kecil
+    const searchInput = document.getElementById('budget-search');
+    const keyword = searchInput ? searchInput.value.toLowerCase() : "";
+
+    if(!list) return;
     list.innerHTML = '';
+    
     let income = 0, expense = 0;
 
-    data.budget.forEach(b => {
+    // Filter data dulu sebelum di-loop
+    const filteredData = data.budget.filter(b => {
+        return b.desc.toLowerCase().includes(keyword);
+    });
+
+    filteredData.forEach(b => {
+        // Hitung total hanya dari data yang tampil (Filtered Total)
         if (b.type === 'income') income += b.amount; else expense += b.amount;
         
         let walletName = 'Dompet';
@@ -167,6 +179,10 @@ export function renderBudget() {
 
         const el = document.createElement('div');
         el.className = `list-item ${b.type}`;
+        
+        // Tambahkan animasi fade-in biar halus saat mencari
+        el.style.animation = "fadeIn 0.3s ease";
+        
         el.innerHTML = `
             <div style="display:flex; align-items:center; gap:15px;">
                 <i class="fas ${b.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
@@ -175,7 +191,7 @@ export function renderBudget() {
                     <small class="text-muted">${fmtDate(b.date, data.settings.lang)}</small>
                 </div>
             </div>
-                        <div style="text-align:right">
+            <div style="text-align:right">
                 <strong class="${b.type === 'income' ? 'text-green' : 'text-red'}">
                     ${b.type === 'income' ? '+' : '-'} ${fmtMoney(b.amount)}
                 </strong>
@@ -185,28 +201,54 @@ export function renderBudget() {
                     <i class="fas fa-trash text-muted" onclick="deleteItem('budget', ${b.id})" style="font-size:0.8rem; cursor:pointer;"></i>
                 </div>
             </div>
-
         `;
         list.appendChild(el);
     });
     
+    // Update Angka Header sesuai hasil pencarian
     document.getElementById('main-income').textContent = fmtMoney(income);
     document.getElementById('main-expense').textContent = fmtMoney(expense);
-    
-    // Render Chart
-    const ctx = document.getElementById('mainChart').getContext('2d');
+  
+    // Update Grafik agar sesuai hasil pencarian
+    if (typeof renderChart === "function") {
+        renderChart(income, expense);
+    }
+
+    // Cek jika hasil pencarian kosong
+    if(filteredData.length === 0) {
+        list.innerHTML = `
+            <div style="text-align:center; padding: 30px; opacity:0.5;">
+                <i class="fas fa-search" style="font-size:2rem; margin-bottom:10px;"></i>
+                <p>Tidak ditemukan transaksi "${keyword}"</p>
+            </div>
+        `;
+    }
+} // <--- INI TUTUP KURUNG renderBudget (PENTING!)
+
+
+// --- FUNGSI BARU: Render Chart (Dipisah biar rapi) ---
+export function renderChart(income, expense) {
+    const ctx = document.getElementById('mainChart');
+    if(!ctx) return; // Safety check jika elemen chart gak ada
+
+    // Hapus chart lama jika ada (biar gak numpuk)
     if(chartInstance) chartInstance.destroy();
     
-    if(income === 0 && expense === 0) { income = 1; expense = 0; }
+    // Tangani jika data kosong (biar grafik tetap muncul walau 0)
+    if(income === 0 && expense === 0) { 
+        income = 1; 
+        expense = 0; 
+    }
+
     const labels = [t('lbl_income_type', data.settings.lang), t('lbl_expense_type', data.settings.lang)]; 
 
-    chartInstance = new Chart(ctx, {
+    chartInstance = new Chart(ctx.getContext('2d'), {
         type: 'doughnut',
         data: {
             labels: labels,
             datasets: [{
                 data: [income, expense],
-                backgroundColor: ['#4481eb', '#fc5c7d'],
+                backgroundColor: ['#4481eb', '#fc5c7d'], // Warna Biru & Merah
                 borderWidth: 0,
                 hoverOffset: 4
             }]
@@ -218,7 +260,6 @@ export function renderBudget() {
             }
         }
     });
-    renderEmptyState('budget-list', 'msg_empty_trans');
 }
 
 // [BARU] Fungsi Buka Modal Edit
