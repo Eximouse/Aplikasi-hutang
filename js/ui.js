@@ -901,7 +901,7 @@ export function setupConfirmListener() {
     }
 }
 
-function showConfirmDialog(message, actionCallback) {
+export function showConfirmDialog(message, actionCallback) {
     document.getElementById('confirm-msg').innerText = message;
     document.getElementById('confirm-title').innerText = t('lbl_confirm_title', data.settings.lang);
     document.getElementById('btn-conf-cancel').innerText = t('btn_cancel', data.settings.lang);
