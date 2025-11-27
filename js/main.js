@@ -26,6 +26,7 @@ window.saveEmergencyProfile = UI.saveEmergencyProfile;
 // Fitur Aksi (Bayar, Hapus, Detail)
 window.payBill = UI.payBill;
 window.payLoan = UI.payLoan;
+window.editBudget = UI.editBudget;
 window.showLoanDetail = UI.showLoanDetail; // <-- INI YANG TADI HILANG
 window.deletePayment = UI.deletePayment;   // <-- INI JUGA PENTING
 window.deleteItem = UI.deleteItem;

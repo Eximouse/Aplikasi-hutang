@@ -175,12 +175,17 @@ export function renderBudget() {
                     <small class="text-muted">${fmtDate(b.date, data.settings.lang)}</small>
                 </div>
             </div>
-            <div style="text-align:right">
+                        <div style="text-align:right">
                 <strong class="${b.type === 'income' ? 'text-green' : 'text-red'}">
                     ${b.type === 'income' ? '+' : '-'} ${fmtMoney(b.amount)}
                 </strong>
-                <br><i class="fas fa-trash text-muted" onclick="deleteItem('budget', ${b.id})" style="font-size:0.8rem; cursor:pointer; margin-top:5px;"></i>
+                <br>
+                <div style="margin-top:5px; display:flex; gap:10px; justify-content:flex-end;">
+                    <i class="fas fa-pen text-primary" onclick="editBudget(${b.id})" style="font-size:0.8rem; cursor:pointer;"></i>
+                    <i class="fas fa-trash text-muted" onclick="deleteItem('budget', ${b.id})" style="font-size:0.8rem; cursor:pointer;"></i>
+                </div>
             </div>
+
         `;
         list.appendChild(el);
     });
@@ -214,6 +219,30 @@ export function renderBudget() {
         }
     });
     renderEmptyState('budget-list', 'msg_empty_trans');
+}
+
+// [BARU] Fungsi Buka Modal Edit
+export function editBudget(id) {
+    const item = data.budget.find(b => b.id === id);
+    if (!item) return;
+
+    // Isi form dengan data lama
+    document.getElementById('b-id').value = item.id; // Isi ID Rahasia
+    document.getElementById('b-amount').value = item.amount.toLocaleString('id-ID');
+    document.getElementById('b-desc').value = item.desc;
+    document.getElementById('b-date').value = item.date;
+    
+    // Set Wallet & Type
+    if(item.walletId) document.getElementById('b-wallet').value = item.walletId;
+    
+    // Set Radio Button (Pemasukan/Pengeluaran)
+    if (item.type === 'income') {
+        document.getElementById('t-in').checked = true;
+    } else {
+        document.getElementById('t-out').checked = true;
+    }
+
+    openModal('modal-budget');
 }
 
 // [BARU] Fungsi Render Grafik Tren Pengeluaran
@@ -280,7 +309,9 @@ export function renderTrendChart() {
     });
 }
 
+// [UPDATE] Fungsi Simpan Budget (Bisa Baru, Bisa Edit)
 export function saveBudget() {
+    const id = document.getElementById('b-id').value; // Cek ID Rahasia
     const type = document.querySelector('input[name="b-type"]:checked').value;
     const amountRaw = document.getElementById('b-amount').value;
     const amount = parseMoney(amountRaw);
@@ -290,18 +321,50 @@ export function saveBudget() {
 
     if (!amount || !desc) return showToast(t('msg_complete_data', data.settings.lang), 'error');
 
-    const wallet = data.wallets.find(w => w.id === walletId);
-    if (wallet) {
-        if (type === 'income') wallet.balance += amount;
-        else wallet.balance -= amount;
-    }
+    // --- LOGIKA EDIT ---
+    if (id) {
+        // 1. Cari Data Lama
+        const oldItem = data.budget.find(b => b.id == id);
+        if (oldItem) {
+            // 2. KEMBALIKAN SALDO LAMA (Reverse)
+            const oldWallet = data.wallets.find(w => w.id === oldItem.walletId);
+            if (oldWallet) {
+                if (oldItem.type === 'income') oldWallet.balance -= oldItem.amount;
+                else oldWallet.balance += oldItem.amount;
+            }
 
-    data.budget.unshift({ id: Date.now(), type, amount, desc, date, walletId });
+            // 3. UPDATE DATA
+            oldItem.type = type;
+            oldItem.amount = amount;
+            oldItem.desc = desc;
+            oldItem.date = date;
+            oldItem.walletId = walletId;
+
+            // 4. POTONG SALDO BARU
+            const newWallet = data.wallets.find(w => w.id === walletId);
+            if (newWallet) {
+                if (type === 'income') newWallet.balance += amount;
+                else newWallet.balance -= amount;
+            }
+            
+            showToast("Transaksi berhasil diedit");
+        }
+    } 
+    // --- LOGIKA BARU ---
+    else {
+        const wallet = data.wallets.find(w => w.id === walletId);
+        if (wallet) {
+            if (type === 'income') wallet.balance += amount;
+            else wallet.balance -= amount;
+        }
+        data.budget.unshift({ id: Date.now(), type, amount, desc, date, walletId });
+        showToast(t('msg_trans_saved', data.settings.lang));
+    }
     
     saveAppData(window.currentUser, window.dbInstance);
     closeModal('modal-budget');
     resetInputs('modal-budget');
-    showToast(t('msg_trans_saved', data.settings.lang));
+    document.getElementById('b-id').value = ''; // Reset ID jadi kosong lagi
     updateUI(); 
 }
 
