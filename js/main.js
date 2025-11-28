@@ -22,6 +22,8 @@ window.saveLoan = UI.saveLoan;
 window.addGoal = UI.addGoal;
 window.addEmergencyFund = UI.addEmergencyFund;
 window.saveEmergencyProfile = UI.saveEmergencyProfile;
+window.toggleEmergencySettings = UI.toggleEmergencySettings;
+window.toggleAddBill = UI.toggleAddBill;
 
 // Fitur Aksi (Bayar, Hapus, Detail)
 window.payBill = UI.payBill;
@@ -134,6 +136,7 @@ async function startApp() {
     UI.initTheme();
     UI.checkPinLock();
     initMoneyInputs(UI.calcLoanPreview); 
+    if(typeof UI.initTypeSelector === 'function') UI.initTypeSelector(); 
     
     // 4. Render Awal
     UI.renderWallets();
