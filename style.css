@@ -306,3 +306,34 @@ input:checked + .type-btn.expense { background: var(--danger); color: white; }
 .toast { padding: 15px 20px; border-radius: 16px; color: white; margin-bottom: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); font-weight: 600; display: flex; align-items: center; gap: 10px; }
 .toast.success { background: var(--success); }
 .toast.error { background: var(--danger); }
+/* --- FIX ICON COMPATIBILITY (ANDROID 10+) --- */
+
+/* Memaksa font icon agar selalu tampil */
+.fas, .far, .fab, .fa {
+    font-display: block;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fallback jika icon gagal loading (agar layout tidak hancur) */
+.icon-btn i, 
+.nav-item i, 
+.list-item i, 
+.fab-main i {
+    display: inline-block;
+    min-width: 1em;
+    min-height: 1em;
+    line-height: 1;
+    text-align: center;
+}
+
+/* Fix khusus Android WebView lama yang kadang salah render weight font */
+.fas { font-weight: 900 !important; }
+.far { font-weight: 400 !important; }
+.fab { font-weight: 400 !important; }
+
+/* Menangani Emoji Bendera/Diamond agar tidak kotak di Android lama */
+body {
+    font-variant-emoji: emoji; 
+}
+
