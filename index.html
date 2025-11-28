@@ -3,6 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<script>
+    window.onerror = function(message, source, lineno, colno, error) {
+        // Hilangkan loading biar pesan error terbaca
+        const overlay = document.getElementById('loading-overlay');
+        if(overlay) overlay.style.display = 'none';
+        
+        alert("ERROR DITEMUKAN:\n" + message + "\n\nFile: " + source + "\nBaris: " + lineno);
+    };
+</script>
     <meta name="theme-color" content="#2b2d42">
     <title>Finansial Pro</title>
     
