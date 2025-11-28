@@ -60,7 +60,16 @@ body { background-color: var(--bg-body); color: var(--text-main); padding-bottom
 .full-width { width: 100%; }
 .flex-between { display: flex; justify-content: space-between; align-items: center; }
 
-/* [NEW] Class Khusus Wadah Iklan Manual */
+/* [NEW] Helper Class untuk Memaksa Angka Turun ke Bawah (Wrap) */
+.text-break-amount {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word; /* [FIX] Ubah dari break-all ke break-word agar angka tidak putus */
+    white-space: normal;
+    line-height: 1.2;
+}
+
+/* [NEW] Class Khusus Wadah Iklan Manual (Opsional) */
 .ad-slot {
     width: 100%;
     min-height: 100px;
@@ -99,6 +108,7 @@ body { background-color: var(--bg-body); color: var(--text-main); padding-bottom
     overflow: hidden; 
 }
 
+/* Menggunakan clamp() agar font mengecil otomatis di layar kecil */
 .balance-card h1 { 
     font-size: clamp(1.8rem, 5vw, 2.4rem); 
     margin: 10px 0; 
@@ -110,65 +120,64 @@ body { background-color: var(--bg-body); color: var(--text-main); padding-bottom
 .balance-row { display: flex; gap: 15px; font-size: 0.9rem; background: rgba(255, 255, 255, 0.15); padding: 12px; border-radius: 16px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2); }
 .balance-card .text-green, .balance-card .text-red { color: #fff !important; font-weight: bold; } 
 
-/* [PERBAIKAN UTAMA] Quick Stats Grid & Stat Card */
-.quick-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+/* --- [PERBAIKAN UTAMA DI SINI] --- */
+/* Grid untuk Statistik Cepat (Total Hutang/Piutang) */
+.quick-stats-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 10px; /* Gap diperkecil agar kartu lebih lebar */
+    margin-bottom: 30px; 
+}
 
-/* UBAHAN DISINI: 
-   - display: flex (row) -> Agar icon dan teks sejajar menyamping
-   - align-items: center -> Agar icon berada di tengah secara vertikal
-*/
 .stat-card { 
     background: var(--bg-card); 
-    padding: 15px; 
+    padding: 15px 10px; /* Padding samping diperkecil agar teks punya ruang */
     border-radius: 16px; 
     display: flex; 
-    flex-direction: row; /* Layout Menyamping (Icon Kiri, Teks Kanan) */
-    align-items: center; 
-    gap: 12px; 
+    flex-direction: column; 
+    justify-content: center;
+    align-items: flex-start; /* Rata kiri agar rapi */
+    gap: 5px; 
     box-shadow: var(--shadow); 
     border: 1px solid var(--border); 
     position: relative; 
     overflow: hidden; 
-    min-height: auto; 
+    min-height: 90px; 
 }
 
-/* Border warna di kiri */
-.stat-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+/* Layout khusus untuk menaruh icon dan teks agar rapi */
+.stat-card-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.stat-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
 .border-left-green::before { background: var(--success); }
 .border-left-red::before { background: var(--danger); }
+.stat-card i { font-size: 1.4rem; flex-shrink: 0; margin-bottom: 5px; } 
 
-/* Style Icon di Stat Card */
-.stat-card i { 
-    font-size: 1.6rem; 
-    flex-shrink: 0; /* Mencegah icon mengecil */
-}
-
-/* Style Wrapper Teks (Div di sebelah icon) */
-.stat-card > div {
-    display: flex;
-    flex-direction: column; /* Label diatas, Nominal dibawah */
-    justify-content: center;
-    flex: 1; /* Mengisi sisa ruang */
-    min-width: 0; /* Mencegah layout pecah jika teks kepanjangan */
-}
-
-/* Label (Total Hutang/Piutang) - Sejajar dengan bagian atas Icon */
-.stat-card small {
-    font-size: 0.75rem;
+/* Style Teks Judul (Total Hutang/Piutang) */
+.stat-card span, .stat-card small, .stat-card p {
+    font-size: 0.8rem;
     color: var(--text-muted);
-    line-height: 1.2;
-    margin-bottom: 4px;
-    white-space: nowrap; /* Satu baris */
+    line-height: 1;
+    margin-bottom: 2px;
+    white-space: nowrap; /* Judul tidak boleh turun baris */
 }
 
-/* Nominal (Rp ...) - Dibawah Label */
-.stat-card strong {
-    font-size: 1.1rem;
-    color: var(--text-main);
+/* Style Angka Nominal (Agar Rapi & Tidak Terpotong) */
+.stat-card h3, .stat-card strong, .stat-card .nominal {
+    font-size: clamp(0.9rem, 4.5vw, 1.2rem); /* Font otomatis mengecil jika layar sempit */
+    font-weight: 700;
+    margin: 0;
     line-height: 1.2;
-    word-wrap: break-word; /* Bungkus ke bawah jika angka panjang */
-    white-space: normal;
+    word-break: normal; /* PENTING: Jangan potong angka di tengah */
+    overflow-wrap: break-word; /* Pindah baris hanya jika benar-benar penuh */
+    color: var(--text-main);
 }
+/* ---------------------------------- */
 
 /* Inputs & Buttons */
 input, select { width: 100%; padding: 15px 16px; border: 2px solid transparent; border-radius: 16px; background: var(--bg-input); color: var(--text-main); font-size: 1rem; margin-bottom: 15px; transition: 0.3s; font-weight: 500; }
@@ -182,8 +191,8 @@ input:focus, select:focus { outline: none; background: var(--bg-card); border-co
 .btn-xs { padding: 8px 16px; border-radius: 10px; border: none; background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border); font-size: 0.85rem; cursor: pointer; font-weight: 600; }
 
 /* Tabs */
-.tabs { display: flex; gap: 5px; background: var(--bg-input); padding: 6px; border-radius: 18px; margin-bottom: 25px; }
-.tab { flex: 1; padding: 10px 5px; border: none; background: transparent; border-radius: 14px; color: var(--text-muted); cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 0.85rem; }
+.tabs { display: flex; background: var(--bg-input); padding: 6px; border-radius: 18px; margin-bottom: 25px; }
+.tab { flex: 1; padding: 12px; border: none; background: transparent; border-radius: 14px; color: var(--text-muted); cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 0.95rem; }
 .tab.active { background: var(--bg-card); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 .tab-content { display: none; }
 .tab-content.active { display: block; animation: slideUp 0.3s ease; }
@@ -219,10 +228,11 @@ input:focus, select:focus { outline: none; background: var(--bg-card); border-co
 .modal-header h3 { font-size: 1.4rem; color: var(--text-main); }
 .close-icon { font-size: 1.5rem; cursor: pointer; color: var(--text-muted); background: var(--bg-input); padding: 8px; border-radius: 50%; }
 
-/* Helper untuk elemen di dalam modal agar wrap */
+/* [MODIFIED] Helper untuk elemen di dalam modal agar wrap */
 .modal-card .stat-card, .modal-card .list-item {
     height: auto !important;
     min-height: 80px;
+    align-items: flex-start;
 }
 .modal-card p, .modal-card h3, .modal-card span {
     word-break: break-word;
@@ -258,7 +268,7 @@ input:checked + .type-btn.expense { background: var(--danger); }
 @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .fade-in { animation: fadeIn 0.5s ease; }
 
-/* --- DANA DARURAT --- */
+/* --- TAMBAHAN UNTUK HALAMAN DANA DARURAT --- */
 .progress-circle-conic {
     width: 200px; height: 200px; border-radius: 50%;
     background: conic-gradient(var(--primary) 0%, #e0e0e0 0%);
@@ -320,7 +330,7 @@ input:checked + .type-btn.expense { background: var(--danger); }
     75% { transform: translateX(10px); }
 }
 
-/* --- SETTINGS --- */
+/* --- PERBAIKAN TAMPILAN SETTINGS --- */
 .setting-item {
     display: flex;
     justify-content: space-between;
@@ -363,7 +373,7 @@ input:checked + .type-btn.expense { background: var(--danger); }
 }
 .file-label { display: inline-block; cursor: pointer; }
 
-/* --- FITUR DOMPET & LAINNYA --- */
+/* --- FITUR DOMPET (WALLETS) --- */
 .wallet-container-scroll {
     overflow-x: auto;
     padding-bottom: 5px;
@@ -400,18 +410,22 @@ input:checked + .type-btn.expense { background: var(--danger); }
     border-radius: 10px;
 }
 
-/* Indikator Tagihan */
+/* Update tabs agar muat 3 kolom */
+.tabs { gap: 5px; }
+.tab { padding: 10px 5px; font-size: 0.85rem; }
+
+/* Tambahan styling untuk indikator tagihan */
 .border-left-green { border-left: 4px solid var(--success) !important; }
 .border-left-red { border-left: 4px solid var(--danger) !important; }
 
-/* Table Styles */
+/* Table Styles untuk Rincian Kalkulator */
 .table-responsive { overflow-x: auto; }
 #calc-breakdown-list tr { border-bottom: 1px solid var(--border); }
 #calc-breakdown-list tr:nth-child(even) { background-color: var(--bg-input); }
 #calc-breakdown-list td { padding: 12px 5px; color: var(--text-main); }
 #calc-breakdown-list td.highlight { font-weight: bold; color: var(--primary); }
 
-/* Modal Bahasa */
+/* Styling Modal Bahasa */
 .lang-item {
     display: flex;
     justify-content: space-between;
