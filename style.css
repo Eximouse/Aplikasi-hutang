@@ -1,5 +1,5 @@
 :root {
-    /* --- PALET WARNA UTAMA --- */
+    /* --- PALET WARNA UTAMA (GRADASI) --- */
     --gradient-primary: linear-gradient(135deg, #4481eb 0%, #04befe 100%);
     --gradient-card: linear-gradient(135deg, #4481eb 0%, #005bea 100%);
     
@@ -44,7 +44,7 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
-/* Layout Umum */
+/* [MODIFIED FOR ADSENSE] Padding bawah diperbesar */
 body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 140px; transition: background 0.3s ease, color 0.3s ease; }
 
 /* Utilities */
@@ -60,13 +60,25 @@ body { background-color: var(--bg-body); color: var(--text-main); padding-bottom
 .full-width { width: 100%; }
 .flex-between { display: flex; justify-content: space-between; align-items: center; }
 
-/* Helper Text Break */
+/* [NEW] Helper Class untuk Memaksa Angka Turun ke Bawah (Wrap) */
 .text-break-amount {
     word-wrap: break-word;
     overflow-wrap: break-word;
-    word-break: break-word;
+    word-break: break-all; /* Memaksa potong jika tidak ada spasi */
     white-space: normal;
     line-height: 1.2;
+}
+
+/* [NEW] Class Khusus Wadah Iklan Manual (Opsional) */
+.ad-slot {
+    width: 100%;
+    min-height: 100px;
+    background: transparent;
+    margin: 20px 0;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Header */
@@ -76,15 +88,15 @@ body { background-color: var(--bg-body); color: var(--text-main); padding-bottom
 .icon-btn { background: var(--bg-card); border: 1px solid var(--border); font-size: 1.1rem; color: var(--text-main); cursor: pointer; padding: 10px; border-radius: 50%; box-shadow: var(--shadow); transition: 0.3s; }
 .icon-btn:active { transform: scale(0.9); }
 
-/* Container */
+/* Container & Page */
 .app-container { padding: 0 20px; max-width: 600px; margin: 0 auto; }
 .page { display: none; animation: fadeIn 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); }
 .page.active { display: block; }
 
-/* Cards Umum */
+/* Cards */
 .card { background: var(--bg-card); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 30px; border: 1px solid var(--border); }
 
-/* Balance Card (Total Kekayaan) */
+/* [MODIFIED] Balance Card agar responsif */
 .balance-card { 
     background: var(--gradient-card); 
     padding: 25px; 
@@ -95,88 +107,99 @@ body { background-color: var(--bg-body); color: var(--text-main); padding-bottom
     position: relative; 
     overflow: hidden; 
 }
+
+/* Menggunakan clamp() agar font mengecil otomatis di layar kecil */
 .balance-card h1 { 
     font-size: clamp(1.8rem, 5vw, 2.4rem); 
     margin: 10px 0; 
     font-weight: 700; 
     letter-spacing: -1px;
-    word-wrap: break-word; 
+    word-wrap: break-word; /* Mencegah overflow */
 }
+
 .balance-row { display: flex; gap: 15px; font-size: 0.9rem; background: rgba(255, 255, 255, 0.15); padding: 12px; border-radius: 16px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2); }
 .balance-card .text-green, .balance-card .text-red { color: #fff !important; font-weight: bold; } 
 
-/* --- [BAGIAN YANG DIPERBAIKI: Quick Stats Grid & Stat Card] --- */
 
-/* Grid Container */
+/* --- [BAGIAN UTAMA YANG DIPERBAIKI: Quick Stats Grid & Stat Card] --- */
+
+/* 1. Grid Container */
 .quick-stats-grid { 
     display: grid; 
-    grid-template-columns: 1fr 1fr; /* Dua Kolom */
-    gap: 12px; 
+    grid-template-columns: 1fr 1fr; /* Dua kolom sejajar */
+    gap: 15px; /* Jarak antar kartu */
     margin-bottom: 30px; 
 }
 
-/* Card Hutang & Piutang */
+/* 2. Style Kartu Utama */
 .stat-card { 
     background: var(--bg-card); 
-    padding: 16px; 
+    padding: 16px 18px; /* Padding yang nyaman */
     border-radius: 20px; 
     box-shadow: var(--shadow); 
     border: 1px solid var(--border); 
     position: relative; 
     overflow: hidden; 
     
-    /* SETTING FLEXBOX UNTUK LAYOUT IKON SAMPING JUDUL, ANGKA DI BAWAH */
+    /* Layout Magic: Menggunakan Flexbox dengan Wrap */
     display: flex;
-    flex-wrap: wrap;       /* Ini yang membuat angka turun ke bawah */
-    align-items: center;   /* Rata tengah vertikal untuk ikon dan judul */
+    flex-wrap: wrap;       /* Izinkan elemen jatuh ke baris baru */
+    align-items: center;   /* Rata tengah secara vertikal untuk baris pertama */
     justify-content: flex-start;
 }
 
-/* Garis warna di kiri */
-.stat-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
+/* Garis Indikator Warna di Kiri */
+.stat-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; }
 .border-left-green::before { background: var(--success); }
 .border-left-red::before { background: var(--danger); }
 
-/* Pengaturan Ikon */
+/* --- BARIS PERTAMA: IKON & JUDUL --- */
+
+/* Ikon */
 .stat-card i { 
-    font-size: 1.3rem; 
-    flex-shrink: 0; 
+    font-size: 1.1rem; 
+    color: var(--text-muted); /* Warna abu-abu agar tidak terlalu mencolok */
     margin-right: 8px; /* Jarak antara ikon dan teks judul */
+    width: auto; 
+    flex-shrink: 0;
 }
 
-/* Pengaturan Judul (Teks: Total Hutang/Piutang) */
+/* Judul (Total Hutang/Piutang) */
 .stat-card span, 
 .stat-card small, 
 .stat-card p {
-    font-size: 0.8rem;
-    color: var(--text-muted);
+    font-size: 0.85rem; 
+    color: var(--text-muted); /* Warna abu-abu seperti referensi */
     font-weight: 600;
     margin: 0;
-    line-height: 1.2;
-    /* Lebar otomatis agar mepet ikon */
-    width: auto; 
+    line-height: 1;
+    width: auto;
 }
 
-/* Pengaturan Angka Nominal */
+/* --- BARIS KEDUA: NOMINAL ANGKA --- */
+
+/* Angka Nominal */
 .stat-card h3, 
 .stat-card strong,
 .stat-card .nominal {
-    /* MEMAKSA ANGKA TURUN KE BARIS BARU & MEMAKAI LEBAR PENUH */
+    /* INI KUNCINYA: Lebar 100% memaksa angka turun ke baris baru */
     width: 100%; 
-    margin-top: 10px; /* Memberi jarak/space yang cukup dari judul */
     
-    /* Ukuran font responsif (mengecil di HP kecil agar muat) */
-    font-size: clamp(1rem, 5vw, 1.3rem); 
+    margin-top: 8px; /* Memberi jarak nafas antara Judul dan Angka */
+    
+    /* Ukuran Font Besar seperti Referensi */
+    font-size: clamp(1.1rem, 5vw, 1.4rem); 
     font-weight: 700;
+    color: var(--text-main); /* Hitam/Gelap */
     line-height: 1.2;
-    color: var(--text-main);
     
-    /* Mencegah terpotong */
-    white-space: normal;
-    word-break: break-word; 
+    /* Menjaga angka tetap satu baris, tidak boleh putus di tengah */
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis; /* Titik-titik jika layar terlalu kecil sekali */
 }
-
 /* ----------------------------------------------------------- */
+
 
 /* Inputs & Buttons */
 input, select { width: 100%; padding: 15px 16px; border: 2px solid transparent; border-radius: 16px; background: var(--bg-input); color: var(--text-main); font-size: 1rem; margin-bottom: 15px; transition: 0.3s; font-weight: 500; }
@@ -190,8 +213,8 @@ input:focus, select:focus { outline: none; background: var(--bg-card); border-co
 .btn-xs { padding: 8px 16px; border-radius: 10px; border: none; background: var(--bg-input); color: var(--text-main); border: 1px solid var(--border); font-size: 0.85rem; cursor: pointer; font-weight: 600; }
 
 /* Tabs */
-.tabs { display: flex; background: var(--bg-input); padding: 6px; border-radius: 18px; margin-bottom: 25px; gap: 5px; }
-.tab { flex: 1; padding: 10px 5px; border: none; background: transparent; border-radius: 14px; color: var(--text-muted); cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 0.85rem; }
+.tabs { display: flex; background: var(--bg-input); padding: 6px; border-radius: 18px; margin-bottom: 25px; }
+.tab { flex: 1; padding: 12px; border: none; background: transparent; border-radius: 14px; color: var(--text-muted); cursor: pointer; font-weight: 600; transition: 0.3s; font-size: 0.95rem; }
 .tab.active { background: var(--bg-card); color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 .tab-content { display: none; }
 .tab-content.active { display: block; animation: slideUp 0.3s ease; }
@@ -227,6 +250,18 @@ input:focus, select:focus { outline: none; background: var(--bg-card); border-co
 .modal-header h3 { font-size: 1.4rem; color: var(--text-main); }
 .close-icon { font-size: 1.5rem; cursor: pointer; color: var(--text-muted); background: var(--bg-input); padding: 8px; border-radius: 50%; }
 
+/* [MODIFIED] Helper untuk elemen di dalam modal agar wrap */
+.modal-card .stat-card, .modal-card .list-item {
+    height: auto !important;
+    min-height: 80px;
+    align-items: flex-start;
+}
+.modal-card p, .modal-card h3, .modal-card span {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
 /* Type Selector */
 .type-selector { display: flex; gap: 10px; margin-bottom: 25px; background: var(--bg-input); padding: 6px; border-radius: 18px; }
 .type-selector input { display: none; }
@@ -239,71 +274,216 @@ input:checked + .type-btn.expense { background: var(--danger); }
 .goal-progress-bg { background: var(--bg-input); height: 12px; border-radius: 6px; margin-top: 12px; overflow: hidden; }
 .goal-progress-bar { height: 100%; background: var(--gradient-primary); transition: width 0.6s cubic-bezier(0.25, 1, 0.5, 1); border-radius: 6px; }
 
-/* Toast & Animations */
+/* Calculator */
+.calc-details { background: var(--bg-input); padding: 20px; border-radius: 20px; margin-top: 20px; border: 1px solid var(--border); }
+.detail-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.95rem; }
+
+/* Toast */
 #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 12px; width: 90%; max-width: 350px; }
 .toast { padding: 16px 24px; border-radius: 16px; color: white; font-size: 0.95rem; box-shadow: 0 10px 25px rgba(0,0,0,0.15); animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; gap: 12px; font-weight: 600; backdrop-filter: blur(5px); }
 .toast.success { background: rgba(0, 176, 155, 0.95); }
 .toast.error { background: rgba(252, 92, 125, 0.95); }
 
+/* Animations */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .fade-in { animation: fadeIn 0.5s ease; }
 
-/* Pin Lock */
-.pin-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--gradient-primary); z-index: 9999; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); transition: opacity 0.3s; }
-.pin-card { background: rgba(255, 255, 255, 0.15); padding: 30px; border-radius: 30px; text-align: center; width: 320px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); }
+/* --- TAMBAHAN UNTUK HALAMAN DANA DARURAT --- */
+.progress-circle-conic {
+    width: 200px; height: 200px; border-radius: 50%;
+    background: conic-gradient(var(--primary) 0%, #e0e0e0 0%);
+    margin: 0 auto 10px; display: flex; justify-content: center; align-items: center;
+    position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: background 0.5s ease;
+}
+.progress-circle-conic .inner-circle {
+    width: 170px; height: 170px; background: var(--bg-card);
+    border-radius: 50%; position: absolute; display: flex;
+    flex-direction: column; justify-content: center; align-items: center;
+}
+.progress-circle-conic .percentage { font-size: 2.5rem; font-weight: 800; color: var(--primary); line-height: 1; }
+.progress-circle-conic .status-text { font-size: 0.9rem; color: var(--text-muted); margin-top: 5px; }
+
+.info-box {
+    background: rgba(255, 193, 7, 0.1); color: #e67e22; padding: 12px;
+    border-radius: 12px; font-size: 0.9rem; line-height: 1.4;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+[data-theme="dark"] .progress-circle-conic { background: conic-gradient(var(--primary) 0%, #444 0%); }
+[data-theme="dark"] .progress-circle-conic .inner-circle { background: var(--bg-card); }
+
+/* --- PIN LOCK SCREEN --- */
+.pin-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: var(--gradient-primary); z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(10px); transition: opacity 0.3s;
+}
+
+.pin-card {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 30px; border-radius: 30px;
+    text-align: center; width: 320px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
 .pin-dots { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
 .dot { width: 15px; height: 15px; border-radius: 50%; background: rgba(255,255,255,0.3); transition: 0.2s; border: 2px solid rgba(255,255,255,0.5); }
 .dot.filled { background: white; transform: scale(1.2); box-shadow: 0 0 10px rgba(255,255,255,0.5); }
 .dot.error { background: #fc5c7d; border-color: #fc5c7d; animation: shake 0.3s; }
+
 .pin-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-.pin-keypad button { background: rgba(255,255,255,0.1); border: none; color: white; font-size: 1.5rem; height: 65px; width: 65px; border-radius: 50%; cursor: pointer; margin: 0 auto; transition: 0.2s; display: grid; place-items: center; }
+.pin-keypad button {
+    background: rgba(255,255,255,0.1); border: none;
+    color: white; font-size: 1.5rem; height: 65px; width: 65px;
+    border-radius: 50%; cursor: pointer; margin: 0 auto;
+    transition: 0.2s; display: grid; place-items: center;
+}
 .pin-keypad button:active { background: rgba(255,255,255,0.4); transform: scale(0.9); }
 .btn-enter { background: rgba(0, 176, 155, 0.4) !important; }
-@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
 
-/* Settings Items */
-.setting-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border); }
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+/* --- PERBAIKAN TAMPILAN SETTINGS (Rapi & Satu Baris) --- */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+}
 .setting-item:last-child { border-bottom: none; }
-.setting-item span { font-size: 0.95rem; font-weight: 600; color: var(--text-main); flex: 1; }
-.setting-item select { width: auto !important; margin-bottom: 0 !important; padding: 8px 35px 8px 15px; font-size: 0.85rem; background-color: var(--bg-input); border: 1px solid var(--border); }
-.setting-item .btn-xs { margin: 0; padding: 8px 20px; font-size: 0.85rem; border-radius: 12px; }
-.btn-toggle-active { background-color: var(--primary) !important; color: white !important; border: none !important; box-shadow: 0 4px 10px rgba(68, 129, 235, 0.3); }
-.btn-toggle-inactive { background-color: var(--danger) !important; color: white !important; border: none !important; box-shadow: 0 4px 10px rgba(252, 92, 125, 0.3); }
+.setting-item span {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+    flex: 1;
+}
+.setting-item select {
+    width: auto !important; 
+    margin-bottom: 0 !important;
+    padding: 8px 35px 8px 15px;
+    font-size: 0.85rem;
+    background-color: var(--bg-input);
+    border: 1px solid var(--border);
+}
+.setting-item .btn-xs {
+    margin: 0;
+    padding: 8px 20px;
+    font-size: 0.85rem;
+    border-radius: 12px;
+}
+.btn-toggle-active {
+    background-color: var(--primary) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 10px rgba(68, 129, 235, 0.3);
+}
+.btn-toggle-inactive {
+    background-color: var(--danger) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 10px rgba(252, 92, 125, 0.3);
+}
 .file-label { display: inline-block; cursor: pointer; }
 
-/* Dana Darurat */
-.progress-circle-conic { width: 200px; height: 200px; border-radius: 50%; background: conic-gradient(var(--primary) 0%, #e0e0e0 0%); margin: 0 auto 10px; display: flex; justify-content: center; align-items: center; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: background 0.5s ease; }
-.progress-circle-conic .inner-circle { width: 170px; height: 170px; background: var(--bg-card); border-radius: 50%; position: absolute; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-.progress-circle-conic .percentage { font-size: 2.5rem; font-weight: 800; color: var(--primary); line-height: 1; }
-.progress-circle-conic .status-text { font-size: 0.9rem; color: var(--text-muted); margin-top: 5px; }
-.info-box { background: rgba(255, 193, 7, 0.1); color: #e67e22; padding: 12px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; border: 1px solid rgba(255, 193, 7, 0.3); }
-[data-theme="dark"] .progress-circle-conic { background: conic-gradient(var(--primary) 0%, #444 0%); }
-[data-theme="dark"] .progress-circle-conic .inner-circle { background: var(--bg-card); }
+/* --- FITUR DOMPET (WALLETS) --- */
+.wallet-container-scroll {
+    overflow-x: auto;
+    padding-bottom: 5px;
+    margin: 0 -10px 20px -10px;
+    padding: 0 10px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.wallet-container-scroll::-webkit-scrollbar { display: none; }
 
-/* Calculator Table */
+.wallet-list-row { display: flex; gap: 12px; width: max-content; }
+
+.wallet-card-mini {
+    background: var(--bg-card);
+    padding: 15px;
+    border-radius: 18px;
+    min-width: 140px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: 0.2s;
+}
+.wallet-card-mini small { font-size: 0.75rem; color: var(--text-muted); }
+.wallet-card-mini strong { font-size: 1rem; margin-top: 5px; color: var(--text-main); }
+.wallet-card-mini .icon { 
+    margin-bottom: 8px; 
+    font-size: 1.2rem; 
+    color: var(--primary);
+    background: rgba(68, 129, 235, 0.1);
+    width: 35px; height: 35px;
+    display: grid; place-items: center;
+    border-radius: 10px;
+}
+
+/* Update tabs agar muat 3 kolom */
+.tabs { gap: 5px; }
+.tab { padding: 10px 5px; font-size: 0.85rem; }
+
+/* Tambahan styling untuk indikator tagihan */
+.border-left-green { border-left: 4px solid var(--success) !important; }
+.border-left-red { border-left: 4px solid var(--danger) !important; }
+
+/* Table Styles untuk Rincian Kalkulator */
 .table-responsive { overflow-x: auto; }
 #calc-breakdown-list tr { border-bottom: 1px solid var(--border); }
 #calc-breakdown-list tr:nth-child(even) { background-color: var(--bg-input); }
 #calc-breakdown-list td { padding: 12px 5px; color: var(--text-main); }
 #calc-breakdown-list td.highlight { font-weight: bold; color: var(--primary); }
 
-/* Language Modal */
-.lang-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; border-radius: 12px; }
+/* Styling Modal Bahasa */
+.lang-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: 0.2s;
+    border-radius: 12px;
+}
 .lang-item:hover { background-color: var(--bg-input); }
 .lang-item:last-child { border-bottom: none; }
 .check-icon { display: none; }
 .lang-item.active .check-icon { display: block; }
 .lang-item.active { background-color: var(--bg-input); font-weight: 600; }
 
-.badge-gray { background: transparent !important; padding: 0 !important; border-radius: 0 !important; font-weight: 800 !important; font-size: 0.75rem !important; letter-spacing: 0.5px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; }
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
-/* Wallets */
-.wallet-container-scroll { overflow-x: auto; padding-bottom: 5px; margin: 0 -10px 20px -10px; padding: 0 10px; -ms-overflow-style: none; scrollbar-width: none; }
-.wallet-container-scroll::-webkit-scrollbar { display: none; }
-.wallet-list-row { display: flex; gap: 12px; width: max-content; }
-.wallet-card-mini { background: var(--bg-card); padding: 15px; border-radius: 18px; min-width: 140px; box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; transition: 0.2s; }
-.wallet-card-mini small { font-size: 0.75rem; color: var(--text-muted); }
-.wallet-card-mini strong { font-size: 1rem; margin-top: 5px; color: var(--text-main); }
-.wallet-card-mini .icon { margin-bottom: 8px; font-size: 1.2rem; color: var(--primary); background: rgba(68, 129, 235, 0.1); width: 35px; height: 35px; display: grid; place-items: center; border-radius: 10px; }
+.badge-gray { 
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    font-weight: 800 !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+}
