@@ -415,3 +415,18 @@ input:checked + .type-btn.expense { background: var(--danger); }
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* --- [UPDATE] BADGE STATUS BERSIH (Tanpa Kotak) --- */
+.badge-gray { 
+    background: transparent !important; /* Hilangkan warna kotak */
+    padding: 0 !important;              /* Hilangkan jarak dalam */
+    border-radius: 0 !important;        /* Hilangkan sudut bulat */
+    font-weight: 800 !important;        /* Teks lebih tebal */
+    font-size: 0.75rem !important;      /* Ukuran font pas */
+    letter-spacing: 0.5px;              /* Spasi antar huruf biar elegan */
+    text-transform: uppercase;          /* Huruf besar semua */
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+}
