@@ -171,6 +171,31 @@ export const RESOURCES = {
         msg_prof_saved: "Profil tersimpan! Target Anda:",
         
         word_bill: "Total Tagihan",
+        msg_loading: "Memuat data...",
+        login_desc: "Kelola keuanganmu dengan aman, tersinkronisasi di awan.",
+        btn_login_google: "Masuk dengan Google",
+        
+        lbl_trend_chart: "Tren Pengeluaran (6 Bulan)",
+        lbl_calc_title: "Bunga Majemuk (Compound)",
+        lbl_return_rate: "Return (%/thn)",
+        
+        lbl_asset_growth: "Pertumbuhan Aset",
+        col_year: "Thn",
+        col_total_modal: "Total Modal",
+        col_final_bal: "Saldo Akhir",
+        
+        lbl_backup_data: "Backup Data (JSON)",
+        lbl_restore_data: "Restore Data (JSON)",
+        lbl_google_account: "Akun Google",
+        btn_logout: "Keluar / Logout",
+        lbl_about_privacy: "Tentang & Privasi",
+        btn_read: "Baca",
+        lbl_contact_dev: "Kontak Developer",
+        btn_email: "Email",
+        
+        // Label Modal Konfirmasi (Default HTML)
+        msg_confirm_default: "Apakah anda yakin?",
+        btn_yes_delete: "Ya, Hapus",
         word_pay: "Bayar"
     },
     en: {
@@ -343,6 +368,31 @@ export const RESOURCES = {
         msg_prof_saved: "Profile saved! Your Target:",
 
         word_bill: "Total Bill",
+        msg_loading: "Loading data...",
+        login_desc: "Manage your finances securely, synced in the cloud.",
+        btn_login_google: "Sign in with Google",
+        
+        lbl_trend_chart: "Expense Trend (6 Months)",
+        lbl_calc_title: "Compound Interest",
+        lbl_return_rate: "Return (%/yr)",
+        
+        lbl_asset_growth: "Asset Growth",
+        col_year: "Yr",
+        col_total_modal: "Total Capital",
+        col_final_bal: "Final Balance",
+        
+        lbl_backup_data: "Backup Data (JSON)",
+        lbl_restore_data: "Restore Data (JSON)",
+        lbl_google_account: "Google Account",
+        btn_logout: "Logout",
+        lbl_about_privacy: "About & Privacy",
+        btn_read: "Read",
+        lbl_contact_dev: "Contact Developer",
+        btn_email: "Email",
+        
+        // Confirmation Modal Labels
+        msg_confirm_default: "Are you sure?",
+        btn_yes_delete: "Yes, Delete",
         word_pay: "Pay"
     }
 };

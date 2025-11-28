@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<script>
-    window.onerror = function(message, source, lineno, colno, error) {
-        // Hilangkan loading biar pesan error terbaca
-        const overlay = document.getElementById('loading-overlay');
-        if(overlay) overlay.style.display = 'none';
-        
-        alert("ERROR DITEMUKAN:\n" + message + "\n\nFile: " + source + "\nBaris: " + lineno);
-    };
-</script>
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const overlay = document.getElementById('loading-overlay');
+            if(overlay) overlay.style.display = 'none';
+            alert("ERROR:\n" + message + "\nLine: " + lineno);
+        };
+    </script>
     <meta name="theme-color" content="#2b2d42">
     <title>Finansial Pro</title>
     
@@ -24,7 +22,7 @@
     
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
     <meta name="google-adsense-account" content="ca-pub-4170035550920357">
@@ -33,18 +31,18 @@
 <body>
     <div id="loading-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-body); z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center;">
         <div class="loader" style="border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;"></div>
-        <p style="margin-top:15px; color:var(--text-muted); font-size:0.9rem;">Memuat data...</p>
+        <p style="margin-top:15px; color:var(--text-muted); font-size:0.9rem;" data-i18n="msg_loading">Memuat data...</p>
     </div>
 
     <div id="login-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-body); z-index:99999; display:none; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
         <div class="balance-card glass-effect" style="width:100%; max-width:350px; margin-bottom:30px; padding:40px 20px;">
             <div style="font-size:3rem; margin-bottom:10px;">💎</div>
             <h1 style="margin-bottom:10px;">Finansial Pro</h1>
-            <p style="opacity:0.8; font-size:0.9rem; margin-bottom:30px;">Kelola keuanganmu dengan aman, tersinkronisasi di awan.</p>
+            <p style="opacity:0.8; font-size:0.9rem; margin-bottom:30px;" data-i18n="login_desc">Kelola keuanganmu dengan aman, tersinkronisasi di awan.</p>
             
             <button id="btn-google-login" class="btn-primary full-width" style="background: white; color: #333; display:flex; align-items:center; justify-content:center; gap:10px;">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
-                Masuk dengan Google
+                <span data-i18n="btn_login_google">Masuk dengan Google</span>
             </button>
             
             <p id="login-status" class="text-muted mt-20" style="font-size:0.8rem;"></p>
@@ -102,7 +100,7 @@
                 </div>
             </div>
 
-                        <div class="chart-section mt-20">
+            <div class="chart-section mt-20">
                 <h3><i class="fas fa-chart-pie"></i> <span data-i18n="cashflow_title">Arus Kas Bulan Ini</span></h3>
                 <div class="chart-container">
                     <canvas id="mainChart"></canvas>
@@ -110,12 +108,11 @@
             </div>
 
             <div class="chart-section mt-20">
-                <h3><i class="fas fa-chart-line"></i> Tren Pengeluaran (6 Bulan)</h3>
+                <h3><i class="fas fa-chart-line"></i> <span data-i18n="lbl_trend_chart">Tren Pengeluaran (6 Bulan)</span></h3>
                 <div class="chart-container">
                     <canvas id="trendChart"></canvas>
                 </div>
             </div>
-
         </section>
 
         <section id="page-budget" class="page">
@@ -126,16 +123,16 @@
             </div>
 
             <div id="tab-budget-list" class="tab-content active">
- <div class="list-header">
-    <h3 data-i18n="recent_history">Riwayat Terakhir</h3>
-    <div style="display:flex; gap:5px;">
-        <button class="btn-xs" onclick="exportCSV('budget')" style="background:#eee; color:#333;"><i class="fas fa-file-csv"></i> CSV</button>
-        <button class="btn-xs" onclick="generatePDF()" style="background:var(--primary); color:white; border:none;"><i class="fas fa-file-pdf"></i> PDF</button>
-    </div>
-</div>
-<div class="search-wrapper mb-10" style="position:relative; margin-bottom: 15px;">
+                <div class="list-header">
+                    <h3 data-i18n="recent_history">Riwayat Terakhir</h3>
+                    <div style="display:flex; gap:5px;">
+                        <button class="btn-xs" onclick="exportCSV('budget')" style="background:#eee; color:#333;"><i class="fas fa-file-csv"></i> CSV</button>
+                        <button class="btn-xs" onclick="generatePDF()" style="background:var(--primary); color:white; border:none;"><i class="fas fa-file-pdf"></i> PDF</button>
+                    </div>
+                </div>
+                <div class="search-wrapper mb-10" style="position:relative; margin-bottom: 15px;">
                     <i class="fas fa-search" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); color:var(--text-muted);"></i>
-                    <input type="text" id="budget-search" placeholder="Cari transaksi..." onkeyup="renderBudget()" style="padding-left: 40px; margin-bottom:0;">
+                    <input type="text" id="budget-search" data-i18n-ph="lbl_search_budget" placeholder="Cari transaksi..." onkeyup="renderBudget()" style="padding-left: 40px; margin-bottom:0;">
                 </div>
 
                 <div class="ad-slot" style="margin: 10px 0;">
@@ -153,7 +150,7 @@
                     <div id="add-bill-form" class="hidden mt-20">
                         <div class="form-group">
                             <input type="text" id="bill-name" data-i18n-ph="ph_bill_name" placeholder="Nama (cth: WiFi, Listrik)">
-                            <input type="text" inputmode="numeric" class="money-input" id="bill-amount" placeholder="Nominal Rutin (Rp)">
+                            <input type="text" inputmode="numeric" class="money-input" id="bill-amount" data-i18n-ph="lbl_routine_amount" placeholder="Nominal Rutin (Rp)">
                             <label style="font-size:0.8rem; color:var(--text-muted);" data-i18n="lbl_due_date">Setiap Tanggal:</label>
                             <select id="bill-date" style="margin-top:5px;"></select>
                             <button class="btn-primary full-width mt-10" onclick="saveBill()" data-i18n="btn_save">Simpan Tagihan</button>
@@ -188,7 +185,7 @@
             </div>
             <div class="search-wrapper mb-20">
                 <i class="fas fa-search"></i>
-                <input type="text" id="loan-search" data-i18n-ph="ph_search_name" placeholder="Cari nama..." onkeyup="renderLoans()">
+                <input type="text" id="loan-search" data-i18n-ph="lbl_search_loan" placeholder="Cari nama..." onkeyup="renderLoans()">
             </div>
             <div class="ad-slot" style="margin: 10px 0;">
                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4170035550920357" data-ad-slot="3450258051" data-ad-format="auto" data-full-width-responsive="true"></ins>
@@ -272,7 +269,7 @@
             <div id="tab-calc" class="tab-content">
                 <div class="card luxury-card">
                     <div class="card-header-icon"><i class="fas fa-calculator"></i></div>
-                    <h3 class="text-center mb-20">Compound Interest</h3>
+                    <h3 class="text-center mb-20" data-i18n="lbl_calc_title">Compound Interest</h3>
                     <div class="form-group">
                         <label data-i18n="lbl_principal">Modal Awal/Modal Saat Ini (Rp)</label>
                         <input type="text" inputmode="numeric" class="money-input" id="calc-principal" placeholder="10.000.000">
@@ -293,7 +290,7 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Return (%/thn)</label>
+                            <label data-i18n="lbl_return_rate">Return (%/thn)</label>
                             <input type="number" id="calc-rate" placeholder="10">
                         </div>
                         <div class="form-group">
@@ -332,11 +329,11 @@
                     <button id="btn-toggle-pin" class="btn-xs" onclick="togglePinSetup()" data-i18n="enable_pin">Aktifkan PIN</button>
                 </div>
                 <div class="setting-item">
-                    <span>Backup Data (JSON)</span>
+                    <span data-i18n="lbl_backup_data">Backup Data (JSON)</span>
                    <button class="btn-xs" onclick="downloadBackup()"><i class="fas fa-download"></i> <span data-i18n="btn_download">Simpan</span></button>
                 </div>
                 <div class="setting-item">
-                    <span>Restore Data (JSON)</span>
+                    <span data-i18n="lbl_restore_data">Restore Data (JSON)</span>
                     <label class="btn-xs file-label" style="background: var(--bg-input); border: 1px dashed var(--primary);">
                         <span data-i18n="btn_choose_file">Pilih File</span> 
                         <input type="file" id="restore-file" hidden onchange="restoreBackup(this)">
@@ -349,18 +346,18 @@
             </div>
             <div class="card mt-20">
                 <div class="setting-item">
-                    <span>Akun Google</span>
-                    <button class="btn-xs" onclick="logoutUser()" style="background:var(--bg-input); border:1px solid var(--border);">Keluar / Logout</button>
+                    <span data-i18n="lbl_google_account">Akun Google</span>
+                    <button class="btn-xs" onclick="logoutUser()" data-i18n="btn_logout" style="background:var(--bg-input); border:1px solid var(--border);">Keluar / Logout</button>
                 </div>
             </div>
-                        <div class="card mt-20">
+            <div class="card mt-20">
                 <div class="setting-item">
-                    <span>Tentang & Privasi</span>
-                    <a href="privacy.html" class="btn-xs" style="text-decoration:none; display:flex; align-items:center; justify-content:center; background:var(--bg-input); color:var(--text-main); border:1px solid var(--border);">Baca</a>
+                    <span data-i18n="lbl_about_privacy">Tentang & Privasi</span>
+                    <a href="privacy.html" class="btn-xs" data-i18n="btn_read" style="text-decoration:none; display:flex; align-items:center; justify-content:center; background:var(--bg-input); color:var(--text-main); border:1px solid var(--border);">Baca</a>
                 </div>
                 <div class="setting-item">
-                    <span>Kontak Developer</span>
-                    <a href="mailto: scoopybalap16@gmail.com" class="btn-xs" style="text-decoration:none; display:flex; align-items:center; justify-content:center; background:var(--bg-input); color:var(--text-main); border:1px solid var(--border);">Email</a>
+                    <span data-i18n="lbl_contact_dev">Kontak Developer</span>
+                    <a href="mailto:scoopybalap16@gmail.com" class="btn-xs" data-i18n="btn_email" style="text-decoration:none; display:flex; align-items:center; justify-content:center; background:var(--bg-input); color:var(--text-main); border:1px solid var(--border);">Email</a>
                 </div>
             </div>
 
@@ -407,7 +404,7 @@
                 <div class="form-group" style="margin-bottom: 10px;">
                     <select id="b-wallet" style="padding: 10px; border-radius: 12px; background: var(--bg-input);"></select>
                 </div>
-                <input type="text" inputmode="numeric" class="money-input input-lg" id="b-amount" placeholder="Nominal (Rp)">
+                <input type="text" inputmode="numeric" class="money-input input-lg" id="b-amount" data-i18n-ph="ph_amount" placeholder="Nominal (Rp)">
                 <input type="text" id="b-desc" data-i18n-ph="ph_desc" placeholder="Keterangan (cth: Makan Siang)">
                 <input type="date" id="b-date">
                 <input type="hidden" id="b-id">
@@ -474,7 +471,7 @@
     <div class="modal-overlay" id="modal-target-add">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 data-i18n="modal_save_title">Tabung Dana</h3>
+                <h3 data-i18n="lbl_target_add_title">Tambah Tabungan</h3>
                 <i class="fas fa-times close-icon" onclick="closeModal('modal-target-add')"></i>
             </div>
             <div class="modal-body">
@@ -515,7 +512,7 @@
             <div class="icon-lock mb-20">
                 <i class="fas fa-lock" style="font-size: 2rem; color: white;"></i>
             </div>
-            <h3 id="pin-title" style="color: white; margin-bottom: 20px;">Masukkan PIN</h3>
+            <h3 id="pin-title" style="color: white; margin-bottom: 20px;" data-i18n="lbl_enter_pin_title">Masukkan PIN</h3>
             <div class="pin-dots">
                 <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
             </div>
@@ -533,14 +530,14 @@
                 <button onclick="pressPin(0)">0</button>
                 <button onclick="pressPin('enter')" class="btn-enter"><i class="fas fa-check"></i></button>
             </div>
-            <button class="btn-xs mt-20" id="btn-forgot-pin" onclick="resetData()" style="background: rgba(255,0,0,0.3); color: white; border:none; display:none;">Lupa PIN? Reset Data</button>
+            <button class="btn-xs mt-20" id="btn-forgot-pin" onclick="resetData()" data-i18n="lbl_forgot_pin" style="background: rgba(255,0,0,0.3); color: white; border:none; display:none;">Lupa PIN? Reset Data</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="modal-calc-detail">
         <div class="modal-card">
             <div class="modal-header">
-                <h3>Pertumbuhan Aset</h3>
+                <h3 data-i18n="lbl_asset_growth">Pertumbuhan Aset</h3>
                 <i class="fas fa-times close-icon" onclick="closeModal('modal-calc-detail')"></i>
             </div>
             <div class="modal-body">
@@ -548,9 +545,9 @@
                     <table class="w-full text-left" style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
                         <thead>
                             <tr style="border-bottom: 2px solid var(--border);">
-                                <th style="padding:10px 5px;">Thn</th>
-                                <th style="padding:10px 5px;">Total Modal</th>
-                                <th style="padding:10px 5px; text-align:right;">Saldo Akhir</th>
+                                <th style="padding:10px 5px;" data-i18n="col_year">Thn</th>
+                                <th style="padding:10px 5px;" data-i18n="col_total_modal">Total Modal</th>
+                                <th style="padding:10px 5px; text-align:right;" data-i18n="col_final_bal">Saldo Akhir</th>
                             </tr>
                         </thead>
                         <tbody id="calc-breakdown-list"></tbody>
@@ -564,15 +561,15 @@
         <div class="modal-card" style="max-width: 320px; text-align: center;">
             <div class="mb-20">
                 <i class="fas fa-exclamation-circle text-warning" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                <h3 id="confirm-title" style="margin-bottom: 10px;">Konfirmasi</h3>
-                <p id="confirm-msg" class="text-muted">Apakah anda yakin?</p>
+                <h3 id="confirm-title" data-i18n="lbl_confirm_title" style="margin-bottom: 10px;">Konfirmasi</h3>
+                <p id="confirm-msg" class="text-muted" data-i18n="msg_confirm_default">Apakah anda yakin?</p>
             </div>
             <div class="flex-between" style="gap: 10px;">
                 <button class="btn-xs full-width" onclick="closeModal('modal-confirm')" style="background: var(--bg-input); border: 1px solid var(--border);">
-                    <span id="btn-conf-cancel">Batal</span>
+                    <span id="btn-conf-cancel" data-i18n="btn_cancel">Batal</span>
                 </button>
                 <button class="btn-xs full-width btn-primary" id="btn-conf-yes">
-                    <span id="btn-conf-yes-text">Ya, Hapus</span>
+                    <span id="btn-conf-yes-text" data-i18n="btn_yes_delete">Ya, Hapus</span>
                 </button>
             </div>
         </div>
@@ -603,13 +600,11 @@
         </div>
     </div>
 
-        <script type="module">
+    <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        // [UPDATE] Tambahkan onSnapshot di sini
         import { getFirestore, doc, getDoc, setDoc, onSnapshot, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         
-        // [UPDATE] Masukkan onSnapshot ke window.firebaseLib
         window.firebaseLib = { initializeApp, getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, getFirestore, doc, getDoc, setDoc, onSnapshot, enableIndexedDbPersistence };
     </script>
     
