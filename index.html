@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">   
     <meta name="theme-color" content="#2b2d42">
     <title>Finansial Pro</title>
     
@@ -70,11 +70,11 @@
             <div class="quick-stats-grid">
                 <div class="stat-card border-left-green">
                     <i class="fas fa-hand-holding-usd text-green"></i>
-                    <div><small data-i18n="total_receivable">Piutang</small><strong id="main-piutang">Rp 0</strong></div>
+                    <div><small data-i18n="total_receivable">Total Piutang</small><strong id="main-piutang">Rp 0</strong></div>
                 </div>
                 <div class="stat-card border-left-red">
                     <i class="fas fa-file-invoice-dollar text-red"></i>
-                    <div><small data-i18n="total_debt">Hutang</small><strong id="main-hutang">Rp 0</strong></div>
+                    <div><small data-i18n="total_debt">Total Hutang</small><strong id="main-hutang">Rp 0</strong></div>
                 </div>
             </div>
 
@@ -365,8 +365,7 @@
     <div id="toast-container"></div>
 
     <div class="fab-wrapper">
-        <div class="fab-menu" id="fab-menu">
-            <button onclick="openModal('modal-budget')" data-label="Catat Transaksi" data-i18n-label="fab_trans"><i class="fas fa-wallet"></i></button>
+        <div class="fab-menu" id="fab-menu" style="display: none;"> <button onclick="openModal('modal-budget')" data-label="Catat Transaksi" data-i18n-label="fab_trans"><i class="fas fa-wallet"></i></button>
             <button onclick="openModal('modal-loan')" data-label="Catat Hutang/Piutang" data-i18n-label="fab_loan"><i class="fas fa-handshake"></i></button>
             <button onclick="openModal('modal-emergency-add')" data-label="Tabung Dana Darurat" data-i18n-label="fab_emergency"><i class="fas fa-shield-alt"></i></button>
         </div>
