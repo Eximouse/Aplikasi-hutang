@@ -40,6 +40,7 @@ window.toggleFab = UI.toggleFab;
 window.toggleTheme = UI.toggleTheme;
 window.togglePinSetup = UI.togglePinSetup;
 window.pressPin = UI.pressPin; 
+window.exportCSV = UI.exportCSV;
 window.resetData = UI.resetData;
 window.downloadBackup = UI.downloadBackup;
 window.restoreBackup = UI.restoreBackup;
@@ -137,6 +138,7 @@ async function startApp() {
     UI.checkPinLock();
     initMoneyInputs(UI.calcLoanPreview); 
     if(typeof UI.initTypeSelector === 'function') UI.initTypeSelector(); 
+       if (typeof UI.initBillDateSelect === 'function') UI.initBillDateSelect();
     
     // 4. Render Awal
     UI.renderWallets();
