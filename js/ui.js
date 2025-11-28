@@ -352,39 +352,48 @@ export function renderBills() {
 
         let statusHTML = '';
         let btnHTML = '';
-        
+        let borderClass = '';
+
+        // [UPDATE] Hapus background, sisakan warna teks saja
         if (isPaid) {
-            statusHTML = `<span class="badge-gray" style="color:var(--success); background:var(--success-bg);"><i class="fas fa-check"></i> ${t('status_paid', data.settings.lang)}</span>`;
+            statusHTML = `<span class="badge-gray" style="color:var(--success);"><i class="fas fa-check"></i> ${t('status_paid', data.settings.lang)}</span>`;
+            borderClass = 'border-left-green';
         } else {
             if (currentDay > bill.dueDay) {
-                statusHTML = `<span class="badge-gray" style="color:var(--danger); background:var(--danger-bg);">${t('status_overdue', data.settings.lang)}</span>`;
+                statusHTML = `<span class="badge-gray" style="color:var(--danger);">${t('status_overdue', data.settings.lang)}</span>`;
+                borderClass = 'border-left-red';
             } else {
-                statusHTML = `<span class="badge-gray">${t('status_unpaid', data.settings.lang)}</span>`;
+                statusHTML = `<span class="badge-gray" style="color:var(--text-muted);">${t('status_unpaid', data.settings.lang)}</span>`;
             }
-            btnHTML = `<button class="btn-xs" onclick="payBill(${bill.id})" style="margin-top:5px; border-color:var(--primary); color:var(--primary);">${t('btn_pay_bill', data.settings.lang)}</button>`;
+            btnHTML = `<button class="btn-xs text-primary" onclick="payBill(${bill.id})" style="margin-top:8px; border:1px solid var(--primary);">${t('btn_pay_bill', data.settings.lang)}</button>`;
         }
 
         const el = document.createElement('div');
-        el.className = `card list-item`;
+        el.className = `card list-item ${borderClass}`;
         
         el.innerHTML = `
-            <div>
-                <strong>${bill.name}</strong><br>
-                <small class="text-muted">${t('lbl_due_date', data.settings.lang)} <b>${bill.dueDay}</b></small>
-            </div>
-            <div class="text-right">
-                <strong>${fmtMoney(bill.amount)}</strong><br>
-                ${statusHTML} <br>
-                ${btnHTML}
-                <div style="margin-top:5px;">
-                     <i class="fas fa-trash text-muted" onclick="deleteItem('bills', ${bill.id})" style="font-size:0.8rem; cursor:pointer;"></i>
+            <div class="flex-between">
+                <div>
+                    <strong>${bill.name}</strong>
+                    <div style="font-size:0.8rem; margin-top:4px;" class="text-muted">
+                        ${t('lbl_due_date', data.settings.lang)} <b>${bill.dueDay}</b>
+                    </div>
                 </div>
+                <div style="text-align:right">
+                    <strong>${fmtMoney(bill.amount)}</strong><br>
+                    ${statusHTML}
+                </div>
+            </div>
+            <div class="flex-between" style="align-items:flex-end">
+                 <i class="fas fa-trash text-muted" onclick="deleteItem('bills', ${bill.id})" style="font-size:0.8rem; cursor:pointer; margin-top:15px;"></i>
+                 ${btnHTML}
             </div>
         `;
         list.appendChild(el);
     });
 
     document.getElementById('bill-status-summary').textContent = `${paidCount}/${data.bills.length} ${t('status_paid', data.settings.lang)}`;
+       
     renderEmptyState('bill-list', 'msg_empty_bill', 'fa-file-invoice');
 }
 
@@ -581,16 +590,18 @@ export function renderLoans() {
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
             const shortDate = nextDueDate.toLocaleDateString(data.settings.lang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short', year: '2-digit' });
 
+            // [UPDATE] Tampilan Status Bersih (Tanpa Background)
             if (diffDays === 0) {
-                dueStatusHTML = `<small class="badge-gray" style="background:#fff3cd; color:#856404;"><i class="fas fa-exclamation-circle"></i> ${t('sts_due_today', data.settings.lang)}</small>`;
+                dueStatusHTML = `<small class="badge-gray" style="color:var(--warning); animation: pulse 1.5s infinite;"><i class="fas fa-exclamation-circle"></i> ${t('sts_due_today', data.settings.lang)}</small>`;
             } else if (diffDays > 0) {
                 const prefix = data.settings.lang === 'id' ? 'H-' : 'Due ';
-                dueStatusHTML = `<small style="background:var(--primary-light); color:var(--primary); padding: 4px 8px; border-radius: 6px; font-weight:600; font-size: 0.75rem;"><i class="fas fa-clock"></i> ${prefix}${diffDays} &bull; ${shortDate}</small>`;
+                // Gunakan warna primary (Biru) agar konsisten dengan tema clean
+                dueStatusHTML = `<small style="color:var(--primary); font-weight:700; font-size: 0.75rem;"><i class="fas fa-clock"></i> ${prefix}${diffDays} &bull; ${shortDate}</small>`;
             } else {
-                dueStatusHTML = `<small class="badge-gray" style="background:var(--danger-bg); color:var(--danger);">${t('sts_late', data.settings.lang)} ${Math.abs(diffDays)} ${t('sts_day', data.settings.lang)}</small>`;
+                dueStatusHTML = `<small class="badge-gray" style="color:var(--danger);">${t('sts_late', data.settings.lang)} ${Math.abs(diffDays)} ${t('sts_day', data.settings.lang)}</small>`;
             }
         } else {
-            dueStatusHTML = `<small class="badge-gray" style="background:var(--success-bg); color:var(--success);"><i class="fas fa-check"></i> LUNAS</small>`;
+            dueStatusHTML = `<small class="badge-gray" style="color:var(--success);"><i class="fas fa-check"></i> LUNAS</small>`;
             progressLabel = "Selesai";
         }
 
@@ -601,7 +612,6 @@ export function renderLoans() {
 
         const el = document.createElement('div');
         el.className = 'card list-item';
-        // Border kiri indikator
         el.style.borderLeft = `4px solid ${l.type === 'piutang' ? 'var(--success)' : 'var(--danger)'}`;
         
         el.innerHTML = `
@@ -609,10 +619,10 @@ export function renderLoans() {
                 <div class="flex-between">
                     <div>
                         <strong>${l.person}</strong>
-                        <div style="margin-top:6px;">${dueStatusHTML}</div>
+                        <div style="margin-top:4px;">${dueStatusHTML}</div>
                     </div>
                     <div style="text-align:right">
-                         <span style="font-size:0.7rem; font-weight:bold; color:${l.type==='piutang'?'var(--success)':'var(--danger)'}">${typeLabel}</span><br>
+                         <span style="font-size:0.7rem; font-weight:800; letter-spacing:0.5px; color:${l.type==='piutang'?'var(--success)':'var(--danger)'}">${typeLabel}</span><br>
                         <small class="text-muted" style="font-size:0.7rem;">${l.status === 'active' ? progressLabel : displayTenor}</small>
                     </div>
                 </div>
@@ -1201,9 +1211,7 @@ export function refreshAds(containerId) {
         } catch (e) {
             console.warn("AdSense pending...");
         }
-    });
-}
-// [BARU] Deteksi Koneksi Internet
+  // [BARU] Deteksi Koneksi Internet
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 
