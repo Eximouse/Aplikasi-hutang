@@ -1195,6 +1195,22 @@ export function renderTrendChart() {
         }
     });
 }
+export function toggleAddBill() {
+    const form = document.getElementById('add-bill-form');
+    if (form) form.classList.toggle('hidden');
+}
+
+export function toggleDcaInput() {
+    const method = document.getElementById('calc-method').value;
+    const dcaGroup = document.getElementById('dca-input-group');
+    if (dcaGroup) {
+        if (method === 'none') {
+            dcaGroup.classList.add('hidden');
+        } else {
+            dcaGroup.classList.remove('hidden');
+        }
+    }
+}
 
 export function refreshAds(containerId) {
     const container = document.getElementById(containerId);
