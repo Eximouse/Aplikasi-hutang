@@ -20,6 +20,7 @@ window.saveBudget = UI.saveBudget;
 window.saveBill = UI.saveBill;
 window.saveLoan = UI.saveLoan;
 window.addGoal = UI.addGoal;
+window.saveTargetSavings = UI.saveTargetSavings;
 window.addEmergencyFund = UI.addEmergencyFund;
 window.saveEmergencyProfile = UI.saveEmergencyProfile;
 window.toggleEmergencySettings = UI.toggleEmergencySettings;
