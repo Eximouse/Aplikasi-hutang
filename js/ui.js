@@ -1210,10 +1210,11 @@ export function refreshAds(containerId) {
             if (typeof window.adsbygoogle !== 'undefined') window.adsbygoogle.push({});
         } catch (e) {
             console.warn("AdSense pending...");
-                 }
-            });
         }
-  // [BARU] Deteksi Koneksi Internet
+    });
+}
+
+// [BARU] Deteksi Koneksi Internet
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 
@@ -1223,7 +1224,9 @@ function updateOnlineStatus() {
     
     const toast = document.createElement('div');
     toast.className = `toast ${status === 'online' ? 'success' : 'error'}`;
-    toast.style.background = status === 'online' ? '#10b981' : '#64748b'; // Hijau / Abu
+    
+    // Style inline ini opsional karena sudah ada di CSS, tapi boleh dibiarkan
+    toast.style.background = status === 'online' ? '#10b981' : '#64748b'; 
     
     const icon = status === 'online' ? 'fa-wifi' : 'fa-plane';
     const text = status === 'online' ? 'Kembali Online' : 'Mode Offline';
@@ -1231,6 +1234,4 @@ function updateOnlineStatus() {
     toast.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
-      }
-   };
 }
