@@ -43,6 +43,8 @@ export const RESOURCES = {
         status_paid: "LUNAS",
         status_unpaid: "BELUM",
         status_overdue: "TELAT",
+        lbl_search_budget: "Cari Transaksi..",
+        lbl_search_loan: "Cari Pinjaman..",
         
         tab_trans: "Transaksi",
         tab_plan: "Planning & Target",
@@ -240,6 +242,8 @@ export const RESOURCES = {
         status_paid: "PAID",
         status_unpaid: "UNPAID",
         status_overdue: "LATE",
+        lbl_search_budget: "Search Transactions..",
+        lbl_search_loan: "Search Loans..",
         
         tab_trans: "Transactions",
         tab_plan: "Planning & Goals",
