@@ -3,13 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <script>
-        window.onerror = function(message, source, lineno, colno, error) {
-            const overlay = document.getElementById('loading-overlay');
-            if(overlay) overlay.style.display = 'none';
-            alert("ERROR:\n" + message + "\nLine: " + lineno);
-        };
-    </script>
     <meta name="theme-color" content="#2b2d42">
     <title>Finansial Pro</title>
     
@@ -372,7 +365,7 @@
     <div id="toast-container"></div>
 
     <div class="fab-wrapper">
-        <div class="fab-menu" id="fab-menu" style="display: none;">
+        <div class="fab-menu" id="fab-menu">
             <button onclick="openModal('modal-budget')" data-label="Catat Transaksi" data-i18n-label="fab_trans"><i class="fas fa-wallet"></i></button>
             <button onclick="openModal('modal-loan')" data-label="Catat Hutang/Piutang" data-i18n-label="fab_loan"><i class="fas fa-handshake"></i></button>
             <button onclick="openModal('modal-emergency-add')" data-label="Tabung Dana Darurat" data-i18n-label="fab_emergency"><i class="fas fa-shield-alt"></i></button>
