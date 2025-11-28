@@ -225,8 +225,33 @@ input:focus, select:focus { outline: none; background: var(--bg-card); border-co
 .nav-item.active { color: var(--primary); background: rgba(67, 97, 238, 0.1); }
 .nav-item i { font-size: 1.3rem; margin-bottom: 2px; }
 
-/* FAB */
-.fab-wrapper { position: fixed; bottom: 100px; right: 25px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
+/* --- FAB (FLOATING ACTION BUTTON) --- */
+.fab-wrapper { 
+    position: fixed; 
+    bottom: 100px; 
+    right: 25px; 
+    z-index: 100; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: flex-end; 
+    gap: 15px; 
+}
+
+/* Menu Sembunyi Secara Default */
+.fab-menu { 
+    display: none; /* INI YANG SEBELUMNYA KURANG */
+    flex-direction: column; 
+    gap: 15px; 
+    align-items: flex-end; 
+    margin-bottom: 5px;
+}
+
+/* Menu Muncul saat class 'active' ditambahkan oleh JS */
+.fab-menu.active { 
+    display: flex; 
+    animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+
 .fab-main { 
     width: 60px; height: 60px; border-radius: 20px; 
     background: var(--text-main); color: var(--bg-body); 
@@ -234,13 +259,42 @@ input:focus, select:focus { outline: none; background: var(--bg-card); border-co
     box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
     cursor: pointer; transition: 0.3s; display: grid; place-items: center; 
 }
+
 [data-theme="dark"] .fab-main { background: var(--primary); color: white; }
-.fab-main:active { transform: scale(0.9); }
+
+.fab-main:active { transform: scale(0.9) rotate(45deg); }
+
 .fab-menu button { 
     width: 50px; height: 50px; border-radius: 16px; border: none; 
     background: var(--bg-card); color: var(--text-main); 
     box-shadow: 0 5px 15px rgba(0,0,0,0.1); cursor: pointer; display: grid; place-items: center; 
+    transition: 0.2s;
 }
+
+.fab-menu button:active { transform: scale(0.9); }
+
+/* Label teks di samping tombol kecil (Opsional agar lebih informatif) */
+.fab-menu button::after {
+    content: attr(data-label);
+    position: absolute;
+    right: 60px;
+    background: var(--bg-card);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.2s;
+    transform: translateX(10px);
+}
+.fab-menu button:hover::after {
+    opacity: 1;
+    transform: translateX(0);
+}
+
 
 /* --- MODALS --- */
 .modal-overlay { 
