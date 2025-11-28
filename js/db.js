@@ -1,8 +1,5 @@
 // js/db.js
 import { APP_KEY } from './config.js';
-//Circular dependency? Hati-hati. 
-// Sebaiknya showToast dipindah ke utils atau ui.js jangan import db.js dulu.
-// Untuk amannya, kita pakai console.error dulu di sini, atau oper fungsi showToast.
 
 // State Data Utama
 export let data = {
@@ -62,9 +59,6 @@ export async function loadAppData(currentUser, db) {
     }
     if (!data.emergency) {
          data.emergency = { saved: 0, expense: 0, job: 'stable', dependents: '0', targetMonths: 6, targetAmount: 0 };
-    }
-} catch (error) {
-        console.error("Error loading data:", error);
     }
 }
 
