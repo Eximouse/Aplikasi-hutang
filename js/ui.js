@@ -1314,6 +1314,47 @@ export function showCalcDetail() {
     }
 }
 
+// --- [PERBAIKAN 1] FUNGSI INIT TANGGAL TAGIHAN ---
+// Panggil fungsi ini saat startApp di main.js
+export function initBillDateSelect() {
+    const select = document.getElementById('bill-date');
+    if (select && select.children.length === 0) {
+        for (let i = 1; i <= 31; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = i;
+            select.appendChild(opt);
+        }
+    }
+}
+
+// --- [PERBAIKAN 2] FUNGSI EXPORT CSV (YANG HILANG) ---
+export function exportCSV(type) {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    let rows = [];
+    
+    if(type === 'budget') {
+        rows.push("Tanggal,Tipe,Deskripsi,Nominal,Dompet");
+        data.budget.forEach(b => {
+            const w = data.wallets.find(x => x.id === b.walletId)?.name || '-';
+            rows.push(`${b.date},${b.type},"${b.desc}",${b.amount},"${w}"`);
+        });
+    } else if(type === 'loans') {
+        rows.push("Tanggal,Tipe,Nama,Total,Terbayar,Status");
+        data.loans.forEach(l => rows.push(`${l.date},${l.type},"${l.person}",${l.total},${l.paid},${l.status}`));
+    }
+
+    csvContent += rows.join("\r\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `finpro_${type}_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+
 export function refreshAds(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
