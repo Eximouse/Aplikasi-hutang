@@ -1210,6 +1210,8 @@ export function refreshAds(containerId) {
             if (typeof window.adsbygoogle !== 'undefined') window.adsbygoogle.push({});
         } catch (e) {
             console.warn("AdSense pending...");
+                 }
+            });
         }
   // [BARU] Deteksi Koneksi Internet
 window.addEventListener('online', updateOnlineStatus);
@@ -1229,5 +1231,6 @@ function updateOnlineStatus() {
     toast.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
-  }
+      }
+   };
 }
