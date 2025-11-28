@@ -1229,4 +1229,5 @@ function updateOnlineStatus() {
     toast.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
+  }
 }
