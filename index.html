@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            const overlay = document.getElementById('loading-overlay');
+            if(overlay) overlay.style.display = 'none';
+            alert("ERROR:\n" + message + "\nLine: " + lineno);
+        };
+    </script>
     <meta name="theme-color" content="#2b2d42">
     <title>Finansial Pro</title>
     
@@ -389,21 +395,31 @@
                 <i class="fas fa-times close-icon" onclick="closeModal('modal-budget')"></i>
             </div>
             <div class="modal-body">
-                <div class="type-selector">
-                    <input type="radio" name="b-type" id="t-out" value="expense" checked>
-                    <label for="t-out" class="type-btn expense" data-i18n="lbl_expense_type">Pengeluaran</label>
-                    <input type="radio" name="b-type" id="t-in" value="income">
-                    <label for="t-in" class="type-btn income" data-i18n="lbl_income_type">Pemasukan</label>
-                </div>
-                <div class="form-group" style="margin-bottom: 10px;">
-                    <select id="b-wallet" style="padding: 10px; border-radius: 12px; background: var(--bg-input);"></select>
-                </div>
-                <input type="text" inputmode="numeric" class="money-input input-lg" id="b-amount" data-i18n-ph="ph_amount" placeholder="Nominal (Rp)">
-                <input type="text" id="b-desc" data-i18n-ph="ph_desc" placeholder="Keterangan (cth: Makan Siang)">
-                <input type="date" id="b-date">
-                <input type="hidden" id="b-id">
-                <button class="btn-primary full-width mt-20" onclick="saveBudget()" data-i18n="btn_save">Simpan</button>
-            </div>
+    <div class="type-selector">
+        <input type="radio" name="b-type" id="t-out" value="expense" checked onchange="updateCategoryOptions()">
+        <label for="t-out" class="type-btn expense" data-i18n="lbl_expense_type">Pengeluaran</label>
+        
+        <input type="radio" name="b-type" id="t-in" value="income" onchange="updateCategoryOptions()">
+        <label for="t-in" class="type-btn income" data-i18n="lbl_income_type">Pemasukan</label>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 10px;">
+        <label style="font-size:0.8rem; margin-left:5px; color:var(--text-muted);" data-i18n="lbl_category">Kategori</label>
+        <select id="b-category" style="padding: 10px; border-radius: 12px; background: var(--bg-input);">
+            </select>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 10px;">
+        <select id="b-wallet" style="padding: 10px; border-radius: 12px; background: var(--bg-input);"></select>
+    </div>
+
+    <input type="text" inputmode="numeric" class="money-input input-lg" id="b-amount" data-i18n-ph="ph_amount" placeholder="Nominal (Rp)">
+    <input type="text" id="b-desc" data-i18n-ph="ph_desc" placeholder="Keterangan (cth: Makan Siang)">
+    <input type="date" id="b-date">
+    <input type="hidden" id="b-id">
+    
+    <button class="btn-primary full-width mt-20" onclick="saveBudget()" data-i18n="btn_save">Simpan</button>
+</div>
         </div>
     </div>
 

@@ -3,6 +3,28 @@ import { data, saveAppData } from './db.js';
 import { t, fmtMoney, fmtDate, parseMoney, initMoneyInputs } from './utils.js';
 import { APP_KEY } from './config.js';
 
+// Definisi Icon untuk setiap kategori (Opsional, biar cantik)
+const CAT_ICONS = {
+    cat_food: 'fa-utensils',
+    cat_transport: 'fa-bus',
+    cat_shopping: 'fa-shopping-bag',
+    cat_bill: 'fa-file-invoice',
+    cat_health: 'fa-medkit',
+    cat_edu: 'fa-graduation-cap',
+    cat_ent: 'fa-film',
+    cat_inv: 'fa-chart-line',
+    cat_salary: 'fa-money-bill-wave',
+    cat_bonus: 'fa-gift',
+    cat_sell: 'fa-store',
+    cat_other: 'fa-ellipsis-h'
+};
+
+// Daftar Key Resource berdasarkan Tipe
+const CAT_KEYS = {
+    expense: ['cat_food', 'cat_transport', 'cat_shopping', 'cat_bill', 'cat_health', 'cat_edu', 'cat_ent', 'cat_other'],
+    income: ['cat_salary', 'cat_bonus', 'cat_sell', 'cat_inv', 'cat_other']
+};
+
 // --- VARIABLES ---
 let chartInstance = null;
 let trendChartInstance = null;
@@ -188,28 +210,33 @@ export function renderBudget() {
             else if (w.type === 'bank') walletName = t('wallet_bank', data.settings.lang);
             else if (w.type === 'ewallet') walletName = t('wallet_ewallet', data.settings.lang);
             else walletName = w.name;
+                        
         }
 
+// Ambil nama kategori yang sudah di translate
+    const catName = b.category ? t(b.category, data.settings.lang) : b.desc;
+    // Ambil icon
+    const iconKey = CAT_ICONS[b.category] || 'fa-circle';
+    
         const el = document.createElement('div');
         el.className = `card list-item ${b.type}`;
         
         el.innerHTML = `
+            <div style="display:flex; align-items:center; gap:12px;">
+            <div style="background:${b.type==='income'?'var(--success-bg)':'var(--danger-bg)'}; padding:10px; border-radius:12px;">
+                <i class="fas ${iconKey}" style="color:${b.type==='income'?'var(--success)':'var(--danger)'}"></i>
+            </div>
             <div>
-                <i class="fas ${b.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
-                <div>
-                    <strong>${b.desc}</strong><br>
-                    <small class="text-muted">${fmtDate(b.date, data.settings.lang)} &bull; ${walletName}</small>
-                </div>
+                <strong>${catName}</strong><br>
+                <small class="text-muted">${b.desc ? b.desc : walletName}</small>
             </div>
-            <div class="text-right">
-                <strong class="${b.type === 'income' ? 'text-green' : 'text-red'}">
-                    ${b.type === 'income' ? '+' : '-'} ${fmtMoney(b.amount)}
-                </strong>
-                <div style="margin-top:5px; display:flex; gap:10px; justify-content:flex-end;">
-                    <i class="fas fa-pen text-primary" onclick="editBudget(${b.id})" style="font-size:0.9rem; cursor:pointer;"></i>
-                    <i class="fas fa-trash text-muted" onclick="deleteItem('budget', ${b.id})" style="font-size:0.9rem; cursor:pointer;"></i>
-                </div>
-            </div>
+        </div>
+        <div class="text-right">
+             <strong class="${b.type === 'income' ? 'text-green' : 'text-red'}">
+                ${b.type === 'income' ? '+' : '-'} ${fmtMoney(b.amount)}
+            </strong>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">${fmtDate(b.date, data.settings.lang)}</div>
+             </div>
         `;
         list.appendChild(el);
     });
@@ -259,19 +286,23 @@ export function renderChart(income, expense) {
 export function saveBudget() {
     const id = document.getElementById('b-id').value; 
     const typeRadio = document.querySelector('input[name="b-type"]:checked');
-    const type = typeRadio ? typeRadio.value : 'expense'; // [FIX] Ambil nilai radio dgn aman
-
+    const type = typeRadio ? typeRadio.value : 'expense';
+   
     const amountRaw = document.getElementById('b-amount').value;
     const amount = parseMoney(amountRaw);
     const desc = document.getElementById('b-desc').value;
     const date = document.getElementById('b-date').value;
     const walletId = parseInt(document.getElementById('b-wallet').value);
+    
+    // [BARU] Ambil nilai Kategori
+    const category = document.getElementById('b-category').value || 'cat_other';
 
     if (!amount || !desc) return showToast(t('msg_complete_data', data.settings.lang), 'error');
 
     // --- LOGIKA EDIT ---
     if (id) {
         const oldItem = data.budget.find(b => b.id == id);
+        
         if (oldItem) {
             // 1. Kembalikan saldo lama
             const oldWallet = data.wallets.find(w => w.id === oldItem.walletId);
@@ -285,6 +316,7 @@ export function saveBudget() {
             oldItem.desc = desc;
             oldItem.date = date;
             oldItem.walletId = walletId;
+            oldItem.category = category;
             
             // 3. Potong saldo baru
             const newWallet = data.wallets.find(w => w.id === walletId);
@@ -302,7 +334,8 @@ export function saveBudget() {
             if (type === 'income') wallet.balance += amount;
             else wallet.balance -= amount;
         }
-        data.budget.unshift({ id: Date.now(), type, amount, desc, date, walletId });
+        
+        data.budget.unshift({ id: Date.now(), type, amount, desc, date, walletId, category });
         showToast(t('msg_trans_saved', data.settings.lang));
     }
     
@@ -329,8 +362,12 @@ export function editBudget(id) {
     } else {
         document.getElementById('t-out').checked = true;
     }
-
-    openModal('modal-budget');
+    
+ updateCategoryOptions();
+    setTimeout(() => {
+        if(item.category) document.getElementById('b-category').value = item.category;
+    }, 10);
+    openModal('modal-budget');    
 }
 
 // --- FEATURE: BILLS ---
@@ -1354,6 +1391,23 @@ export function exportCSV(type) {
     document.body.removeChild(link);
 }
 
+export function updateCategoryOptions() {
+    const typeRadio = document.querySelector('input[name="b-type"]:checked');
+    const type = typeRadio ? typeRadio.value : 'expense';
+    
+    const select = document.getElementById('b-category');
+    if(!select) return;
+
+    select.innerHTML = ''; // Reset isi dropdown
+
+    const keys = CAT_KEYS[type] || [];
+    keys.forEach(key => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = t(key, data.settings.lang);
+        select.appendChild(opt);
+    });
+}
 
 export function refreshAds(containerId) {
     const container = document.getElementById(containerId);

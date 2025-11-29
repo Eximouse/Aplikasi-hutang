@@ -198,7 +198,21 @@ export const RESOURCES = {
         // Label Modal Konfirmasi (Default HTML)
         msg_confirm_default: "Apakah anda yakin?",
         btn_yes_delete: "Ya, Hapus",
-        word_pay: "Bayar"
+        word_pay: "Bayar",
+        
+        cat_food: "Makan & Minum",
+        cat_transport: "Transportasi",
+        cat_shopping: "Belanja",
+        cat_bill: "Tagihan & Utilitas",
+        cat_health: "Kesehatan",
+        cat_edu: "Pendidikan",
+        cat_ent: "Hiburan",
+        cat_inv: "Investasi",
+        cat_salary: "Gaji Utama",
+        cat_bonus: "Bonus/THR",
+        cat_sell: "Penjualan",
+        cat_other: "Lain-lain",
+        lbl_category: "Kategori"
     },
     en: {
         welcome_msg: "Welcome to Finansial Pro App",
@@ -397,6 +411,20 @@ export const RESOURCES = {
         // Confirmation Modal Labels
         msg_confirm_default: "Are you sure?",
         btn_yes_delete: "Yes, Delete",
-        word_pay: "Pay"
+        word_pay: "Pay",
+        
+        cat_food: "Food & Beverage",
+        cat_transport: "Transportation",
+        cat_shopping: "Shopping",
+        cat_bill: "Bills & Utilities",
+        cat_health: "Health",
+        cat_edu: "Education",
+        cat_ent: "Entertainment",
+        cat_inv: "Investment",
+        cat_salary: "Salary",
+        cat_bonus: "Bonus",
+        cat_sell: "Sales",
+        cat_other: "Others",
+        lbl_category: "Category"
     }
 };

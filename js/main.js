@@ -60,6 +60,7 @@ window.showCalcDetail = UI.showCalcDetail;
 
 // Fungsi Kalkulator Pinjaman (Preview saat ngetik)
 window.calcLoanPreview = UI.calcLoanPreview;
+window.updateCategoryOptions = updateCategoryOptions;
 
 // Variabel Global Auth & DB
 let auth, db;
@@ -140,6 +141,7 @@ async function startApp() {
     initMoneyInputs(UI.calcLoanPreview); 
     if(typeof UI.initTypeSelector === 'function') UI.initTypeSelector(); 
        if (typeof UI.initBillDateSelect === 'function') UI.initBillDateSelect();
+       if(typeof UI.updateCategoryOptions === 'function') UI.updateCategoryOptions();
     
     // 4. Render Awal
     UI.renderWallets();
