@@ -3,7 +3,6 @@ import { data, saveAppData } from './db.js';
 import { t, fmtMoney, fmtDate, parseMoney, initMoneyInputs } from './utils.js';
 import { APP_KEY } from './config.js';
 
-
 // --- VARIABLES ---
 let chartInstance = null;
 let trendChartInstance = null;
@@ -92,7 +91,7 @@ export function closeModal(id) {
     resetInputs(id); // Reset form saat ditutup
 }
 
-export function resetInputs(containerId) {
+function resetInputs(containerId) {
     const container = document.getElementById(containerId);
     if(!container) return;
     
@@ -112,7 +111,7 @@ export function resetInputs(containerId) {
     }
 }
 
-export function renderEmptyState(containerId, messageKey, iconClass = 'fa-clipboard-list') {
+function renderEmptyState(containerId, messageKey, iconClass = 'fa-clipboard-list') {
     const container = document.getElementById(containerId);
     if (!container) return;
     if (container.children.length === 0) {
@@ -188,7 +187,7 @@ export function renderBudget() {
             if (w.type === 'cash') walletName = t('wallet_cash', data.settings.lang);
             else if (w.type === 'bank') walletName = t('wallet_bank', data.settings.lang);
             else if (w.type === 'ewallet') walletName = t('wallet_ewallet', data.settings.lang);
-            else walletName = w.name;            
+            else walletName = w.name;
         }
 
         const el = document.createElement('div');
@@ -260,21 +259,19 @@ export function renderChart(income, expense) {
 export function saveBudget() {
     const id = document.getElementById('b-id').value; 
     const typeRadio = document.querySelector('input[name="b-type"]:checked');
-    const type = typeRadio ? typeRadio.value  // [FIX] Ambil nilai radio dgn aman
-    xpense';
-   
+    const type = typeRadio ? typeRadio.value : 'expense'; // [FIX] Ambil nilai radio dgn aman
+
     const amountRaw = document.getElementById('b-amount').value;
     const amount = parseMoney(amountRaw);
     const desc = document.getElementById('b-desc').value;
     const date = document.getElementById('b-date').value;
-    const walletId = parseInt(document.getElementById('b-t').'cat_other';
+    const walletId = parseInt(document.getElementById('b-wallet').value);
 
     if (!amount || !desc) return showToast(t('msg_complete_data', data.settings.lang), 'error');
 
     // --- LOGIKA EDIT ---
     if (id) {
-        const oldItem = data.budget.find(b => d);
-        
+        const oldItem = data.budget.find(b => b.id == id);
         if (oldItem) {
             // 1. Kembalikan saldo lama
             const oldWallet = data.wallets.find(w => w.id === oldItem.walletId);
@@ -287,7 +284,7 @@ export function saveBudget() {
             oldItem.amount = amount;
             oldItem.desc = desc;
             oldItem.date = date;
-            oldItem.walletId = category;
+            oldItem.walletId = walletId;
             
             // 3. Potong saldo baru
             const newWallet = data.wallets.find(w => w.id === walletId);
@@ -303,9 +300,9 @@ export function saveBudget() {
         const wallet = data.wallets.find(w => w.id === walletId);
         if (wallet) {
             if (type === 'income') wallet.balance += amount;
-            else wallet.balance -= amoun  }
-        
-        data.budget.unshift({ id: Date.now(), type, amount, desc, daId, category });
+            else wallet.balance -= amount;
+        }
+        data.budget.unshift({ id: Date.now(), type, amount, desc, date, walletId });
         showToast(t('msg_trans_saved', data.settings.lang));
     }
     
@@ -330,9 +327,10 @@ export function editBudget(id) {
     if (item.type === 'income') {
         document.getElementById('t-in').checked = true;
     } else {
-        document.getElementById('t-out').checked =;
-    }, 10);
-    openModal('mod    al-budget');    
+        document.getElementById('t-out').checked = true;
+    }
+
+    openModal('modal-budget');
 }
 
 // --- FEATURE: BILLS ---
@@ -495,7 +493,7 @@ export function renderGoals() {
     renderEmptyState('goal-list', 'msg_empty_goal', 'fa-bullseye');
 }
 
-export function openGoalModal(id) {
+function openGoalModal(id) {
     document.getElementById('target-current-id').value = id;
     document.getElementById('target-add-amount').value = '';
     openModal('modal-target-add');
@@ -952,7 +950,7 @@ export function pressPin(key) {
     if (currentPinInput.length === 4) setTimeout(validatePin, 200);
 }
 
-export function validatePin() {
+function validatePin() {
     const savedPin = data.settings.pin;
     const dots = document.querySelectorAll('.dot');
     if (isSettingUpPin) {
@@ -1353,9 +1351,9 @@ export function exportCSV(type) {
     link.setAttribute("download", `finpro_${type}_${Date.now()}.csv`);
     document.body.appendChild(link);
     link.click();
-    document.boendChild(opt);
-    });
+    document.body.removeChild(link);
 }
+
 
 export function refreshAds(containerId) {
     const container = document.getElementById(containerId);
@@ -1379,7 +1377,7 @@ export function refreshAds(containerId) {
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 
-export function updateOnlineStatus() {
+function updateOnlineStatus() {
     const status = navigator.onLine ? "online" : "offline";
     const container = document.getElementById('toast-container');
     
