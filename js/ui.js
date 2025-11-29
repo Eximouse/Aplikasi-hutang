@@ -1173,7 +1173,7 @@ reportData.forEach(b => {
     const finalY = doc.lastAutoTable.finalY + 10;
     doc.setFontSize(8);
     doc.setTextColor(150);
-    doc.text("Dibuat otomatis oleh Finansial Pro", 14, finalY);
+    doc.text("Dibuat & Diterbitkan Oleh Finansial Pro", 14, finalY);
 
     doc.save(`Laporan_Keuangan_${Date.now()}.pdf`);
     showToast("Laporan PDF berhasil diunduh!");
