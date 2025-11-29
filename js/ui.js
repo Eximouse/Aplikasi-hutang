@@ -167,7 +167,6 @@ export function initMonthFilter() {
     const select = document.getElementById('filter-month');
     if(!select) return;
 
-    // Bersihkan opsi selain "Semua Waktu"
     select.innerHTML = '<option value="all">Semua Waktu</option>';
 
     const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -176,14 +175,18 @@ export function initMonthFilter() {
     // Tampilkan 12 bulan ke belakang + bulan depan
     for (let i = -1; i < 12; i++) {
         const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
-        const value = d.toISOString().slice(0, 7); // Format: YYYY-MM
-        const label = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+        
+        // [PERBAIKAN] Ambil Tahun & Bulan Lokal secara manual
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0'); // Tambah 0 di depan jika 1 digit (misal: 1 -> 01)
+        const value = `${year}-${month}`; // Hasil: "2025-11"
+        
+        const label = `${monthNames[d.getMonth()]} ${year}`;
         
         const opt = document.createElement('option');
         opt.value = value;
         opt.textContent = label;
         
-        // Default pilih bulan ini
         if (i === 0) opt.selected = true;
         select.appendChild(opt);
     }
@@ -220,7 +223,7 @@ export function renderBudget() {
         return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
     });
 
-    displayedData.forEach(b => {
+    filteredData.forEach(b => {
         if (b.type === 'income') income += b.amount; else expense += b.amount;
         
         let walletName = 'Dompet';
