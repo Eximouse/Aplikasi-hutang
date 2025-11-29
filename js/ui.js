@@ -10,146 +10,104 @@ let currentPinInput = "";
 let isSettingUpPin = false;
 let onConfirmAction = null;
 
-// --- HAPTIC FEEDBACK ---
-function vibrate(pattern = [10]) {
-    if (navigator.vibrate) navigator.vibrate(pattern);
-}
-
 // --- HELPER UI ---
 export function showToast(msg, type = 'success') {
     const container = document.getElementById('toast-container');
-    if(!container) return;
-    
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    const iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
-    toast.innerHTML = `<i class="fas ${iconClass}"></i> <span>${msg}</span>`;
-    
+    toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
     container.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 10); 
     setTimeout(() => toast.remove(), 3000);
 }
 
-// --- NAVIGATION ---
-export function navTo(pageId, element) {
-    vibrate();
-    document.querySelectorAll('.page').forEach(p => {
-        p.classList.remove('active');
-        p.style.display = 'none'; 
-    });
-    
-    const targetPage = document.getElementById(pageId);
-    if(targetPage) {
-        targetPage.style.display = 'block';
-        setTimeout(() => targetPage.classList.add('active'), 10);
-    }
+// --- NAVIGATION & MODALS ---
+export function navTo(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
     
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    if(element) element.classList.add('active');
-    else {
-        // Fallback update icon navigasi
-        const navLinks = document.querySelectorAll('.bottom-nav .nav-item');
-        if(pageId === 'page-home' && navLinks[0]) navLinks[0].classList.add('active');
-        if(pageId === 'page-budget' && navLinks[1]) navLinks[1].classList.add('active');
-        if(pageId === 'page-tools' && navLinks[2]) navLinks[2].classList.add('active');
-        if(pageId === 'page-loans' && navLinks[3]) navLinks[3].classList.add('active');
-        if(pageId === 'page-settings' && navLinks[4]) navLinks[4].classList.add('active');
-    }
-
-    const titleKeys = { 'page-home': 'nav_home', 'page-budget': 'nav_budget', 'page-loans': 'nav_loans', 'page-tools': 'nav_tools', 'page-settings': 'nav_settings' };
+    if(event && event.currentTarget) event.currentTarget.classList.add('active');
+    
+    const titleKeys = {
+        'page-home': 'nav_home', 
+        'page-budget': 'nav_budget', 
+        'page-loans': 'nav_loans', 
+        'page-tools': 'nav_tools', 
+        'page-settings': 'nav_settings'
+    };
+    
+    const titleKey = titleKeys[pageId];
     const headerEl = document.getElementById('header-title');
-    if(headerEl) {
-        const key = titleKeys[pageId];
-        headerEl.setAttribute('data-i18n', key);
-        headerEl.textContent = t(key, data.settings.lang);
-    }
+    headerEl.setAttribute('data-i18n', titleKey);
+    headerEl.textContent = t(titleKey, data.settings.lang);
     
     const fab = document.querySelector('.fab-wrapper');
-    if(fab) fab.style.display = (pageId === 'page-settings') ? 'none' : 'flex';
-
+    if (pageId === 'page-settings') {
+        fab.style.display = 'none';
+    } else {
+        fab.style.display = 'flex';
+    }
+    // Trigger lazy load ads saat pindah halaman
     setTimeout(() => {
         if (typeof window.refreshAds === 'function') window.refreshAds(pageId);
+        // Render ulang grafik trend jika masuk home agar animasi jalan
         if (pageId === 'page-home') renderTrendChart();
     }, 100);
 }
 
 export function switchTab(context, tabId) {
-    vibrate();
-    const parent = document.getElementById(`page-${context}`);
+    const parent = context === 'tools' ? document.getElementById('page-tools') : document.getElementById(`page-${context}`);
     if(!parent) return;
 
-    parent.querySelectorAll('.tab-content').forEach(c => {
+    const contents = parent.querySelectorAll('.tab-content');
+    contents.forEach(c => {
         c.classList.remove('active');
-        c.style.display = 'none';
+        c.style.display = 'none'; 
     });
 
     const target = document.getElementById(tabId);
-    if(target) {
-        target.style.display = 'block';
-        setTimeout(() => target.classList.add('active'), 10);
-    }
+    target.classList.add('active');
+    target.style.display = 'block'; 
     
-    parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    const tabs = parent.querySelectorAll('.tab');
+    tabs.forEach(t => t.classList.remove('active'));
     if(event && event.target) event.target.classList.add('active');
 }
 
-// --- MODALS (Bottom Sheet) ---
-export function openModal(id) {
-    vibrate([15]);
-    const modal = document.getElementById(id);
-    if(!modal) return;
-    
-    modal.classList.add('active');
-    const fabMenu = document.getElementById('fab-menu');
-    if(fabMenu && fabMenu.classList.contains('active')) toggleFab();
+export function toggleFab() {
+    document.getElementById('fab-menu').classList.toggle('active');
+    const icon = document.getElementById('fab-icon');
+    icon.classList.toggle('fa-plus');
+    icon.classList.toggle('fa-times');
+}
 
-    history.pushState({ modalId: id }, null, window.location.href);
+export function openModal(id) {
+    document.getElementById(id).classList.add('active');
+    if(document.getElementById('fab-menu').classList.contains('active')) toggleFab();
 }
 
 export function closeModal(id) {
-    const modal = document.getElementById(id);
-    if(modal) {
-        modal.classList.remove('active');
-        resetInputs(id);
-        if (history.state && history.state.modalId === id) history.back();
-    }
+    document.getElementById(id).classList.remove('active');
+    resetInputs(id); // Reset form saat ditutup
 }
-
-// Handle Back Button Android
-window.addEventListener('popstate', (event) => {
-    const activeModal = document.querySelector('.modal-overlay.active');
-    if(activeModal) {
-        activeModal.classList.remove('active');
-        resetInputs(activeModal.id);
-    }
-});
 
 function resetInputs(containerId) {
     const container = document.getElementById(containerId);
     if(!container) return;
     
+    // 1. Kosongkan semua input teks
     container.querySelectorAll('input:not([type="radio"]):not([type="hidden"])').forEach(input => input.value = '');
     
+    // 2. Reset Tanggal ke Hari Ini
     const today = new Date().toISOString().split('T')[0];
     const dateInput = container.querySelector('input[type="date"]');
     if(dateInput) dateInput.value = today;
 
-    // Reset ID Edit untuk Budget
+    // 3. [FIX] Reset Radio Button ke "Pengeluaran" (Default)
     if(containerId === 'modal-budget') {
         const defaultRadio = document.getElementById('t-out');
         if(defaultRadio) defaultRadio.checked = true;
-        document.getElementById('b-id').value = ''; 
-    }
-}
-
-export function toggleFab() {
-    vibrate();
-    const menu = document.getElementById('fab-menu');
-    const icon = document.getElementById('fab-icon');
-    if(menu) menu.classList.toggle('active');
-    if(icon) {
-        icon.classList.toggle('fa-plus');
-        icon.classList.toggle('fa-times');
+        document.getElementById('b-id').value = ''; // Hapus ID Edit
     }
 }
 
@@ -158,23 +116,22 @@ function renderEmptyState(containerId, messageKey, iconClass = 'fa-clipboard-lis
     if (!container) return;
     if (container.children.length === 0) {
         container.innerHTML = `
-            <div style="text-align:center; padding: 40px 20px; opacity:0.6;">
-                <div style="background:var(--bg-input); width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px;">
-                    <i class="fas ${iconClass}" style="font-size:1.5rem; color:var(--text-muted);"></i>
-                </div>
-                <p class="text-muted">${t(messageKey, data.settings.lang)}</p>
+            <div style="text-align:center; padding: 40px 20px; opacity:0.6; animation: fadeIn 0.5s;">
+                <i class="fas ${iconClass}" style="font-size:3rem; margin-bottom:15px; color:var(--text-muted);"></i>
+                <p class="text-muted" style="font-size:0.95rem;">${t(messageKey, data.settings.lang)}</p>
             </div>
         `;
     }
 }
 
-// --- RENDER FUNCTIONS ---
+// --- FEATURE: WALLETS ---
 export function renderWallets() {
     const container = document.getElementById('wallet-list');
     const select = document.getElementById('b-wallet');
     if(!container || !select) return;
 
-    container.innerHTML = ''; select.innerHTML = '';
+    container.innerHTML = '';
+    select.innerHTML = '';
     let globalTotal = 0;
 
     data.wallets.forEach(w => {
@@ -191,8 +148,8 @@ export function renderWallets() {
         const el = document.createElement('div');
         el.className = 'wallet-card-mini';
         el.innerHTML = `
-            <div class="mb-10 text-xl"><i class="fas ${iconClass}"></i></div>
-            <small class="block opacity-80">${displayName}</small>
+            <div class="icon"><i class="fas ${iconClass}"></i></div>
+            <small>${displayName}</small>
             <strong>${fmtMoney(w.balance)}</strong>
         `;
         container.appendChild(el);
@@ -202,11 +159,10 @@ export function renderWallets() {
         opt.textContent = `${displayName} (${fmtMoney(w.balance)})`;
         select.appendChild(opt);
     });
-    
-    const balanceEl = document.getElementById('main-balance');
-    if(balanceEl) balanceEl.textContent = fmtMoney(globalTotal);
+    document.getElementById('main-balance').textContent = fmtMoney(globalTotal);
 }
 
+// --- FEATURE: BUDGET (TRANSAKSI) ---
 export function renderBudget() {
     const list = document.getElementById('budget-list');
     const searchInput = document.getElementById('budget-search');
@@ -216,35 +172,43 @@ export function renderBudget() {
     list.innerHTML = '';
     
     let income = 0, expense = 0;
-    const filteredData = data.budget.filter(b => b.desc.toLowerCase().includes(keyword));
+
+    // Filter data
+    const filteredData = data.budget.filter(b => {
+        return b.desc.toLowerCase().includes(keyword);
+    });
 
     filteredData.forEach(b => {
         if (b.type === 'income') income += b.amount; else expense += b.amount;
-        let walletName = '-';
+        
+        let walletName = 'Dompet';
         const w = data.wallets.find(x => x.id === b.walletId);
-        if (w) walletName = w.name;
+        if (w) {
+            if (w.type === 'cash') walletName = t('wallet_cash', data.settings.lang);
+            else if (w.type === 'bank') walletName = t('wallet_bank', data.settings.lang);
+            else if (w.type === 'ewallet') walletName = t('wallet_ewallet', data.settings.lang);
+            else walletName = w.name;
+        }
 
         const el = document.createElement('div');
-        el.className = `list-item ripple`;
-        el.onclick = () => editBudget(b.id);
+        el.className = `card list-item ${b.type}`;
         
-        const iconColor = b.type === 'income' ? 'text-green' : 'text-red';
-        const bgIcon = b.type === 'income' ? 'bg-green-light' : 'bg-red-light';
-        const arrow = b.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up';
-
         el.innerHTML = `
-            <div class="flex-center gap-10">
-                <div class="stat-icon ${bgIcon}" style="width:40px; height:40px; border-radius:12px;">
-                    <i class="fas ${arrow} ${iconColor}"></i>
-                </div>
+            <div>
+                <i class="fas ${b.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
                 <div>
-                    <div class="font-bold">${b.desc}</div>
+                    <strong>${b.desc}</strong><br>
                     <small class="text-muted">${fmtDate(b.date, data.settings.lang)} &bull; ${walletName}</small>
                 </div>
             </div>
             <div class="text-right">
-                <div class="font-bold ${iconColor}">${b.type === 'income' ? '+' : '-'} ${fmtMoney(b.amount)}</div>
-                <i class="fas fa-trash text-muted mt-10" onclick="event.stopPropagation(); deleteItem('budget', ${b.id})" style="font-size:0.8rem; padding:5px;"></i>
+                <strong class="${b.type === 'income' ? 'text-green' : 'text-red'}">
+                    ${b.type === 'income' ? '+' : '-'} ${fmtMoney(b.amount)}
+                </strong>
+                <div style="margin-top:5px; display:flex; gap:10px; justify-content:flex-end;">
+                    <i class="fas fa-pen text-primary" onclick="editBudget(${b.id})" style="font-size:0.9rem; cursor:pointer;"></i>
+                    <i class="fas fa-trash text-muted" onclick="deleteItem('budget', ${b.id})" style="font-size:0.9rem; cursor:pointer;"></i>
+                </div>
             </div>
         `;
         list.appendChild(el);
@@ -252,76 +216,87 @@ export function renderBudget() {
     
     document.getElementById('main-income').textContent = fmtMoney(income);
     document.getElementById('main-expense').textContent = fmtMoney(expense);
-    renderChart(income, expense);
-    if(filteredData.length === 0) renderEmptyState('budget-list', 'msg_empty_trans');
+    
+    // Update Grafik Donat
+    if (typeof renderChart === "function") {
+        renderChart(income, expense);
+    }
+
+    if(filteredData.length === 0) {
+        list.innerHTML = `<div style="text-align:center; padding:30px; opacity:0.5;"><i class="fas fa-search" style="font-size:2rem; margin-bottom:10px;"></i><p>Tidak ditemukan</p></div>`;
+    }
 }
 
+// Fungsi Gambar Chart Donat (Dipisah)
 export function renderChart(income, expense) {
     const ctx = document.getElementById('mainChart');
     if(!ctx) return;
+
     if(chartInstance) chartInstance.destroy();
-    if(income === 0 && expense === 0) { income = 1; expense = 0; }
     
+    if(income === 0 && expense === 0) { income = 1; expense = 0; }
+    const labels = [t('lbl_income_type', data.settings.lang), t('lbl_expense_type', data.settings.lang)]; 
+
     chartInstance = new Chart(ctx.getContext('2d'), {
         type: 'doughnut',
         data: {
-            labels: [t('lbl_income_type', data.settings.lang), t('lbl_expense_type', data.settings.lang)],
+            labels: labels,
             datasets: [{
                 data: [income, expense],
-                backgroundColor: ['#10b981', '#ef4444'],
+                backgroundColor: ['#2563eb', '#ef4444'],
                 borderWidth: 0,
-                hoverOffset: 10
+                hoverOffset: 4
             }]
         },
         options: {
-            cutout: '70%', responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 8 } } }
+            cutout: '75%',
+            plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }
         }
     });
 }
 
-// --- LOGIKA EDIT & SAVE BUDGET (100% FIXED) ---
+// Fungsi Simpan Budget (Baru & Edit)
 export function saveBudget() {
-    vibrate();
     const id = document.getElementById('b-id').value; 
     const typeRadio = document.querySelector('input[name="b-type"]:checked');
-    const type = typeRadio ? typeRadio.value : 'expense';
-    const amount = parseMoney(document.getElementById('b-amount').value);
+    const type = typeRadio ? typeRadio.value : 'expense'; // [FIX] Ambil nilai radio dgn aman
+
+    const amountRaw = document.getElementById('b-amount').value;
+    const amount = parseMoney(amountRaw);
     const desc = document.getElementById('b-desc').value;
     const date = document.getElementById('b-date').value;
     const walletId = parseInt(document.getElementById('b-wallet').value);
 
     if (!amount || !desc) return showToast(t('msg_complete_data', data.settings.lang), 'error');
 
+    // --- LOGIKA EDIT ---
     if (id) {
-        // --- KASUS EDIT: Saldo Lama Dikembalikan (Revert) ---
         const oldItem = data.budget.find(b => b.id == id);
         if (oldItem) {
+            // 1. Kembalikan saldo lama
             const oldWallet = data.wallets.find(w => w.id === oldItem.walletId);
             if (oldWallet) {
-                // Jika dulunya Income, sekarang saldo dikurangi (karena dianggap batal masuk)
                 if (oldItem.type === 'income') oldWallet.balance -= oldItem.amount;
-                // Jika dulunya Expense, sekarang saldo ditambah (karena dianggap uang kembali)
                 else oldWallet.balance += oldItem.amount;
             }
-            
-            // Update Data Item
-            oldItem.type = type; 
-            oldItem.amount = amount; 
-            oldItem.desc = desc; 
-            oldItem.date = date; 
+            // 2. Update Item
+            oldItem.type = type;
+            oldItem.amount = amount;
+            oldItem.desc = desc;
+            oldItem.date = date;
             oldItem.walletId = walletId;
             
-            // --- KASUS EDIT: Saldo Baru Diterapkan ---
+            // 3. Potong saldo baru
             const newWallet = data.wallets.find(w => w.id === walletId);
             if (newWallet) {
                 if (type === 'income') newWallet.balance += amount;
                 else newWallet.balance -= amount;
             }
-            showToast("Transaksi diperbarui");
+            showToast("Transaksi berhasil diedit");
         }
-    } else {
-        // --- KASUS BARU ---
+    } 
+    // --- LOGIKA BARU ---
+    else {
         const wallet = data.wallets.find(w => w.id === walletId);
         if (wallet) {
             if (type === 'income') wallet.balance += amount;
@@ -336,25 +311,29 @@ export function saveBudget() {
     updateUI(); 
 }
 
+// Fungsi Buka Modal Edit
 export function editBudget(id) {
     const item = data.budget.find(b => b.id === id);
     if (!item) return;
-    
-    // Isi Form
+
     document.getElementById('b-id').value = item.id;
     document.getElementById('b-amount').value = item.amount.toLocaleString('id-ID');
     document.getElementById('b-desc').value = item.desc;
     document.getElementById('b-date').value = item.date;
+    
     if(item.walletId) document.getElementById('b-wallet').value = item.walletId;
     
-    // Set Radio Button
-    if (item.type === 'income') document.getElementById('t-in').checked = true;
-    else document.getElementById('t-out').checked = true;
-    
+    // [FIX] Set Radio Button dengan benar
+    if (item.type === 'income') {
+        document.getElementById('t-in').checked = true;
+    } else {
+        document.getElementById('t-out').checked = true;
+    }
+
     openModal('modal-budget');
 }
 
-// --- BILLS ---
+// --- FEATURE: BILLS ---
 export function renderBills() {
     const list = document.getElementById('bill-list');
     if(!list) return;
@@ -371,176 +350,186 @@ export function renderBills() {
         const isPaid = bill.lastPaidMonth === currentMonthStr;
         if(isPaid) paidCount++;
 
-        let statusBadge = '';
-        let actionBtn = '';
-        
+        let statusHTML = '';
+        let btnHTML = '';
+        let borderClass = '';
+
+        // [UPDATE] Hapus background, sisakan warna teks saja
         if (isPaid) {
-            statusBadge = `<span class="badge-pill text-green bg-green-light"><i class="fas fa-check"></i> ${t('status_paid', data.settings.lang)}</span>`;
+            statusHTML = `<span class="badge-gray" style="color:var(--success);"><i class="fas fa-check"></i> ${t('status_paid', data.settings.lang)}</span>`;
+            borderClass = 'border-left-green';
         } else {
-            // Logika Telat
             if (currentDay > bill.dueDay) {
-                statusBadge = `<span class="badge-pill text-red bg-red-light font-bold">TELAT</span>`;
+                statusHTML = `<span class="badge-gray" style="color:var(--danger);">${t('status_overdue', data.settings.lang)}</span>`;
+                borderClass = 'border-left-red';
             } else {
-                statusBadge = `<span class="badge-pill">${t('status_unpaid', data.settings.lang)}</span>`;
+                statusHTML = `<span class="badge-gray" style="color:var(--text-muted);">${t('status_unpaid', data.settings.lang)}</span>`;
             }
-            actionBtn = `<button class="btn-xs mt-10" onclick="payBill(${bill.id})" style="border:1px solid var(--primary); color:var(--primary); background:transparent;">${t('btn_pay_bill', data.settings.lang)}</button>`;
+            btnHTML = `<button class="btn-xs text-primary" onclick="payBill(${bill.id})" style="margin-top:8px; border:1px solid var(--primary);">${t('btn_pay_bill', data.settings.lang)}</button>`;
         }
 
         const el = document.createElement('div');
-        el.className = `list-item ripple`;
+        el.className = `card list-item ${borderClass}`;
+        
         el.innerHTML = `
-            <div>
-                <strong class="text-base">${bill.name}</strong>
-                <div class="text-sm text-muted mt-5">Tgl ${bill.dueDay} &bull; ${fmtMoney(bill.amount)}</div>
-                ${actionBtn}
+            <div class="flex-between">
+                <div>
+                    <strong>${bill.name}</strong>
+                    <div style="font-size:0.8rem; margin-top:4px;" class="text-muted">
+                        ${t('lbl_due_date', data.settings.lang)} <b>${bill.dueDay}</b>
+                    </div>
+                </div>
+                <div style="text-align:right">
+                    <strong>${fmtMoney(bill.amount)}</strong><br>
+                    ${statusHTML}
+                </div>
             </div>
-            <div class="text-right flex flex-col items-end gap-5">
-                ${statusBadge}
-                <i class="fas fa-trash text-muted mt-10" onclick="deleteItem('bills', ${bill.id})"></i>
+            <div class="flex-between" style="align-items:flex-end">
+                 <i class="fas fa-trash text-muted" onclick="deleteItem('bills', ${bill.id})" style="font-size:0.8rem; cursor:pointer; margin-top:15px;"></i>
+                 ${btnHTML}
             </div>
         `;
         list.appendChild(el);
     });
 
-    const summary = document.getElementById('bill-status-summary');
-    if(summary) summary.textContent = `${paidCount}/${data.bills.length} Lunas`;
+    document.getElementById('bill-status-summary').textContent = `${paidCount}/${data.bills.length} ${t('status_paid', data.settings.lang)}`;
+       
     renderEmptyState('bill-list', 'msg_empty_bill', 'fa-file-invoice');
 }
 
 export function saveBill() {
-    vibrate();
     const name = document.getElementById('bill-name').value;
     const amount = parseMoney(document.getElementById('bill-amount').value);
     const dueDay = parseInt(document.getElementById('bill-date').value);
+
     if(!name || !amount) return showToast(t('msg_complete_data', data.settings.lang), 'error');
+
     data.bills.push({ id: Date.now(), name, amount, dueDay, lastPaidMonth: null });
+
     saveAppData(window.currentUser, window.dbInstance);
-    toggleAddBill();
+    document.getElementById('add-bill-form').classList.add('hidden');
+    document.getElementById('bill-name').value = '';
+    document.getElementById('bill-amount').value = '';
     showToast(t('msg_trans_saved', data.settings.lang));
+    renderBills();
     updateUI();
 }
-export function toggleAddBill() {
-    const form = document.getElementById('add-bill-form');
-    if (form) form.classList.toggle('hidden');
-}
+
 export function payBill(id) {
-    vibrate();
     const bill = data.bills.find(b => b.id === id);
     if(!bill) return;
-    const wallet = data.wallets.find(w => w.id === 2);
+
+    const defaultWalletId = 2; 
+    const wallet = data.wallets.find(w => w.id === defaultWalletId);
     if(wallet) wallet.balance -= bill.amount;
-    data.budget.unshift({ id: Date.now(), type: 'expense', amount: bill.amount, desc: `[Tagihan] ${bill.name}`, date: new Date().toISOString().split('T')[0], walletId: 2 });
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    data.budget.unshift({
+        id: Date.now(),
+        type: 'expense',
+        amount: bill.amount,
+        desc: `[Tagihan] ${bill.name}`,
+        date: todayStr,
+        walletId: defaultWalletId
+    });
+
     bill.lastPaidMonth = new Date().toISOString().slice(0, 7);
+
     saveAppData(window.currentUser, window.dbInstance);
     showToast(t('msg_bill_paid', data.settings.lang));
     updateUI();
 }
 
-// --- LOANS (LOGIKA MATEMATIKA ASLI) ---
-export function renderLoans() {
-    const activeList = document.getElementById('loan-list-active');
-    const historyList = document.getElementById('loan-list-history');
-    const search = document.getElementById('loan-search').value.toLowerCase();
+// --- FEATURE: GOALS ---
+export function addGoal() {
+    const name = document.getElementById('goal-name').value;
+    const amount = parseMoney(document.getElementById('goal-amount').value);
     
-    if(!activeList || !historyList) return;
-    activeList.innerHTML = ''; historyList.innerHTML = '';
-    let totPiutang = 0, totHutang = 0;
-    const today = new Date(); today.setHours(0,0,0,0); 
+    if(!name || !amount) return showToast(t('msg_invalid_goal', data.settings.lang), 'error');
+    
+    data.goals.push({id: Date.now(), name, amount, saved: 0});
+    saveAppData(window.currentUser, window.dbInstance);
+    
+    document.getElementById('goal-name').value = '';
+    document.getElementById('goal-amount').value = '';
+    showToast(t('msg_goal_created', data.settings.lang));
+    updateUI();
+}
 
-    data.loans.forEach(l => {
-        if(l.status === 'active') {
-            const rem = l.total - l.paid;
-            if(l.type === 'piutang') totPiutang += rem; else totHutang += rem;
-        }
-        if(!l.person.toLowerCase().includes(search)) return;
-
-        let statusInfo = '';
-        let progressLabel = '';
-
-        // Hitung Jatuh Tempo / Telat
-        if (l.status === 'active') {
-            const transDate = new Date(l.date); transDate.setHours(0,0,0,0);
-            const tenor = parseInt(l.tenor) || 1;
-            const installmentAmount = l.total / tenor;
-            
-            let monthsPaid = Math.floor((l.paid + 100) / installmentAmount); 
-            if (monthsPaid >= tenor) monthsPaid = tenor - 1;
-
-            let nextDueDate = new Date(transDate);
-            nextDueDate.setMonth(transDate.getMonth() + (monthsPaid + 1));
-
-            const currentInstallmentNo = monthsPaid + 1;
-            progressLabel = `Cicilan ${currentInstallmentNo}/${tenor}`;
-
-            const diffTime = nextDueDate - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-            const shortDate = nextDueDate.toLocaleDateString(data.settings.lang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short' });
-
-            if (diffDays === 0) {
-                 statusInfo = `<small class="badge-pill bg-warning text-white" style="animation: pulse 1.5s infinite;"><i class="fas fa-exclamation-circle"></i> HARI INI</small>`;
-            } else if (diffDays > 0) {
-                 const prefix = data.settings.lang === 'id' ? 'H-' : 'Due ';
-                 statusInfo = `<small class="text-xs font-bold text-primary"><i class="fas fa-clock"></i> ${prefix}${diffDays} &bull; ${shortDate}</small>`;
-            } else {
-                 statusInfo = `<small class="badge-pill bg-red-light text-red font-bold">TELAT ${Math.abs(diffDays)} HARI</small>`;
-            }
-        } else {
-            statusInfo = `<small class="badge-pill bg-green-light text-green">LUNAS</small>`;
-            progressLabel = "Selesai";
-        }
-
-        const isPiutang = l.type === 'piutang';
-        const colorClass = isPiutang ? 'text-green' : 'text-red';
-        const bgClass = isPiutang ? 'bg-green-light' : 'bg-red-light';
-        const typeLabel = isPiutang ? 'Piutang' : 'Hutang';
-        const progress = Math.min(100, (l.paid / l.total) * 100);
-
+export function renderGoals() {
+    const container = document.getElementById('goal-list');
+    container.innerHTML = '';
+    
+    data.goals.forEach(g => {
+        const percent = Math.min(100, Math.round((g.saved / g.amount) * 100));
+        
         const el = document.createElement('div');
-        el.className = 'list-item ripple';
-        el.onclick = () => showLoanDetail(l.id);
+        el.className = 'card list-item';
+        el.onclick = (e) => {
+            if(e.target.classList.contains('btn-xs') || e.target.closest('.btn-xs')) return;
+            openGoalModal(g.id);
+        };
 
         el.innerHTML = `
-            <div class="w-full">
+            <div style="width:100%">
                 <div class="flex-between">
-                    <div class="flex-center gap-10">
-                         <div class="stat-icon ${bgClass}"><i class="fas ${isPiutang ? 'fa-hand-holding-usd' : 'fa-file-invoice-dollar'} ${colorClass}"></i></div>
-                         <div>
-                            <strong>${l.person}</strong>
-                            <div class="mt-1">${statusInfo}</div>
-                         </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="font-bold">${fmtMoney(l.total - l.paid)}</div>
-                        <small class="text-muted text-xs">${progressLabel}</small>
-                    </div>
+                    <strong>${g.name}</strong>
+                    <span class="badge-gray">${percent}%</span>
                 </div>
-                <div style="background:var(--bg-input); height:6px; border-radius:3px; margin-top:10px; overflow:hidden;">
-                    <div style="width:${progress}%; background:var(${isPiutang ? '--success' : '--danger'}); height:100%;"></div>
+                <div class="flex-between mt-10 text-muted" style="font-size:0.8rem">
+                    <span>${t('collected', data.settings.lang)}: <b class="text-primary">${fmtMoney(g.saved)}</b></span>
+                    <span>Target: ${fmtMoney(g.amount)}</span>
+                </div>
+                <div class="goal-progress-bg">
+                    <div class="goal-progress-bar" style="width:${percent}%"></div>
+                </div>
+                <div class="text-right mt-10">
+                    <button class="btn-xs" style="border-color:var(--danger); color:var(--danger);" onclick="deleteItem('goals', ${g.id})">Hapus</button>
                 </div>
             </div>
         `;
-
-        if(l.status === 'active') activeList.appendChild(el);
-        else historyList.appendChild(el);
+        container.appendChild(el);
     });
-
-    document.getElementById('main-piutang').textContent = fmtMoney(totPiutang);
-    document.getElementById('main-hutang').textContent = fmtMoney(totHutang);
-    renderEmptyState('loan-list-active', 'msg_empty_loan');
+    renderEmptyState('goal-list', 'msg_empty_goal', 'fa-bullseye');
 }
 
+function openGoalModal(id) {
+    document.getElementById('target-current-id').value = id;
+    document.getElementById('target-add-amount').value = '';
+    openModal('modal-target-add');
+}
+
+export function saveTargetSavings() {
+    const id = parseInt(document.getElementById('target-current-id').value);
+    const amount = parseMoney(document.getElementById('target-add-amount').value);
+    
+    if(!amount || amount <= 0) return showToast(t('msg_invalid_amount', data.settings.lang), 'error');
+    
+    const goal = data.goals.find(g => g.id === id);
+    if(goal) {
+        goal.saved += amount;
+        saveAppData(window.currentUser, window.dbInstance);
+        closeModal('modal-target-add');
+        showToast(`${t('msg_success_add', data.settings.lang)} Rp ${amount.toLocaleString()}`);
+        updateUI();
+    }
+}
+
+// --- FEATURE: LOANS (Sistem Cicilan) ---
 export function calcLoanPreview() {
     const p = parseMoney(document.getElementById('l-principal').value) || 0;
     const r = parseFloat(document.getElementById('l-rate').value) || 0;
     const t = parseFloat(document.getElementById('l-tenor').value) || 1;
+
     const totalInterest = p * (r/100) * t;
     const total = p + totalInterest;
+    const installment = total / t;
+
     document.getElementById('prev-total').textContent = fmtMoney(total);
-    document.getElementById('prev-installment').textContent = fmtMoney(total/t);
+    document.getElementById('prev-installment').textContent = fmtMoney(installment);
 }
 
 export function saveLoan() {
-    vibrate();
     const type = document.getElementById('l-type').value;
     const person = document.getElementById('l-person').value;
     const principal = parseMoney(document.getElementById('l-principal').value);
@@ -551,364 +540,857 @@ export function saveLoan() {
     if(!person || !principal) return showToast(t('msg_complete_data', data.settings.lang), 'error');
 
     const total = principal + (principal * (rate/100) * tenor);
+    
     data.loans.unshift({
         id: Date.now(), type, person, principal, rate, tenor, total, date,
         paid: 0, history: [], status: 'active'
     });
     saveAppData(window.currentUser, window.dbInstance);
     closeModal('modal-loan');
+    resetInputs('modal-loan');
+    showToast(t('msg_loan_saved', data.settings.lang));
     updateUI();
+}
+
+export function renderLoans() {
+    const activeList = document.getElementById('loan-list-active');
+    const historyList = document.getElementById('loan-list-history');
+    const search = document.getElementById('loan-search').value.toLowerCase();
+    
+    if(!activeList || !historyList) return;
+    activeList.innerHTML = ''; historyList.innerHTML = '';
+    let totPiutang = 0, totHutang = 0;
+    const today = new Date(); today.setHours(0,0,0,0);
+
+    data.loans.forEach(l => {
+        if(l.status === 'active') {
+            const remaining = l.total - l.paid;
+            if(l.type === 'piutang') totPiutang += remaining; else totHutang += remaining;
+        }
+
+        if(!l.person.toLowerCase().includes(search)) return;
+
+        let dueStatusHTML = '';
+        let progressLabel = ''; 
+        
+        if (l.status === 'active') {
+            const transDate = new Date(l.date); transDate.setHours(0,0,0,0);
+            const tenor = parseInt(l.tenor) || 1;
+            const installmentAmount = l.total / tenor;
+            let monthsPaid = Math.floor((l.paid + 100) / installmentAmount);
+            if (monthsPaid >= tenor) monthsPaid = tenor - 1;
+
+            let nextDueDate = new Date(transDate);
+            nextDueDate.setMonth(transDate.getMonth() + (monthsPaid + 1));
+
+            const currentInstallmentNo = monthsPaid + 1;
+            progressLabel = `Cicilan ${currentInstallmentNo}/${tenor}`;
+
+            const diffTime = nextDueDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            const shortDate = nextDueDate.toLocaleDateString(data.settings.lang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short', year: '2-digit' });
+
+            // [UPDATE] Tampilan Status Bersih (Tanpa Background)
+            if (diffDays === 0) {
+                dueStatusHTML = `<small class="badge-gray" style="color:var(--warning); animation: pulse 1.5s infinite;"><i class="fas fa-exclamation-circle"></i> ${t('sts_due_today', data.settings.lang)}</small>`;
+            } else if (diffDays > 0) {
+                const prefix = data.settings.lang === 'id' ? 'H-' : 'Due ';
+                // Gunakan warna primary (Biru) agar konsisten dengan tema clean
+                dueStatusHTML = `<small style="color:var(--primary); font-weight:700; font-size: 0.75rem;"><i class="fas fa-clock"></i> ${prefix}${diffDays} &bull; ${shortDate}</small>`;
+            } else {
+                dueStatusHTML = `<small class="badge-gray" style="color:var(--danger);">${t('sts_late', data.settings.lang)} ${Math.abs(diffDays)} ${t('sts_day', data.settings.lang)}</small>`;
+            }
+        } else {
+            dueStatusHTML = `<small class="badge-gray" style="color:var(--success);"><i class="fas fa-check"></i> LUNAS</small>`;
+            progressLabel = "Selesai";
+        }
+
+        const typeLabel = l.type === 'piutang' ? t('word_receivable', data.settings.lang) : t('word_debt', data.settings.lang);
+        const remainingLabel = t('word_remaining', data.settings.lang);
+        const progress = Math.min(100, (l.paid / l.total) * 100);
+        const displayTenor = (l.tenor || 1) + ' ' + t('month', data.settings.lang);
+
+        const el = document.createElement('div');
+        el.className = 'card list-item';
+        el.style.borderLeft = `4px solid ${l.type === 'piutang' ? 'var(--success)' : 'var(--danger)'}`;
+        
+        el.innerHTML = `
+            <div onclick="showLoanDetail(${l.id})" style="width:100%">
+                <div class="flex-between">
+                    <div>
+                        <strong>${l.person}</strong>
+                        <div style="margin-top:4px;">${dueStatusHTML}</div>
+                    </div>
+                    <div style="text-align:right">
+                         <span style="font-size:0.7rem; font-weight:800; letter-spacing:0.5px; color:${l.type==='piutang'?'var(--success)':'var(--danger)'}">${typeLabel}</span><br>
+                        <small class="text-muted" style="font-size:0.7rem;">${l.status === 'active' ? progressLabel : displayTenor}</small>
+                    </div>
+                </div>
+                <div class="flex-between text-muted mt-10" style="font-size:0.8rem; border-top:1px dashed var(--border); padding-top:8px;">
+                    <span>${remainingLabel}: <b style="color:var(--text-main)">${fmtMoney(l.total - l.paid)}</b></span>
+                    <span>${Math.round(progress)}%</span>
+                </div>
+                <div class="goal-progress-bg">
+                    <div class="goal-progress-bar" style="width:${progress}%; background:${l.type==='piutang'?'var(--success)':'var(--danger)'}"></div>
+                </div>
+            </div>
+        `;
+        if(l.status === 'active') activeList.appendChild(el);
+        else historyList.appendChild(el);
+    });
+
+    document.getElementById('main-piutang').textContent = fmtMoney(totPiutang);
+    document.getElementById('main-hutang').textContent = fmtMoney(totHutang);
+    renderEmptyState('loan-list-active', 'msg_empty_loan', 'fa-hand-holding-usd');
+    renderEmptyState('loan-list-history', 'msg_empty_loan', 'fa-history');
 }
 
 export function showLoanDetail(id) {
-    vibrate();
     const l = data.loans.find(x => x.id === id);
-    if (!l) return;
-    
-    const historyHtml = l.history.map((h, i) => `
-        <div class="flex-between py-2 border-b border-gray-100">
-            <span class="text-sm text-muted">${fmtDate(h.date, data.settings.lang)}</span>
-            <div class="flex-center gap-10">
-                <span class="font-bold">${fmtMoney(h.amount)}</span>
-                <i class="fas fa-trash text-red cursor-pointer" onclick="deletePayment(${l.id}, ${i})"></i>
+    if (!l) return; 
+    const remaining = l.total - l.paid;
+    const typeLabel = l.type === 'piutang' ? t('word_receivable', data.settings.lang) : t('word_debt', data.settings.lang);
+
+    let historyHtml = l.history.map((h, i) => 
+        `<div class="flex-between" style="border-bottom:1px dashed var(--border); padding:10px 0">
+            <small class="text-muted">${fmtDate(h.date, data.settings.lang)}</small>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <small style="font-weight:bold;">${fmtMoney(h.amount)}</small>
+                <i class="fas fa-times-circle text-red" onclick="deletePayment(${l.id}, ${i})" style="cursor:pointer;" title="${t('tip_delete_pay', data.settings.lang)}"></i> 
             </div>
-        </div>
-    `).join('');
+        </div>`
+    ).join('');
 
     const html = `
         <div class="text-center mb-20">
-            <h2 class="text-2xl font-bold">${l.person}</h2>
-            <div class="badge-pill mt-5">${l.type.toUpperCase()}</div>
+            <h2>${l.person}</h2>
+            <span class="badge-gray">${typeLabel}</span>
         </div>
         <div class="quick-stats-grid">
-            <div class="stat-card text-center">
-                <small class="text-muted">Total</small>
-                <strong class="text-lg">${fmtMoney(l.total)}</strong>
+            <div class="stat-card">
+                <small>${t('word_bill', data.settings.lang)}</small><strong>${fmtMoney(l.total)}</strong>
             </div>
-            <div class="stat-card text-center">
-                <small class="text-muted">Sisa</small>
-                <strong class="text-lg text-red">${fmtMoney(l.total - l.paid)}</strong>
+            <div class="stat-card">
+                <small>${t('word_remaining', data.settings.lang)}</small><strong class="text-red">${fmtMoney(remaining)}</strong>
             </div>
         </div>
         ${l.status === 'active' ? `
-        <div class="card bg-gray-50 border-0 p-4 mt-20">
-            <label class="text-sm font-bold mb-2 block">Bayar Cicilan</label>
-            <div class="flex gap-2">
-                <input type="text" class="money-input flex-1" id="pay-amount" placeholder="Nominal">
-                <button class="btn-primary" onclick="payLoan(${l.id})">Bayar</button>
+        <div class="card mt-20" style="background:var(--bg-input); border:none;">
+            <h4><i class="fas fa-money-bill-wave"></i> ${t('word_pay', data.settings.lang)}</h4>
+            <div class="flex-between mt-10">
+                <input type="text" inputmode="numeric" class="money-input" id="pay-amount" placeholder="${t('ph_amount', data.settings.lang)}" style="margin:0; width:60%">
+                <button class="btn-primary" onclick="payLoan(${l.id})" style="width:35%">${t('word_pay', data.settings.lang)}</button>
             </div>
-        </div>` : `<div class="p-4 bg-green-50 text-green text-center rounded-xl font-bold mt-20">LUNAS</div>`}
-
+        </div>` : `<div class="text-center text-green mt-20"><strong><i class="fas fa-check"></i> ${t('msg_paid', data.settings.lang)}</strong></div>`}
         <div class="mt-20">
-            <h4 class="mb-10 text-sm uppercase text-muted font-bold">Riwayat</h4>
-            ${historyHtml || '<p class="text-center text-sm text-muted py-4">Belum ada pembayaran</p>'}
+            <h4>${t('lbl_pay_history', data.settings.lang)}</h4>
+            ${historyHtml || '<small class="text-muted" style="display:block; text-align:center; margin-top:10px;">- ' + t('word_remaining', data.settings.lang) + ' 0 -</small>'}
         </div>
-        <button class="btn-danger full-width mt-20" onclick="deleteItem('loans', ${l.id})">Hapus Data</button>
+        <button class="btn-danger full-width mt-20" onclick="deleteItem('loans', ${l.id})">${t('btn_delete_data', data.settings.lang)}</button>
     `;
+    
     document.getElementById('detail-content').innerHTML = html;
     openModal('modal-detail');
-    initMoneyInputs();
+    initMoneyInputs(); 
 }
 
 export function payLoan(id) {
-    vibrate();
     const amount = parseMoney(document.getElementById('pay-amount').value);
+    if(!amount || amount <= 0) return showToast(t('msg_invalid_amount', data.settings.lang), 'error');
+
     const l = data.loans.find(x => x.id === id);
-    if(l && amount > 0) {
-        l.paid += amount;
-        l.history.push({ date: new Date().toISOString().split('T')[0], amount });
-        if(l.paid >= l.total) l.status = 'completed';
-        saveAppData(window.currentUser, window.dbInstance);
-        closeModal('modal-detail');
-        updateUI();
-        showToast("Pembayaran dicatat");
-    }
-}
-export function deletePayment(loanId, index) {
-    showConfirmDialog("Hapus pembayaran ini?", () => {
-        const l = data.loans.find(x => x.id === loanId);
-        if(l) {
-            l.paid -= l.history[index].amount;
-            l.history.splice(index, 1);
-            l.status = 'active';
-            saveAppData(window.currentUser, window.dbInstance);
-            closeModal('modal-detail');
-            updateUI();
-        }
-    });
-}
+    if (!l) return;
 
-// --- GOALS ---
-export function addGoal() {
-    vibrate();
-    const name = document.getElementById('goal-name').value;
-    const amount = parseMoney(document.getElementById('goal-amount').value);
-    if(name && amount) {
-        data.goals.push({ id: Date.now(), name, amount, saved: 0 });
-        saveAppData(window.currentUser, window.dbInstance);
-        document.getElementById('goal-name').value = '';
-        document.getElementById('goal-amount').value = '';
-        updateUI();
-        showToast("Target dibuat");
+    l.paid += amount;
+    l.history.push({ date: new Date().toISOString().split('T')[0], amount: amount });
+    if(l.paid >= l.total) {
+        l.status = 'completed';
+        showToast(t('msg_paid', data.settings.lang), 'success');
+    } else {
+        showToast(t('msg_payment_recorded', data.settings.lang));
     }
-}
-export function renderGoals() {
-    const list = document.getElementById('goal-list');
-    if(!list) return;
-    list.innerHTML = '';
     
-    data.goals.forEach(g => {
-        const percent = Math.min(100, Math.round((g.saved / g.amount) * 100));
-        const el = document.createElement('div');
-        el.className = 'list-item ripple block';
-        el.onclick = (e) => {
-            if(!e.target.closest('.btn-xs')) {
-                document.getElementById('target-current-id').value = g.id;
-                document.getElementById('target-add-amount').value = '';
-                openModal('modal-target-add');
-            }
-        };
-
-        el.innerHTML = `
-            <div class="flex-between mb-5">
-                <strong>${g.name}</strong>
-                <span class="text-sm font-bold text-primary">${percent}%</span>
-            </div>
-            <div style="height:8px; background:var(--bg-input); border-radius:4px; overflow:hidden; margin-bottom:8px;">
-                <div style="width:${percent}%; background:var(--primary); height:100%;"></div>
-            </div>
-            <div class="flex-between text-xs text-muted">
-                <span>${fmtMoney(g.saved)} / ${fmtMoney(g.amount)}</span>
-                <button class="btn-xs text-red" style="padding:4px 8px;" onclick="event.stopPropagation(); deleteItem('goals', ${g.id})">Hapus</button>
-            </div>
-        `;
-        list.appendChild(el);
-    });
-    renderEmptyState('goal-list', 'msg_empty_goal', 'fa-bullseye');
+    saveAppData(window.currentUser, window.dbInstance);
+    closeModal('modal-detail');
+    updateUI(); 
 }
-export function saveTargetSavings() {
-    vibrate();
-    const id = parseInt(document.getElementById('target-current-id').value);
-    const amount = parseMoney(document.getElementById('target-add-amount').value);
-    const g = data.goals.find(x => x.id === id);
-    if(g && amount > 0) {
-        g.saved += amount;
+
+export function deletePayment(loanId, historyIndex) {
+    showConfirmDialog(t('confirm_del_pay', data.settings.lang), function() {
+        const l = data.loans.find(x => x.id === loanId);
+        if (!l) return;
+        const paymentAmount = l.history[historyIndex].amount;
+        l.paid -= paymentAmount;
+        if (l.paid < 0) l.paid = 0; 
+        l.history.splice(historyIndex, 1);
+        if (l.paid < l.total) l.status = 'active';
         saveAppData(window.currentUser, window.dbInstance);
-        closeModal('modal-target-add');
-        updateUI();
-        showToast("Tabungan ditambahkan");
-    }
+        updateUI(); 
+        showLoanDetail(loanId); 
+        showToast(t('msg_pay_deleted', data.settings.lang));
+    });
 }
 
-// --- EMERGENCY ---
+// --- FEATURE: EMERGENCY FUND ---
 export function toggleEmergencySettings() {
     const form = document.getElementById('emergency-settings-form');
-    if(!form) return;
+    const icon = document.getElementById('em-settings-icon');
     form.classList.toggle('hidden');
-    if(!form.classList.contains('hidden')) {
-        document.getElementById('em-expense').value = data.emergency.expense.toLocaleString('id-ID');
-        document.getElementById('em-job').value = data.emergency.job;
-        document.getElementById('em-dependents').value = data.emergency.dependents;
+    
+    if(form.classList.contains('hidden')) {
+        icon.className = 'fas fa-chevron-down';
+    } else {
+        icon.className = 'fas fa-chevron-up';
+        document.getElementById('em-expense').value = data.emergency.expense ? data.emergency.expense.toLocaleString('id-ID') : '';
+        document.getElementById('em-job').value = data.emergency.job || 'stable';
+        document.getElementById('em-dependents').value = data.emergency.dependents || '0';
     }
 }
+
 export function saveEmergencyProfile() {
-    const exp = parseMoney(document.getElementById('em-expense').value);
+    const expense = parseMoney(document.getElementById('em-expense').value);
     const job = document.getElementById('em-job').value;
-    const dep = document.getElementById('em-dependents').value;
-    let m = 6;
-    if(job === 'freelance') m += 3;
-    if(dep === '1') m += 3; else if(dep === '3') m += 6;
-    data.emergency.expense = exp; data.emergency.job = job; data.emergency.dependents = dep;
-    data.emergency.targetMonths = m; data.emergency.targetAmount = m * exp;
+    const dependents = document.getElementById('em-dependents').value;
+
+    if(!expense) return showToast(t('msg_complete_data', data.settings.lang), 'error');
+
+    let months = 6; 
+    if (job === 'freelance') months += 3;
+    if (dependents === '1') months += 3; 
+    else if (dependents === '3') months += 6; 
+
+    const targetAmount = months * expense;
+    data.emergency.expense = expense;
+    data.emergency.job = job;
+    data.emergency.dependents = dependents;
+    data.emergency.targetMonths = months;
+    data.emergency.targetAmount = targetAmount;
+
     saveAppData(window.currentUser, window.dbInstance);
     toggleEmergencySettings();
+    showToast(`${t('msg_prof_saved', data.settings.lang)} ${months} ${t('month', data.settings.lang)}`);
     updateUI();
-    showToast("Profil disimpan");
 }
+
 export function addEmergencyFund() {
-    const amt = parseMoney(document.getElementById('em-add-amount').value);
-    if(amt > 0) {
-        data.emergency.saved += amt;
+    const amount = parseMoney(document.getElementById('em-add-amount').value);
+    if(amount > 0) {
+        data.emergency.saved += amount;
         saveAppData(window.currentUser, window.dbInstance);
         closeModal('modal-emergency-add');
+        document.getElementById('em-add-amount').value = '';
+        showToast(`${t('em_fund_title', data.settings.lang)} +${fmtMoney(amount)}`);
         updateUI();
-        showToast("Dana ditambahkan");
+    } else {
+        showToast(t('msg_invalid_amount', data.settings.lang), 'error');
     }
 }
+
 export function renderEmergency() {
     if(!data.emergency) return;
     const em = data.emergency;
-    const elTarget = document.getElementById('em-target-rp');
-    const elSaved = document.getElementById('em-current-rp');
-    if(elTarget) elTarget.textContent = fmtMoney(em.targetAmount);
-    if(elSaved) elSaved.textContent = fmtMoney(em.saved);
-    if(document.getElementById('em-target-month')) document.getElementById('em-target-month').textContent = em.targetMonths;
-    let p = em.targetAmount > 0 ? Math.round((em.saved / em.targetAmount) * 100) : 0;
-    if(p > 100) p = 100;
-    if(document.getElementById('em-percent')) document.getElementById('em-percent').textContent = p + "%";
-    const circle = document.getElementById('emergency-circle');
-    if(circle) circle.style.background = `conic-gradient(var(--primary) ${p * 3.6}deg, var(--bg-input) 0deg)`;
+    
+    document.getElementById('em-target-rp').textContent = fmtMoney(em.targetAmount);
+    document.getElementById('em-current-rp').textContent = fmtMoney(em.saved);
+    document.getElementById('em-target-month').textContent = em.targetMonths;
+    
+    let percent = 0;
+    if(em.targetAmount > 0) {
+        percent = Math.round((em.saved / em.targetAmount) * 100);
+    }
+    if(percent > 100) percent = 100;
+
+    document.getElementById('em-percent').textContent = percent + "%";
+    document.getElementById('emergency-circle').style.background = `conic-gradient(var(--primary) ${percent * 3.6}deg, #e0e0e0 0deg)`;
+    
+    const homeStatus = document.getElementById('home-emergency-status');
+    if(homeStatus) {
+        if(em.targetAmount === 0) homeStatus.textContent = t('em_not_set', data.settings.lang);
+        else homeStatus.textContent = `${percent}% ${t('collected', data.settings.lang)}`;
+    }
 }
 
-// --- SYSTEM ---
+// --- SYSTEM / SETTINGS UI ---
 export function deleteItem(collection, id) {
-    showConfirmDialog("Hapus item ini?", () => {
-        vibrate([30]);
-        if(collection === 'budget') {
-            const b = data.budget.find(x => x.id === id);
-            if(b) {
-                const w = data.wallets.find(w => w.id === b.walletId);
-                if(w) {
-                    if(b.type === 'income') w.balance -= b.amount;
-                    else w.balance += b.amount;
+    showConfirmDialog(t('msg_confirm_del', data.settings.lang), function() {
+        if (collection === 'budget') {
+            const item = data.budget.find(x => x.id === id);
+            if (item && item.walletId) {
+                const wallet = data.wallets.find(w => w.id === item.walletId);
+                if (wallet) {
+                    if (item.type === 'income') wallet.balance -= item.amount;
+                    else wallet.balance += item.amount;
                 }
             }
         }
         data[collection] = data[collection].filter(x => x.id !== id);
         saveAppData(window.currentUser, window.dbInstance);
-        const detailModal = document.getElementById('modal-detail');
-        if(detailModal && detailModal.classList.contains('active')) closeModal('modal-detail');
-        updateUI();
-        showToast("Item dihapus");
+        updateUI(); 
+        if(document.getElementById('modal-detail').classList.contains('active')) closeModal('modal-detail');
+        showToast("Item berhasil dihapus");
     });
 }
+
+export function renderLanguage() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = t(key, data.settings.lang);
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const key = el.getAttribute('data-i18n-ph');
+        el.placeholder = t(key, data.settings.lang);
+    });
+    document.querySelectorAll('[data-i18n-label]').forEach(el => {
+        const key = el.getAttribute('data-i18n-label');
+        el.setAttribute('data-label', t(key, data.settings.lang));
+    });
+    const labelLang = document.getElementById('current-lang-label');
+    if(labelLang) {
+        labelLang.textContent = data.settings.lang === 'id' ? 'Indonesia' : 'English';
+    }
+    updatePinButtonText();
+}
+
+export function openLangModal() {
+    document.querySelectorAll('.lang-item').forEach(el => el.classList.remove('active'));
+    document.getElementById('check-id').style.display = 'none';
+    document.getElementById('check-en').style.display = 'none';
+    const cur = data.settings.lang;
+    if(cur === 'id') {
+        document.getElementById('check-id').parentElement.classList.add('active');
+        document.getElementById('check-id').style.display = 'block';
+    } else {
+        document.getElementById('check-en').parentElement.classList.add('active');
+        document.getElementById('check-en').style.display = 'block';
+    }
+    openModal('modal-lang');
+}
+
+export function selectLang(langCode) {
+    data.settings.lang = langCode;
+    saveAppData(window.currentUser, window.dbInstance);
+    updateUI();
+    closeModal('modal-lang');
+    showToast(langCode === 'id' ? "Bahasa diganti" : "Language changed");
+}
+
+export function initTheme() {
+    const theme = data.settings.theme;
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('theme-icon').className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+}
+
+export function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = current === 'light' ? 'dark' : 'light';
+    data.settings.theme = newTheme;
+    document.documentElement.setAttribute('data-theme', newTheme);
+    document.getElementById('theme-icon').className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    saveAppData(window.currentUser, window.dbInstance);
+}
+
+export function updateUI() {
+    renderLanguage();
+    renderWallets(); 
+    renderBudget();
+    renderBills();
+    renderLoans();
+    renderGoals();
+    renderEmergency();
+    
+    renderTrendChart(); // Render grafik batang
+}
+
+export function setupConfirmListener() {
+    const btn = document.getElementById('btn-conf-yes');
+    if(btn) {
+        btn.onclick = function() {
+            if (onConfirmAction) onConfirmAction();
+            closeModal('modal-confirm');
+        };
+    }
+}
+
+export function showConfirmDialog(message, actionCallback) {
+    document.getElementById('confirm-msg').innerText = message;
+    document.getElementById('confirm-title').innerText = t('lbl_confirm_title', data.settings.lang);
+    document.getElementById('btn-conf-cancel').innerText = t('btn_cancel', data.settings.lang);
+    document.getElementById('btn-conf-yes-text').innerText = t('btn_yes', data.settings.lang);
+    onConfirmAction = actionCallback;
+    openModal('modal-confirm');
+}
+
+// --- PIN LOCK ---
+export function checkPinLock() {
+    const savedPin = data.settings.pin;
+    const overlay = document.getElementById('pin-overlay');
+    if (savedPin) {
+        overlay.classList.remove('hidden');
+        document.getElementById('pin-title').innerText = t('enter_pin', data.settings.lang);
+        document.getElementById('btn-forgot-pin').style.display = 'inline-block';
+        isSettingUpPin = false;
+    } else {
+        overlay.classList.add('hidden');
+    }
+}
+
+export function pressPin(key) {
+    const dots = document.querySelectorAll('.dot');
+    if (key === 'c') {
+        currentPinInput = currentPinInput.slice(0, -1);
+    } else if (key === 'enter') {
+        // logic enter optional
+    } else {
+        if (currentPinInput.length < 4) currentPinInput += key;
+    }
+    dots.forEach((dot, index) => {
+        if (index < currentPinInput.length) dot.classList.add('filled');
+        else dot.classList.remove('filled');
+    });
+    if (currentPinInput.length === 4) setTimeout(validatePin, 200);
+}
+
+function validatePin() {
+    const savedPin = data.settings.pin;
+    const dots = document.querySelectorAll('.dot');
+    if (isSettingUpPin) {
+        data.settings.pin = currentPinInput;
+        saveAppData(window.currentUser, window.dbInstance);
+        showToast(t('pin_set', data.settings.lang), "success");
+        document.getElementById('pin-overlay').classList.add('hidden');
+        currentPinInput = "";
+        isSettingUpPin = false;
+        updatePinButtonText();
+    } else {
+        if (currentPinInput === savedPin) {
+            document.getElementById('pin-overlay').classList.add('hidden');
+            currentPinInput = "";
+        } else {
+            dots.forEach(d => d.classList.add('error'));
+            setTimeout(() => {
+                dots.forEach(d => { d.classList.remove('error'); d.classList.remove('filled'); });
+                currentPinInput = "";
+            }, 400);
+            showToast(t('pin_wrong', data.settings.lang), "error");
+        }
+    }
+}
+
+export function togglePinSetup() {
+    const overlay = document.getElementById('pin-overlay');
+    currentPinInput = "";
+    if (data.settings.pin) {
+        showConfirmDialog(t('confirm_disable_pin', data.settings.lang), function() {
+            data.settings.pin = null;
+            saveAppData(window.currentUser, window.dbInstance);
+            showToast(t('pin_unset', data.settings.lang));
+            updatePinButtonText();
+        });
+    } else {
+        isSettingUpPin = true;
+        overlay.classList.remove('hidden');
+        document.getElementById('pin-title').innerText = t('setup_pin', data.settings.lang);
+        document.getElementById('btn-forgot-pin').style.display = 'none';
+        document.querySelectorAll('.dot').forEach(d => d.classList.remove('filled'));
+    }
+}
+
+export function updatePinButtonText() {
+    const btn = document.getElementById('btn-toggle-pin');
+    if(btn) {
+        btn.innerText = data.settings.pin ? t('disable_pin', data.settings.lang) : t('enable_pin', data.settings.lang);
+        if (data.settings.pin) btn.className = "btn-xs btn-toggle-inactive"; 
+        else btn.className = "btn-xs btn-toggle-active";
+    }
+}
+
+// --- BACKUP/RESTORE & ADS & PDF ---
+
+// [NEW FEATURE: PDF]
+export function generatePDF() {
+    if (!window.jspdf) {
+        showToast("Library PDF belum siap. Coba refresh.", "error");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Kop
+    doc.setFontSize(18);
+    doc.setTextColor(37, 99, 235); // Primary Blue
+    doc.text("Finansial Pro", 14, 20);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text("Laporan Keuangan Pribadi", 14, 26);
+    doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 32);
+
+    // Ringkasan
+    let totalIncome = 0;
+    let totalExpense = 0;
+    data.budget.forEach(b => {
+        if (b.type === 'income') totalIncome += b.amount;
+        else totalExpense += b.amount;
+    });
+    const balance = totalIncome - totalExpense;
+
+    doc.setDrawColor(200);
+    doc.setFillColor(248, 250, 252);
+    doc.roundedRect(14, 40, 180, 25, 3, 3, 'FD');
+
+    doc.setFontSize(10);
+    doc.setTextColor(50);
+    doc.text("Pemasukan", 20, 48);
+    doc.text("Pengeluaran", 80, 48);
+    doc.text("Sisa Saldo", 140, 48);
+
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(16, 185, 129); 
+    doc.text(fmtMoney(totalIncome), 20, 58);
+    
+    doc.setTextColor(239, 68, 68); 
+    doc.text(fmtMoney(totalExpense), 80, 58);
+    
+    doc.setTextColor(37, 99, 235); 
+    doc.text(fmtMoney(balance), 140, 58);
+
+    // Tabel
+    const tableRows = data.budget.map(b => {
+        const wallet = data.wallets.find(w => w.id === b.walletId);
+        const walletName = wallet ? wallet.name : '-';
+        return [
+            fmtDate(b.date, data.settings.lang),
+            b.desc,
+            walletName,
+            b.type === 'income' ? 'Masuk' : 'Keluar',
+            fmtMoney(b.amount)
+        ];
+    });
+
+    doc.autoTable({
+        startY: 75,
+        head: [['Tanggal', 'Keterangan', 'Dompet', 'Tipe', 'Nominal']],
+        body: tableRows,
+        theme: 'grid',
+        headStyles: { fillColor: [37, 99, 235] },
+        styles: { fontSize: 8, cellPadding: 3 },
+        columnStyles: { 4: { halign: 'right', fontStyle: 'bold' } },
+        didParseCell: function(data) {
+            if (data.section === 'body' && data.column.index === 4) {
+                const type = tableRows[data.row.index][3];
+                if (type === 'Masuk') data.cell.styles.textColor = [16, 185, 129];
+                else data.cell.styles.textColor = [239, 68, 68];
+            }
+        }
+    });
+
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text("Dibuat otomatis oleh Finansial Pro", 14, finalY);
+
+    doc.save(`Laporan_Keuangan_${Date.now()}.pdf`);
+    showToast("Laporan PDF berhasil diunduh!");
+}
+
+export function downloadBackup() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    const date = new Date().toISOString().split('T')[0];
+    downloadAnchorNode.setAttribute("download", `finpro_backup_${date}.json`);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+
+export function restoreBackup(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const json = JSON.parse(e.target.result);
+            if (json.budget && json.settings) {
+                const msg = data.settings.lang === 'en' 
+                    ? "Current data will be replaced with backup data. Continue?" 
+                    : "Data saat ini akan ditimpa dengan data backup. Lanjutkan?";
+                showConfirmDialog(msg, function() {
+                    Object.assign(data, json); // Update data in place
+                    saveAppData(window.currentUser, window.dbInstance);
+                    alert("Restore Berhasil! Aplikasi akan dimuat ulang.");
+                    location.reload();
+                });
+            } else {
+                alert("File backup tidak valid!");
+            }
+        } catch (err) {
+            alert("Error membaca file JSON!");
+        }
+    };
+    reader.readAsText(file);
+    input.value = ''; 
+}
+
 export function resetData() {
-    showConfirmDialog("RESET SEMUA DATA? Tidak bisa dikembalikan!", () => {
+    showConfirmDialog(t('msg_confirm_reset', data.settings.lang), function() {
         localStorage.removeItem(APP_KEY);
         location.reload();
     });
 }
 
-// --- CHART & UTILS ---
+// [NEW FEATURE: TREND CHART]
 export function renderTrendChart() {
     const ctx = document.getElementById('trendChart');
-    if(!ctx) return;
-    const labels = []; const points = []; const today = new Date();
+    if(!ctx) return; 
+
+    const labels = [];
+    const dataPoints = [];
+    const today = new Date();
+    
     for (let i = 5; i >= 0; i--) {
         const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
-        labels.push(d.toLocaleDateString(data.settings.lang === 'id' ? 'id-ID' : 'en-US', { month: 'short' }));
-        const key = d.toISOString().slice(0, 7);
-        let sum = 0;
-        data.budget.forEach(b => { if(b.type === 'expense' && b.date.startsWith(key)) sum += b.amount; });
-        points.push(sum);
+        const monthName = d.toLocaleDateString(data.settings.lang === 'id' ? 'id-ID' : 'en-US', { month: 'short', year: '2-digit' });
+        labels.push(monthName);
+        
+        const searchKey = d.toISOString().slice(0, 7); 
+        let monthlyTotal = 0;
+        data.budget.forEach(b => {
+            if (b.type === 'expense' && b.date.startsWith(searchKey)) {
+                monthlyTotal += b.amount;
+            }
+        });
+        dataPoints.push(monthlyTotal);
     }
+
     if(trendChartInstance) trendChartInstance.destroy();
-    const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 200);
-    gradient.addColorStop(0, 'rgba(239, 68, 68, 0.5)'); gradient.addColorStop(1, 'rgba(239, 68, 68, 0.0)');
+
     trendChartInstance = new Chart(ctx.getContext('2d'), {
-        type: 'line',
-        data: { labels: labels, datasets: [{ label: 'Pengeluaran', data: points, borderColor: '#ef4444', backgroundColor: gradient, fill: true, tension: 0.4, pointRadius: 4 }] },
-        options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } }, maintainAspectRatio: false }
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: t('lbl_expense_type', data.settings.lang),
+                data: dataPoints,
+                backgroundColor: 'rgba(239, 68, 68, 0.6)', 
+                borderColor: 'rgba(239, 68, 68, 1)',
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return (value / 1000).toLocaleString() + 'k';
+                        }
+                    }
+                }
+            },
+            plugins: { legend: { display: false } }
+        }
     });
 }
+export function toggleAddBill() {
+    const form = document.getElementById('add-bill-form');
+    if (form) form.classList.toggle('hidden');
+}
 
-// --- UTILS (RESTORED & IMPROVED) ---
-export function initBillDateSelect() {
-    const select = document.getElementById('bill-date');
-    if(select && select.children.length === 0) {
-        for(let i=1; i<=31; i++) {
-            const o = document.createElement('option'); o.value = i; o.textContent = i; select.appendChild(o);
+// --- FEATURE: CALCULATOR (INVESTASI) ---
+
+export function toggleDcaInput() {
+    const method = document.getElementById('calc-method').value;
+    const dcaGroup = document.getElementById('dca-input-group');
+    if (dcaGroup) {
+        if (method === 'none') {
+            dcaGroup.classList.add('hidden');
+        } else {
+            dcaGroup.classList.remove('hidden');
         }
     }
 }
-export function exportCSV(type) {
-    let csv = "data:text/csv;charset=utf-8,";
-    if(type === 'budget') {
-        csv += "Tanggal,Tipe,Deskripsi,Nominal,Dompet\r\n";
-        data.budget.forEach(b => { const w = data.wallets.find(x => x.id === b.walletId)?.name || '-'; csv += `${b.date},${b.type},"${b.desc}",${b.amount},"${w}"\r\n` });
-    } else {
-        csv += "Tanggal,Tipe,Nama,Total,Terbayar,Status\r\n";
-        data.loans.forEach(l => csv += `${l.date},${l.type},"${l.person}",${l.total},${l.paid},${l.status}\r\n`);
-    }
-    const link = document.createElement("a"); link.href = encodeURI(csv); link.download = `finpro_${type}_${Date.now()}.csv`; link.click();
-}
-export function generatePDF() {
-    if (!window.jspdf) return showToast("Library PDF belum siap", "error");
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.setFontSize(18); doc.setTextColor(37, 99, 235); doc.text("Finansial Pro", 14, 20);
-    doc.setFontSize(10); doc.setTextColor(100); doc.text("Laporan Keuangan", 14, 26);
-    doc.text(`Dicetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 32);
-    let inc = 0, exp = 0; data.budget.forEach(b => { if (b.type === 'income') inc += b.amount; else exp += b.amount; });
-    doc.setFillColor(248, 250, 252); doc.roundedRect(14, 40, 180, 25, 3, 3, 'FD');
-    doc.text("Pemasukan", 20, 48); doc.text("Pengeluaran", 80, 48); doc.text("Sisa", 140, 48);
-    doc.setFontSize(12); doc.setFont("helvetica", "bold");
-    doc.setTextColor(16, 185, 129); doc.text(fmtMoney(inc), 20, 58);
-    doc.setTextColor(239, 68, 68); doc.text(fmtMoney(exp), 80, 58);
-    doc.setTextColor(37, 99, 235); doc.text(fmtMoney(inc-exp), 140, 58);
-    const rows = data.budget.map(b => {
-        const w = data.wallets.find(x => x.id === b.walletId)?.name || '-';
-        return [fmtDate(b.date, data.settings.lang), b.desc, w, b.type==='income'?'Masuk':'Keluar', fmtMoney(b.amount)];
-    });
-    doc.autoTable({ startY: 75, head: [['Tgl', 'Ket', 'Dompet', 'Tipe', 'Nominal']], body: rows, theme: 'grid', headStyles: { fillColor: [37, 99, 235] }, styles: { fontSize: 8, cellPadding: 3 }, columnStyles: { 4: { halign: 'right' } } });
-    doc.save(`Laporan_${Date.now()}.pdf`);
-    showToast("PDF berhasil diunduh");
-}
-export function downloadBackup() { const s = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data)); const a = document.createElement('a'); a.href = s; a.download = `backup_${Date.now()}.json`; a.click(); }
-export function restoreBackup(input) {
-    const f = input.files[0]; if(!f) return; const r = new FileReader();
-    r.onload = (e) => { try { const j = JSON.parse(e.target.result); if(j.budget) { Object.assign(data, j); saveAppData(window.currentUser, window.dbInstance); location.reload(); } } catch(e) { alert("File rusak"); } };
-    r.readAsText(f);
-}
-export function toggleDcaInput() { const m = document.getElementById('calc-method').value; const g = document.getElementById('dca-input-group'); if(g) g.classList.toggle('hidden', m === 'none'); }
+
 export function calculateCompound() {
     const P = parseMoney(document.getElementById('calc-principal').value) || 0;
-    const r = (parseFloat(document.getElementById('calc-rate').value) || 0) / 100;
+    const rRaw = document.getElementById('calc-rate').value;
+    const r = parseFloat(rRaw) / 100; 
     const t = parseFloat(document.getElementById('calc-years').value) || 0;
     const method = document.getElementById('calc-method').value;
     const PMT = parseMoney(document.getElementById('calc-contribution').value) || 0;
-    if(t === 0) return;
-    let n = 1; if(method === 'daily') n = 365; else if(method === 'monthly') n = 12;
-    const tbody = document.getElementById('calc-breakdown-list'); if(tbody) tbody.innerHTML = '';
-    let finalFv = 0;
-    for (let i = 1; i <= t; i++) {
-        let fvYear = 0;
-        if(method === 'none') fvYear = P * Math.pow(1+r, i);
-        else { const rateP = r/n; const totalP = n * i; fvYear = (P * Math.pow(1+rateP, totalP)) + (PMT * ((Math.pow(1+rateP, totalP)-1)/rateP)); }
-        if (i === t) finalFv = fvYear;
-        if(tbody) { const row = document.createElement('tr'); const totalInvested = method === 'none' ? P : (P + (PMT * n * i)); row.innerHTML = `<td>${i}</td><td>${fmtMoney(totalInvested)}</td><td class="text-right font-bold text-primary">${fmtMoney(fvYear)}</td>`; tbody.appendChild(row); }
+
+    if(t === 0) return showToast(t('msg_fill_year', data.settings.lang), 'error');
+
+    let n = 1; 
+    if (method === 'daily') n = 365;
+    else if (method === 'weekly') n = 52;
+    else if (method === 'monthly') n = 12;
+    else if (method === 'yearly') n = 1;
+
+    let futureValue = 0;
+    let totalContributions = 0;
+    
+    if (method === 'none') {
+        futureValue = P * Math.pow((1 + r), t);
+    } else {
+        const ratePerPeriod = r / n;
+        const totalPeriods = n * t;
+        const fvLumpSum = P * Math.pow((1 + ratePerPeriod), totalPeriods);
+        const fvSeries = PMT * ((Math.pow((1 + ratePerPeriod), totalPeriods) - 1) / ratePerPeriod);
+        futureValue = fvLumpSum + fvSeries;
+        totalContributions = PMT * totalPeriods;
     }
+
+    const totalInvested = P + totalContributions;
+    const totalInterest = futureValue - totalInvested;
+    
     document.getElementById('calc-result').classList.remove('hidden');
-    document.getElementById('calc-total-display').textContent = fmtMoney(finalFv);
-    document.getElementById('calc-principal-display').textContent = fmtMoney(method==='none' ? P : (P+(PMT*n*t)));
-    document.getElementById('calc-interest-display').textContent = fmtMoney(finalFv - (method==='none' ? P : (P+(PMT*n*t))));
-    let btnDetail = document.getElementById('btn-show-calc-detail');
-    if(!btnDetail) { const detailsBox = document.querySelector('.calc-details'); if(detailsBox) { btnDetail = document.createElement('button'); btnDetail.id = 'btn-show-calc-detail'; btnDetail.className = 'btn-xs full-width mt-10'; btnDetail.innerHTML = '<i class="fas fa-list-ol"></i> Lihat Tabel'; btnDetail.onclick = () => openModal('modal-calc-detail'); detailsBox.after(btnDetail); } }
+    document.getElementById('calc-total-display').textContent = fmtMoney(futureValue);
+    document.getElementById('calc-principal-display').textContent = fmtMoney(totalInvested);
+    document.getElementById('calc-interest-display').textContent = fmtMoney(totalInterest);
+
+    // Tombol Rincian
+    let btnDetail = document.getElementById('btn-calc-detail');
+    if(!btnDetail) {
+        const resultBox = document.querySelector('.calc-details'); 
+        if(resultBox) {
+            btnDetail = document.createElement('button');
+            btnDetail.id = 'btn-calc-detail';
+            btnDetail.className = 'btn-xs full-width mt-10';
+            btnDetail.innerHTML = '<i class="fas fa-list-ol"></i> Lihat Progres Tahunan';
+            btnDetail.onclick = showCalcDetail; 
+            resultBox.after(btnDetail);
+        }
+    }
 }
-export function resetCalc() { document.getElementById('calc-result').classList.add('hidden'); const btn = document.getElementById('btn-show-calc-detail'); if(btn) btn.remove(); }
+
+export function resetCalc() {
+    const result = document.getElementById('calc-result');
+    if(result) result.classList.add('hidden');
+}
+
+export function showCalcDetail() {
+    const P = parseMoney(document.getElementById('calc-principal').value) || 0;
+    const rRaw = parseFloat(document.getElementById('calc-rate').value) || 0;
+    const r = rRaw / 100;
+    const t = parseFloat(document.getElementById('calc-years').value) || 0;
+    const method = document.getElementById('calc-method').value;
+    const PMT = parseMoney(document.getElementById('calc-contribution').value) || 0;
+
+    let n = 1; 
+    if (method === 'daily') n = 365;
+    else if (method === 'weekly') n = 52;
+    else if (method === 'monthly') n = 12;
+    else if (method === 'yearly') n = 1;
+
+    const tbody = document.getElementById('calc-breakdown-list');
+    if(tbody) {
+        tbody.innerHTML = ''; 
+
+        for (let i = 1; i <= t; i++) {
+            let fvYear = 0;
+            let investedYear = 0;
+
+            if (method === 'none') {
+                fvYear = P * Math.pow((1 + r), i);
+                investedYear = P;
+            } else {
+                const ratePerPeriod = r / n;
+                const periodsNow = n * i; 
+                const fvLumpSum = P * Math.pow((1 + ratePerPeriod), periodsNow);
+                const fvSeries = PMT * ((Math.pow((1 + ratePerPeriod), periodsNow) - 1) / ratePerPeriod);
+                fvYear = fvLumpSum + fvSeries;
+                investedYear = P + (PMT * periodsNow);
+            }
+
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${i}</td><td>${fmtMoney(investedYear)}</td><td class="text-right highlight">${fmtMoney(fvYear)}</td>`;
+            tbody.appendChild(row);
+        }
+        openModal('modal-calc-detail');
+    }
+}
+
+// --- [PERBAIKAN 1] FUNGSI INIT TANGGAL TAGIHAN ---
+// Panggil fungsi ini saat startApp di main.js
+export function initBillDateSelect() {
+    const select = document.getElementById('bill-date');
+    if (select && select.children.length === 0) {
+        for (let i = 1; i <= 31; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = i;
+            select.appendChild(opt);
+        }
+    }
+}
+
+// --- [PERBAIKAN 2] FUNGSI EXPORT CSV (YANG HILANG) ---
+export function exportCSV(type) {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    let rows = [];
+    
+    if(type === 'budget') {
+        rows.push("Tanggal,Tipe,Deskripsi,Nominal,Dompet");
+        data.budget.forEach(b => {
+            const w = data.wallets.find(x => x.id === b.walletId)?.name || '-';
+            rows.push(`${b.date},${b.type},"${b.desc}",${b.amount},"${w}"`);
+        });
+    } else if(type === 'loans') {
+        rows.push("Tanggal,Tipe,Nama,Total,Terbayar,Status");
+        data.loans.forEach(l => rows.push(`${l.date},${l.type},"${l.person}",${l.total},${l.paid},${l.status}`));
+    }
+
+    csvContent += rows.join("\r\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `finpro_${type}_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+
 export function refreshAds(containerId) {
-    const container = document.getElementById(containerId); if (!container) return;
+    const container = document.getElementById(containerId);
+    if (!container) return;
     const ads = container.querySelectorAll('ins.adsbygoogle');
-    ads.forEach(ad => { if (ad.getAttribute('data-adsbygoogle-status')) return; if (ad.offsetWidth === 0) { setTimeout(() => { refreshAds(containerId); }, 500); return; } try { if (typeof window.adsbygoogle !== 'undefined') window.adsbygoogle.push({}); } catch (e) { console.warn("AdSense pending..."); } });
+    ads.forEach(ad => {
+        if (ad.getAttribute('data-adsbygoogle-status')) return;
+        if (ad.offsetWidth === 0) {
+            setTimeout(() => { refreshAds(containerId); }, 300);
+            return;
+        }
+        try {
+            if (typeof window.adsbygoogle !== 'undefined') window.adsbygoogle.push({});
+        } catch (e) {
+            console.warn("AdSense pending...");
+        }
+    });
 }
-export function showConfirmDialog(msg, callback) {
-    vibrate([20]); document.getElementById('confirm-msg').textContent = msg; onConfirmAction = callback;
-    const modal = document.getElementById('modal-confirm'); if(modal) { modal.classList.add('active'); history.pushState({ modalId: 'modal-confirm' }, null, window.location.href); }
+
+// [BARU] Deteksi Koneksi Internet
+window.addEventListener('online', updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+
+function updateOnlineStatus() {
+    const status = navigator.onLine ? "online" : "offline";
+    const container = document.getElementById('toast-container');
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${status === 'online' ? 'success' : 'error'}`;
+    
+    // Style inline ini opsional karena sudah ada di CSS, tapi boleh dibiarkan
+    toast.style.background = status === 'online' ? '#10b981' : '#64748b'; 
+    
+    const icon = status === 'online' ? 'fa-wifi' : 'fa-plane';
+    const text = status === 'online' ? 'Kembali Online' : 'Mode Offline';
+    
+    toast.innerHTML = `<i class="fas ${icon}"></i> ${text}`;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
 }
-export function setupConfirmListener() { const btn = document.getElementById('btn-conf-yes'); if(btn) { btn.onclick = () => { if(onConfirmAction) onConfirmAction(); closeModal('modal-confirm'); }; } }
-export function togglePinSetup() {
-    if(data.settings.pin) { showConfirmDialog("Matikan PIN?", () => { data.settings.pin = null; saveAppData(window.currentUser, window.dbInstance); updatePinButtonText(); showToast("PIN Dimatikan"); });
-    } else { isSettingUpPin = true; document.getElementById('pin-overlay').classList.remove('hidden'); document.getElementById('pin-title').textContent = "Buat PIN Baru (4 Angka)"; document.querySelectorAll('.dot').forEach(d => d.classList.remove('filled')); currentPinInput = ""; }
-}
-export function pressPin(key) {
-    vibrate([5]); if(key === 'c') currentPinInput = currentPinInput.slice(0, -1); else if(key !== 'enter' && currentPinInput.length < 4) currentPinInput += key;
-    const dots = document.querySelectorAll('.dot'); dots.forEach((d, i) => { if(i < currentPinInput.length) d.classList.add('filled'); else d.classList.remove('filled'); });
-    if(currentPinInput.length === 4) setTimeout(validatePin, 100);
-}
-function validatePin() {
-    if(isSettingUpPin) { data.settings.pin = currentPinInput; saveAppData(window.currentUser, window.dbInstance); document.getElementById('pin-overlay').classList.add('hidden'); isSettingUpPin = false; updatePinButtonText(); showToast("PIN Diaktifkan");
-    } else { if(currentPinInput === data.settings.pin) { document.getElementById('pin-overlay').classList.add('hidden'); } else { vibrate([50, 50, 50]); currentPinInput = ""; document.querySelectorAll('.dot').forEach(d => d.classList.remove('filled')); showToast("PIN Salah!", "error"); } }
-}
-export function checkPinLock() { if(data.settings.pin) { document.getElementById('pin-overlay').classList.remove('hidden'); document.getElementById('pin-title').textContent = "Masukkan PIN"; document.getElementById('btn-forgot-pin').style.display = "block"; } }
-export function updatePinButtonText() { const btn = document.getElementById('btn-toggle-pin'); if(btn) { btn.textContent = data.settings.pin ? "Nonaktifkan PIN" : "Aktifkan PIN"; btn.className = data.settings.pin ? "btn-xs text-red border-red" : "btn-xs text-primary border-primary"; } }
-export function toggleTheme() { vibrate(); const cur = data.settings.theme; data.settings.theme = cur === 'light' ? 'dark' : 'light'; initTheme(); saveAppData(window.currentUser, window.dbInstance); }
-export function initTheme() { document.documentElement.setAttribute('data-theme', data.settings.theme); const icon = document.getElementById('theme-icon'); if(icon) icon.className = data.settings.theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'; }
-export function openLangModal() { openModal('modal-lang'); }
-export function selectLang(code) { data.settings.lang = code; saveAppData(window.currentUser, window.dbInstance); updateUI(); closeModal('modal-lang'); document.getElementById('check-id').style.display = code === 'id' ? 'block' : 'none'; document.getElementById('check-en').style.display = code === 'en' ? 'block' : 'none'; document.getElementById('current-lang-label').textContent = code === 'id' ? 'Indonesia' : 'English'; }
-export function updateUI() {
-    renderWallets(); renderBudget(); renderBills(); renderLoans(); renderGoals(); renderEmergency(); renderTrendChart(); updatePinButtonText();
-    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n'), data.settings.lang); });
-    document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-ph'), data.settings.lang); });
-}
-window.addEventListener('online', () => showToast("Kembali Online", "success"));
-window.addEventListener('offline', () => showToast("Mode Offline", "error"));
