@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
-    <meta name="theme-color" content="#f4f7f6" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#1e272e" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f8fafc">
     
     <title>Finansial Pro</title>
     
@@ -17,6 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
@@ -35,15 +34,13 @@
             <div class="login-icon">💎</div>
             <h1>Finansial Pro</h1>
             <p data-i18n="login_desc">Kelola keuanganmu dengan aman, tersinkronisasi di awan.</p>
-            
-            <button id="btn-google-login" class="btn-google">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="Google">
+            <button id="btn-google-login" class="btn-google ripple">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="G">
                 <span data-i18n="btn_login_google">Masuk dengan Google</span>
             </button>
-            
-            <p id="login-status" class="text-muted"></p>
+            <p id="login-status" class="text-muted text-sm mt-10"></p>
         </div>
-        <small class="version-tag">v4.3 Native Cloud</small>
+        <small class="version-tag">v4.5 Native</small>
     </div>
 
     <header class="top-bar">
@@ -57,13 +54,12 @@
     </header>
 
     <main class="app-container">
-        
         <section id="page-home" class="page active">
             <div class="balance-card ripple-card">
                 <div class="wallet-container-scroll mb-10">
                     <div id="wallet-list" class="wallet-list-row"></div>
                 </div>
-                <span style="opacity: 0.9; font-size: 0.85rem;" data-i18n="total_net_worth">Total Kekayaan</span>
+                <span style="opacity:0.9; font-size:0.85rem;" data-i18n="total_net_worth">Total Kekayaan</span>
                 <h1 id="main-balance">Rp 0</h1>
                 <div class="balance-row">
                     <div class="row-item"><i class="fas fa-arrow-down text-green"></i> <span data-i18n="lbl_in">Masuk</span> <span id="main-income" class="font-bold">0</span></div>
@@ -90,7 +86,7 @@
             </div>
 
             <div class="ad-slot">
-                <small class="ad-label">Advertisement</small>
+                <small class="ad-label">Sponsored</small>
                 <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fs+3n+7a-ag-4h" data-ad-client="ca-pub-4170035550920357" data-ad-slot="6949327399"></ins> 
             </div>
             
@@ -106,18 +102,14 @@
 
             <div class="chart-section mt-20">
                 <h3><span data-i18n="cashflow_title">Arus Kas</span></h3>
-                <div class="chart-container">
-                    <canvas id="mainChart"></canvas>
-                </div>
+                <div class="chart-container"><canvas id="mainChart"></canvas></div>
             </div>
-
             <div class="chart-section mt-20">
                 <h3><span data-i18n="lbl_trend_chart">Tren 6 Bulan</span></h3>
-                <div class="chart-container">
-                    <canvas id="trendChart"></canvas>
-                </div>
+                <div class="chart-container"><canvas id="trendChart"></canvas></div>
             </div>
-            <div style="height: 100px;"></div> </section>
+            <div class="spacer-bottom"></div>
+        </section>
 
         <section id="page-budget" class="page">
             <div class="tabs-wrapper">
@@ -132,15 +124,14 @@
                 <div class="list-header">
                     <h3 data-i18n="recent_history">Riwayat</h3>
                     <div class="action-group">
-                        <button class="btn-icon-sm" onclick="exportCSV('budget')"><i class="fas fa-file-csv"></i></button>
-                        <button class="btn-icon-sm primary" onclick="generatePDF()"><i class="fas fa-file-pdf"></i></button>
+                        <button class="btn-icon-sm ripple" onclick="exportCSV('budget')"><i class="fas fa-file-csv"></i></button>
+                        <button class="btn-icon-sm primary ripple" onclick="generatePDF()"><i class="fas fa-file-pdf"></i></button>
                     </div>
                 </div>
                 <div class="search-box">
                     <i class="fas fa-search"></i>
                     <input type="text" id="budget-search" data-i18n-ph="lbl_search_budget" placeholder="Cari transaksi..." onkeyup="renderBudget()">
                 </div>
-
                 <div class="ad-slot small">
                     <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4170035550920357" data-ad-slot="1369506733" data-ad-format="auto" data-full-width-responsive="true"></ins>
                 </div>
@@ -158,7 +149,7 @@
                             <input type="text" inputmode="numeric" class="money-input" id="bill-amount" data-i18n-ph="lbl_routine_amount" placeholder="Nominal (Rp)">
                             <label class="text-sm text-muted" data-i18n="lbl_due_date">Tgl Jatuh Tempo:</label>
                             <select id="bill-date" class="modern-select"></select>
-                            <button class="btn-primary full-width mt-10" onclick="saveBill()" data-i18n="btn_save">Simpan</button>
+                            <button class="btn-primary full-width mt-10 ripple" onclick="saveBill()" data-i18n="btn_save">Simpan</button>
                         </div>
                     </div>
                 </div>
@@ -175,12 +166,12 @@
                     <div class="form-group mt-10">
                         <input type="text" id="goal-name" data-i18n-ph="ph_goal_name" placeholder="Nama Target">
                         <input type="text" inputmode="numeric" class="money-input" id="goal-amount" data-i18n-ph="ph_goal_amount" placeholder="Target Nominal (Rp)">
-                        <button class="btn-primary full-width" onclick="addGoal()" data-i18n="btn_save">Simpan</button>
+                        <button class="btn-primary full-width ripple" onclick="addGoal()" data-i18n="btn_save">Simpan</button>
                     </div>
                 </div>
                 <div id="goal-list" class="goal-list mt-10"></div>
             </div>
-            <div style="height: 100px;"></div>
+            <div class="spacer-bottom"></div>
         </section>
 
         <section id="page-loans" class="page">
@@ -203,11 +194,11 @@
             <div id="tab-loans-history" class="tab-content">
                  <div class="list-header">
                     <h3 data-i18n="archive_paid">Arsip Lunas</h3>
-                    <button class="btn-icon-sm" onclick="exportCSV('loans')"><i class="fas fa-download"></i></button>
+                    <button class="btn-icon-sm ripple" onclick="exportCSV('loans')"><i class="fas fa-download"></i></button>
                 </div>
                 <div id="loan-list-history" class="loan-grid mt-10"></div>
             </div>
-            <div style="height: 100px;"></div>
+            <div class="spacer-bottom"></div>
         </section>
 
         <section id="page-tools" class="page">
@@ -237,41 +228,19 @@
                             <strong id="em-current-rp" class="text-green">Rp 0</strong>
                         </div>
                     </div>
-                    <button class="btn-primary full-width mt-10" onclick="openModal('modal-emergency-add')"><i class="fas fa-plus"></i> <span data-i18n="btn_add_savings">Tambah</span></button>
+                    <button class="btn-primary full-width mt-10 ripple" onclick="openModal('modal-emergency-add')"><i class="fas fa-plus"></i> <span data-i18n="btn_add_savings">Tambah</span></button>
                 </div>
-
-                <div class="ad-slot">
-                     <small class="ad-label">Advertisement</small>
-                     <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fs+3n+7a-ag-4h" data-ad-client="ca-pub-4170035550920357" data-ad-slot="4634047443"></ins>
-                </div>
-
+                <div class="ad-slot"><ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fs+3n+7a-ag-4h" data-ad-client="ca-pub-4170035550920357" data-ad-slot="4634047443"></ins></div>
                 <div class="card mt-20 ripple" onclick="toggleEmergencySettings()">
                     <div class="flex-between">
                         <h3><i class="fas fa-sliders-h"></i> <span data-i18n="risk_profile_title">Profil Risiko</span></h3>
                         <i class="fas fa-chevron-down" id="em-settings-icon"></i>
                     </div>
                     <div id="emergency-settings-form" class="hidden mt-20 form-slide">
-                        <div class="info-box mb-20" data-i18n="risk_profile_desc">Hitung otomatis berdasarkan profil risiko.</div>
-                        <div class="form-group">
-                            <label data-i18n="lbl_expense">Pengeluaran/Bln</label>
-                            <input type="text" inputmode="numeric" class="money-input" id="em-expense" data-i18n-ph="ph_expense" placeholder="Contoh: 3.000.000">
-                        </div>
-                        <div class="form-group">
-                            <label data-i18n="lbl_job_status">Pekerjaan</label>
-                            <select id="em-job" class="modern-select">
-                                <option value="stable" data-i18n="opt_stable">Karyawan Tetap (Stabil)</option>
-                                <option value="freelance" data-i18n="opt_freelance">Freelance (Fluktuatif)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label data-i18n="lbl_dependents">Tanggungan</label>
-                            <select id="em-dependents" class="modern-select">
-                                <option value="0" data-i18n="opt_single">Single</option>
-                                <option value="1" data-i18n="opt_family_small">Keluarga Kecil (1-2)</option>
-                                <option value="3" data-i18n="opt_family_large">Keluarga Besar (3+)</option>
-                            </select>
-                        </div>
-                        <button class="btn-primary full-width" onclick="saveEmergencyProfile()" data-i18n="btn_recalc">Hitung Ulang</button>
+                        <div class="form-group"><label data-i18n="lbl_expense">Pengeluaran/Bln</label><input type="text" inputmode="numeric" class="money-input" id="em-expense" data-i18n-ph="ph_expense" placeholder="0"></div>
+                        <div class="form-group"><label data-i18n="lbl_job_status">Pekerjaan</label><select id="em-job" class="modern-select"><option value="stable" data-i18n="opt_stable">Karyawan Tetap</option><option value="freelance" data-i18n="opt_freelance">Freelance</option></select></div>
+                        <div class="form-group"><label data-i18n="lbl_dependents">Tanggungan</label><select id="em-dependents" class="modern-select"><option value="0" data-i18n="opt_single">Single</option><option value="1" data-i18n="opt_family_small">1-2 Orang</option><option value="3" data-i18n="opt_family_large">3+ Orang</option></select></div>
+                        <button class="btn-primary full-width ripple" onclick="saveEmergencyProfile()" data-i18n="btn_recalc">Hitung Ulang</button>
                     </div>
                 </div>
             </div>
@@ -279,39 +248,17 @@
             <div id="tab-calc" class="tab-content">
                 <div class="card">
                     <h3 class="mb-20"><i class="fas fa-calculator text-primary"></i> <span data-i18n="lbl_calc_title">Compound Interest</span></h3>
-                    <div class="form-group">
-                        <label data-i18n="lbl_principal">Modal Awal (Rp)</label>
-                        <input type="text" inputmode="numeric" class="money-input" id="calc-principal" placeholder="10.000.000">
-                    </div>
-                    <div class="form-group">
-                        <label data-i18n="lbl_inv_method">Metode Investasi</label>
-                        <select id="calc-method" class="modern-select" onchange="toggleDcaInput()">
-                            <option value="none" data-i18n="opt_lump">Lump Sum</option>
-                            <option value="monthly" data-i18n="opt_monthly">Nabung Bulanan</option>
-                            <option value="yearly" data-i18n="opt_yearly">Nabung Tahunan</option>
-                        </select>
-                    </div>
-                    <div class="form-group hidden" id="dca-input-group">
-                        <label data-i18n="lbl_routine_amount">Nominal Rutin (Rp)</label>
-                        <input type="text" inputmode="numeric" class="money-input" id="calc-contribution" placeholder="50.000">
-                    </div>
+                    <div class="form-group"><label data-i18n="lbl_principal">Modal Awal (Rp)</label><input type="text" inputmode="numeric" class="money-input" id="calc-principal" placeholder="10.000.000"></div>
+                    <div class="form-group"><label data-i18n="lbl_inv_method">Metode Investasi</label><select id="calc-method" class="modern-select" onchange="toggleDcaInput()"><option value="none" data-i18n="opt_lump">Lump Sum</option><option value="daily" data-i18n="opt_daily">Harian</option><option value="monthly" data-i18n="opt_monthly">Bulanan</option><option value="yearly" data-i18n="opt_yearly">Tahunan</option></select></div>
+                    <div class="form-group hidden" id="dca-input-group"><label data-i18n="lbl_routine_amount">Nominal Rutin (Rp)</label><input type="text" inputmode="numeric" class="money-input" id="calc-contribution" placeholder="50.000"></div>
                     <div class="form-row">
-                        <div class="form-group half">
-                            <label data-i18n="lbl_return_rate">Return (%)</label>
-                            <input type="number" id="calc-rate" placeholder="10">
-                        </div>
-                        <div class="form-group half">
-                            <label data-i18n="lbl_duration">Tahun</label>
-                            <input type="number" id="calc-years" placeholder="5">
-                        </div>
+                        <div class="form-group half"><label data-i18n="lbl_return_rate">Return (%)</label><input type="number" id="calc-rate" placeholder="10"></div>
+                        <div class="form-group half"><label data-i18n="lbl_duration">Tahun</label><input type="number" id="calc-years" placeholder="5"></div>
                     </div>
-                    <button class="btn-primary full-width mt-10" onclick="calculateCompound()" data-i18n="btn_calc_sim">Hitung</button>
+                    <button class="btn-primary full-width mt-10 ripple" onclick="calculateCompound()" data-i18n="btn_calc_sim">Hitung</button>
                 </div>
                 <div id="calc-result" class="result-box hidden mt-20 fade-in">
-                    <div class="flex-between mb-10">
-                        <small data-i18n="est_total">Estimasi Total:</small>
-                        <i class="fas fa-times close-result" onclick="resetCalc()"></i>
-                    </div>
+                    <div class="flex-between mb-10"><small data-i18n="est_total">Estimasi Total:</small><i class="fas fa-times close-result" onclick="resetCalc()"></i></div>
                     <h2 id="calc-total-display" class="text-primary">Rp 0</h2>
                     <div class="calc-details mb-20">
                         <div class="detail-row"><span data-i18n="lbl_capital">Modal:</span> <strong id="calc-principal-display">Rp 0</strong></div>
@@ -319,57 +266,22 @@
                     </div>
                 </div>
             </div>
-            <div style="height: 100px;"></div>
+            <div class="spacer-bottom"></div>
         </section>
 
         <section id="page-settings" class="page">
             <div class="card">
                 <h3><i class="fas fa-cog"></i> <span data-i18n="pref_title">Preferensi</span></h3>
-                <div class="setting-item ripple" onclick="openLangModal()">
-                    <span data-i18n="lbl_lang">Bahasa</span>
-                    <div class="setting-value">
-                        <span id="current-lang-label">Indonesia</span>
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
-                </div>
-                <div class="setting-item">
-                    <span data-i18n="security_title">Keamanan</span>
-                    <button id="btn-toggle-pin" class="btn-xs" onclick="togglePinSetup()" data-i18n="enable_pin">Aktifkan PIN</button>
-                </div>
-                <div class="setting-item">
-                    <span data-i18n="lbl_backup_data">Backup</span>
-                   <button class="btn-xs" onclick="downloadBackup()"><i class="fas fa-download"></i></button>
-                </div>
-                <div class="setting-item">
-                    <span data-i18n="lbl_restore_data">Restore</span>
-                    <label class="btn-xs file-label">
-                        <i class="fas fa-upload"></i>
-                        <input type="file" id="restore-file" hidden onchange="restoreBackup(this)">
-                    </label>
-                </div>
-                <div class="setting-item no-border">
-                    <span>Versi App</span>
-                    <small class="badge-pill">v4.3</small>
-                </div>
+                <div class="setting-item ripple" onclick="openLangModal()"><span data-i18n="lbl_lang">Bahasa</span><div class="setting-value"><span id="current-lang-label">Indonesia</span><i class="fas fa-chevron-right"></i></div></div>
+                <div class="setting-item"><span data-i18n="security_title">Keamanan</span><button id="btn-toggle-pin" class="btn-xs" onclick="togglePinSetup()" data-i18n="enable_pin">Aktifkan PIN</button></div>
+                <div class="setting-item"><span data-i18n="lbl_backup_data">Backup</span><button class="btn-xs ripple" onclick="downloadBackup()"><i class="fas fa-download"></i></button></div>
+                <div class="setting-item"><span data-i18n="lbl_restore_data">Restore</span><label class="btn-xs file-label ripple"><i class="fas fa-upload"></i><input type="file" id="restore-file" hidden onchange="restoreBackup(this)"></label></div>
+                <div class="setting-item no-border"><span>Versi App</span><small class="badge-pill">v4.5</small></div>
             </div>
-            <div class="card mt-20">
-                <div class="setting-item ripple" onclick="logoutUser()">
-                    <span data-i18n="btn_logout">Keluar</span>
-                    <i class="fas fa-sign-out-alt text-red"></i>
-                </div>
-            </div>
-            <div class="card mt-20">
-                <div class="setting-item ripple">
-                    <span data-i18n="lbl_contact_dev">Hubungi Developer</span>
-                    <a href="mailto:scoopybalap16@gmail.com" class="btn-icon-sm"><i class="fas fa-envelope"></i></a>
-                </div>
-            </div>
-
-            <div class="card mt-20 border-red">
-                <h3 class="text-red"><i class="fas fa-exclamation-triangle"></i> Zona Bahaya</h3>
-                <button class="btn-danger full-width mt-10" onclick="resetData()" data-i18n="btn_reset_data">Reset Data Aplikasi</button>
-            </div>
-            <div style="height: 100px;"></div>
+            <div class="card mt-20"><div class="setting-item ripple" onclick="logoutUser()"><span data-i18n="btn_logout">Keluar</span><i class="fas fa-sign-out-alt text-red"></i></div></div>
+            <div class="card mt-20"><div class="setting-item ripple"><span data-i18n="lbl_contact_dev">Hubungi Developer</span><a href="mailto:scoopybalap16@gmail.com" class="btn-icon-sm"><i class="fas fa-envelope"></i></a></div></div>
+            <div class="card mt-20 border-red"><h3 class="text-red"><i class="fas fa-exclamation-triangle"></i> Zona Bahaya</h3><button class="btn-danger full-width mt-10 ripple" onclick="resetData()" data-i18n="btn_reset_data">Reset Data Aplikasi</button></div>
+            <div class="spacer-bottom"></div>
         </section>
     </main>
 
@@ -377,265 +289,45 @@
 
     <div class="fab-wrapper">
         <div class="fab-menu" id="fab-menu">
-            <button onclick="openModal('modal-budget')" class="fab-item">
-                <span class="fab-label" data-i18n="fab_trans">Transaksi</span>
-                <i class="fas fa-wallet"></i>
-            </button>
-            <button onclick="openModal('modal-loan')" class="fab-item">
-                <span class="fab-label" data-i18n="fab_loan">Pinjaman</span>
-                <i class="fas fa-handshake"></i>
-            </button>
-            <button onclick="openModal('modal-emergency-add')" class="fab-item">
-                <span class="fab-label" data-i18n="fab_emergency">Dana Darurat</span>
-                <i class="fas fa-shield-alt"></i>
-            </button>
+            <button onclick="openModal('modal-budget')" class="fab-item ripple"><span class="fab-label" data-i18n="fab_trans">Transaksi</span><i class="fas fa-wallet"></i></button>
+            <button onclick="openModal('modal-loan')" class="fab-item ripple"><span class="fab-label" data-i18n="fab_loan">Pinjaman</span><i class="fas fa-handshake"></i></button>
+            <button onclick="openModal('modal-emergency-add')" class="fab-item ripple"><span class="fab-label" data-i18n="fab_emergency">Dana Darurat</span><i class="fas fa-shield-alt"></i></button>
         </div>
-        <button class="fab-main ripple" onclick="toggleFab()">
-            <i class="fas fa-plus" id="fab-icon"></i>
-        </button>
+        <button class="fab-main ripple" onclick="toggleFab()"><i class="fas fa-plus" id="fab-icon"></i></button>
     </div>
 
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active ripple" onclick="navTo('page-home', this)">
-            <div class="nav-icon"><i class="fas fa-home"></i></div>
-            <span data-i18n="nav_home">Beranda</span>
-        </a>
-        <a href="#" class="nav-item ripple" onclick="navTo('page-budget', this)">
-            <div class="nav-icon"><i class="fas fa-wallet"></i></div>
-            <span data-i18n="nav_budget">Budget</span>
-        </a>
-        <a href="#" class="nav-item ripple" onclick="navTo('page-tools', this)">
-            <div class="nav-icon"><i class="fas fa-layer-group"></i></div>
-            <span data-i18n="nav_tools">Tools</span>
-        </a>
-        <a href="#" class="nav-item ripple" onclick="navTo('page-loans', this)">
-            <div class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></div>
-            <span data-i18n="nav_loans">Hutang</span>
-        </a>
-        <a href="#" class="nav-item ripple" onclick="navTo('page-settings', this)">
-            <div class="nav-icon"><i class="fas fa-cog"></i></div>
-            <span data-i18n="nav_settings">Setelan</span>
-        </a>
+        <a href="#" class="nav-item active ripple" onclick="navTo('page-home', this)"><div class="nav-icon"><i class="fas fa-home"></i></div><span data-i18n="nav_home">Beranda</span></a>
+        <a href="#" class="nav-item ripple" onclick="navTo('page-budget', this)"><div class="nav-icon"><i class="fas fa-wallet"></i></div><span data-i18n="nav_budget">Budget</span></a>
+        <a href="#" class="nav-item ripple" onclick="navTo('page-tools', this)"><div class="nav-icon"><i class="fas fa-layer-group"></i></div><span data-i18n="nav_tools">Tools</span></a>
+        <a href="#" class="nav-item ripple" onclick="navTo('page-loans', this)"><div class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></div><span data-i18n="nav_loans">Hutang</span></a>
+        <a href="#" class="nav-item ripple" onclick="navTo('page-settings', this)"><div class="nav-icon"><i class="fas fa-cog"></i></div><span data-i18n="nav_settings">Setelan</span></a>
     </nav>
 
     <div class="modal-overlay" id="modal-budget">
         <div class="modal-sheet">
             <div class="sheet-handle"></div>
-            <div class="modal-header">
-                <h3 data-i18n="modal_trans_title">Catat Transaksi</h3>
-                <i class="fas fa-times close-icon" onclick="closeModal('modal-budget')"></i>
-            </div>
+            <div class="modal-header"><h3 data-i18n="modal_trans_title">Catat Transaksi</h3><i class="fas fa-times close-icon" onclick="closeModal('modal-budget')"></i></div>
             <div class="modal-body">
-                <div class="type-selector">
-                    <input type="radio" name="b-type" id="t-out" value="expense" checked>
-                    <label for="t-out" class="type-btn expense" data-i18n="lbl_expense_type">Pengeluaran</label>
-                    <input type="radio" name="b-type" id="t-in" value="income">
-                    <label for="t-in" class="type-btn income" data-i18n="lbl_income_type">Pemasukan</label>
-                </div>
-                <div class="form-group">
-                    <select id="b-wallet" class="modern-select"></select>
-                </div>
-                <input type="text" inputmode="numeric" class="money-input input-lg" id="b-amount" data-i18n-ph="ph_amount" placeholder="0">
-                <div class="form-group mt-10">
-                    <input type="text" id="b-desc" data-i18n-ph="ph_desc" placeholder="Keterangan">
-                </div>
-                <div class="form-group">
-                    <input type="date" id="b-date" class="modern-input">
-                </div>
+                <div class="type-selector"><input type="radio" name="b-type" id="t-out" value="expense" checked><label for="t-out" class="type-btn expense ripple" data-i18n="lbl_expense_type">Pengeluaran</label><input type="radio" name="b-type" id="t-in" value="income"><label for="t-in" class="type-btn income ripple" data-i18n="lbl_income_type">Pemasukan</label></div>
+                <div class="form-group"><select id="b-wallet" class="modern-select"></select></div>
                 <input type="hidden" id="b-id">
-                <button class="btn-primary full-width mt-20" onclick="saveBudget()" data-i18n="btn_save">Simpan</button>
+                <input type="text" inputmode="numeric" class="money-input input-lg" id="b-amount" data-i18n-ph="ph_amount" placeholder="0">
+                <div class="form-group mt-10"><input type="text" id="b-desc" data-i18n-ph="ph_desc" placeholder="Keterangan"></div>
+                <div class="form-group"><input type="date" id="b-date" class="modern-input"></div>
+                <button class="btn-primary full-width mt-20 ripple" onclick="saveBudget()" data-i18n="btn_save">Simpan</button>
             </div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="modal-loan">
-        <div class="modal-sheet">
-            <div class="sheet-handle"></div>
-            <div class="modal-header">
-                <h3 data-i18n="modal_loan_title">Catat Pinjaman</h3>
-                <i class="fas fa-times close-icon" onclick="closeModal('modal-loan')"></i>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label data-i18n="lbl_trans_type">Jenis</label>
-                    <select id="l-type" class="modern-select">
-                        <option value="piutang" data-i18n="opt_lend">Saya Meminjamkan (Piutang)</option>
-                        <option value="hutang" data-i18n="opt_borrow">Saya Berhutang (Hutang)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label data-i18n="lbl_person_name">Nama</label>
-                    <input type="text" id="l-person" placeholder="Nama orang">
-                </div>
-                <div class="form-group">
-                    <label data-i18n="lbl_principal_loan">Nominal</label>
-                    <input type="text" inputmode="numeric" class="money-input" id="l-principal" oninput="calcLoanPreview()" placeholder="0">
-                </div>
-                <div class="form-row">
-                    <div class="form-group half">
-                        <label data-i18n="lbl_interest_rate">Bunga (%)</label>
-                        <input type="number" id="l-rate" placeholder="0" oninput="calcLoanPreview()">
-                    </div>
-                    <div class="form-group half">
-                        <label data-i18n="lbl_tenor_month">Bulan</label>
-                        <input type="number" id="l-tenor" value="1" oninput="calcLoanPreview()">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label data-i18n="lbl_trans_date">Tanggal</label>
-                    <input type="date" id="l-date" class="modern-input">
-                </div>
-                <div class="info-preview">
-                    <div class="flex-between"><span data-i18n="lbl_installment">Cicilan:</span> <strong id="prev-installment">Rp 0</strong></div>
-                    <div class="flex-between"><span data-i18n="lbl_total_final">Total:</span> <strong id="prev-total">Rp 0</strong></div>
-                </div>
-                <button class="btn-primary full-width mt-20" onclick="saveLoan()" data-i18n="btn_save">Simpan</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-detail">
-        <div class="modal-sheet">
-            <div class="sheet-handle"></div>
-            <div class="modal-header">
-                <h3 data-i18n="modal_detail_title">Rincian</h3>
-                <i class="fas fa-times close-icon" onclick="closeModal('modal-detail')"></i>
-            </div>
-            <div class="modal-body" id="detail-content"></div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-target-add">
-        <div class="modal-sheet">
-            <div class="sheet-handle"></div>
-            <div class="modal-header">
-                <h3 data-i18n="lbl_target_add_title">Tambah Tabungan</h3>
-                <i class="fas fa-times close-icon" onclick="closeModal('modal-target-add')"></i>
-            </div>
-            <div class="modal-body">
-                <p class="text-center text-muted mb-20" data-i18n="ask_amount_add">Masukkan nominal setoran</p>
-                <div class="form-group">
-                    <input type="text" inputmode="numeric" class="money-input input-lg" id="target-add-amount" placeholder="0">
-                </div>
-                <input type="hidden" id="target-current-id">
-                <button class="btn-primary full-width mt-10" onclick="saveTargetSavings()" data-i18n="btn_add_savings">Tambah</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-emergency-add">
-        <div class="modal-sheet">
-            <div class="sheet-handle"></div>
-            <div class="modal-header">
-                <h3><i class="fas fa-shield-alt text-primary"></i> <span data-i18n="em_fund_title">Dana Darurat</span></h3>
-                <i class="fas fa-times close-icon" onclick="closeModal('modal-emergency-add')"></i>
-            </div>
-            <div class="modal-body">
-                <p class="text-center text-muted mb-20" data-i18n="em_modal_desc">Tabung untuk masa depan.</p>
-                <div class="form-group">
-                    <input type="text" inputmode="numeric" class="money-input input-lg" id="em-add-amount" placeholder="0">
-                </div>
-                <div class="info-box icon-left">
-                    <i class="fas fa-lightbulb text-warning"></i>
-                    <small data-i18n="em_tip">Sisihkan uang receh atau sisa belanja agar tidak terasa berat.</small>
-                </div>
-                <button class="btn-primary full-width mt-20" onclick="addEmergencyFund()" data-i18n="btn_save_savings">Simpan</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-calc-detail">
-        <div class="modal-sheet">
-            <div class="sheet-handle"></div>
-            <div class="modal-header">
-                <h3 data-i18n="lbl_asset_growth">Pertumbuhan Aset</h3>
-                <i class="fas fa-times close-icon" onclick="closeModal('modal-calc-detail')"></i>
-            </div>
-            <div class="modal-body scrollable-y" style="max-height: 60vh;">
-                <table class="w-full text-left modern-table">
-                    <thead>
-                        <tr>
-                            <th data-i18n="col_year">Thn</th>
-                            <th data-i18n="col_total_modal">Modal</th>
-                            <th class="text-right" data-i18n="col_final_bal">Saldo</th>
-                        </tr>
-                    </thead>
-                    <tbody id="calc-breakdown-list"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-confirm" style="z-index: 99999;">
-        <div class="modal-dialog">
-            <div class="mb-20 text-center">
-                <i class="fas fa-exclamation-circle text-warning text-4xl mb-10"></i>
-                <h3 id="confirm-title" data-i18n="lbl_confirm_title" class="mb-5">Konfirmasi</h3>
-                <p id="confirm-msg" class="text-muted" data-i18n="msg_confirm_default">Yakin?</p>
-            </div>
-            <div class="flex-between gap-10">
-                <button class="btn-secondary full-width" onclick="closeModal('modal-confirm')">
-                    <span id="btn-conf-cancel" data-i18n="btn_cancel">Batal</span>
-                </button>
-                <button class="btn-primary full-width" id="btn-conf-yes">
-                    <span id="btn-conf-yes-text" data-i18n="btn_yes_delete">Ya</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-lang" style="z-index: 99999;">
-        <div class="modal-sheet">
-            <div class="sheet-handle"></div>
-            <div class="modal-header mb-10">
-                <h3 data-i18n="lbl_select_lang">Pilih Bahasa</h3>
-                <i class="fas fa-times close-icon" onclick="closeModal('modal-lang')"></i>
-            </div>
-            <div class="lang-options">
-                <div class="lang-item ripple" onclick="selectLang('id')">
-                    <div class="flex-center gap-10">
-                        <span class="text-2xl">🇮🇩</span>
-                        <span>Bahasa Indonesia</span>
-                    </div>
-                    <i class="fas fa-check text-primary check-icon" id="check-id"></i>
-                </div>
-                <div class="lang-item ripple" onclick="selectLang('en')">
-                    <div class="flex-center gap-10">
-                        <span class="text-2xl">🇺🇸</span>
-                        <span>English (US)</span>
-                    </div>
-                    <i class="fas fa-check text-primary check-icon" id="check-en"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="pin-overlay" class="pin-overlay hidden">
-        <div class="pin-content">
-            <div class="icon-lock">
-                <i class="fas fa-lock"></i>
-            </div>
-            <h3 id="pin-title" data-i18n="lbl_enter_pin_title">Masukkan PIN</h3>
-            <div class="pin-dots">
-                <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
-            </div>
-            <div class="pin-keypad">
-                <button onclick="pressPin(1)" class="ripple">1</button>
-                <button onclick="pressPin(2)" class="ripple">2</button>
-                <button onclick="pressPin(3)" class="ripple">3</button>
-                <button onclick="pressPin(4)" class="ripple">4</button>
-                <button onclick="pressPin(5)" class="ripple">5</button>
-                <button onclick="pressPin(6)" class="ripple">6</button>
-                <button onclick="pressPin(7)" class="ripple">7</button>
-                <button onclick="pressPin(8)" class="ripple">8</button>
-                <button onclick="pressPin(9)" class="ripple">9</button>
-                <button onclick="pressPin('c')" class="btn-clear ripple"><i class="fas fa-backspace"></i></button>
-                <button onclick="pressPin(0)" class="ripple">0</button>
-                <button onclick="pressPin('enter')" class="btn-enter ripple"><i class="fas fa-check"></i></button>
-            </div>
-            <button class="btn-text-white mt-20" id="btn-forgot-pin" onclick="resetData()" data-i18n="lbl_forgot_pin" style="display:none;">Lupa PIN? Reset Data</button>
-        </div>
-    </div>
+    <div class="modal-overlay" id="modal-loan"><div class="modal-sheet"><div class="sheet-handle"></div><div class="modal-header"><h3 data-i18n="modal_loan_title">Catat Pinjaman</h3><i class="fas fa-times close-icon" onclick="closeModal('modal-loan')"></i></div><div class="modal-body"><div class="form-group"><label data-i18n="lbl_trans_type">Jenis</label><select id="l-type" class="modern-select"><option value="piutang" data-i18n="opt_lend">Piutang (Saya Pinjamkan)</option><option value="hutang" data-i18n="opt_borrow">Hutang (Saya Pinjam)</option></select></div><div class="form-group"><label data-i18n="lbl_person_name">Nama</label><input type="text" id="l-person" placeholder="Nama orang"></div><div class="form-group"><label data-i18n="lbl_principal_loan">Nominal</label><input type="text" inputmode="numeric" class="money-input" id="l-principal" oninput="calcLoanPreview()" placeholder="0"></div><div class="form-row"><div class="form-group half"><label data-i18n="lbl_interest_rate">Bunga (%)</label><input type="number" id="l-rate" placeholder="0" oninput="calcLoanPreview()"></div><div class="form-group half"><label data-i18n="lbl_tenor_month">Bulan</label><input type="number" id="l-tenor" value="1" oninput="calcLoanPreview()"></div></div><div class="form-group"><label data-i18n="lbl_trans_date">Tanggal</label><input type="date" id="l-date" class="modern-input"></div><div class="info-preview"><div class="flex-between"><span data-i18n="lbl_installment">Cicilan:</span> <strong id="prev-installment">Rp 0</strong></div><div class="flex-between"><span data-i18n="lbl_total_final">Total:</span> <strong id="prev-total">Rp 0</strong></div></div><button class="btn-primary full-width mt-20 ripple" onclick="saveLoan()" data-i18n="btn_save">Simpan</button></div></div></div>
+    <div class="modal-overlay" id="modal-detail"><div class="modal-sheet"><div class="sheet-handle"></div><div class="modal-header"><h3 data-i18n="modal_detail_title">Rincian</h3><i class="fas fa-times close-icon" onclick="closeModal('modal-detail')"></i></div><div class="modal-body" id="detail-content"></div></div></div>
+    <div class="modal-overlay" id="modal-target-add"><div class="modal-sheet"><div class="sheet-handle"></div><div class="modal-header"><h3 data-i18n="lbl_target_add_title">Tambah Tabungan</h3><i class="fas fa-times close-icon" onclick="closeModal('modal-target-add')"></i></div><div class="modal-body"><p class="text-center text-muted mb-20" data-i18n="ask_amount_add">Masukkan nominal setoran</p><div class="form-group"><input type="text" inputmode="numeric" class="money-input input-lg" id="target-add-amount" placeholder="0"></div><input type="hidden" id="target-current-id"><button class="btn-primary full-width mt-10 ripple" onclick="saveTargetSavings()" data-i18n="btn_add_savings">Tambah</button></div></div></div>
+    <div class="modal-overlay" id="modal-emergency-add"><div class="modal-sheet"><div class="sheet-handle"></div><div class="modal-header"><h3><i class="fas fa-shield-alt text-primary"></i> <span data-i18n="em_fund_title">Dana Darurat</span></h3><i class="fas fa-times close-icon" onclick="closeModal('modal-emergency-add')"></i></div><div class="modal-body"><p class="text-center text-muted mb-20" data-i18n="em_modal_desc">Tabung untuk masa depan.</p><div class="form-group"><input type="text" inputmode="numeric" class="money-input input-lg" id="em-add-amount" placeholder="0"></div><div class="info-box icon-left"><i class="fas fa-lightbulb text-warning"></i><small data-i18n="em_tip">Sisihkan uang receh atau sisa belanja agar tidak terasa berat.</small></div><button class="btn-primary full-width mt-20 ripple" onclick="addEmergencyFund()" data-i18n="btn_save_savings">Simpan</button></div></div></div>
+    <div class="modal-overlay" id="modal-calc-detail"><div class="modal-sheet"><div class="sheet-handle"></div><div class="modal-header"><h3 data-i18n="lbl_asset_growth">Pertumbuhan Aset</h3><i class="fas fa-times close-icon" onclick="closeModal('modal-calc-detail')"></i></div><div class="modal-body scrollable-y" style="max-height: 60vh;"><table class="w-full text-left modern-table"><thead><tr><th data-i18n="col_year">Thn</th><th data-i18n="col_total_modal">Modal</th><th class="text-right" data-i18n="col_final_bal">Saldo</th></tr></thead><tbody id="calc-breakdown-list"></tbody></table></div></div></div>
+    <div class="modal-overlay" id="modal-confirm" style="z-index: 99999;"><div class="modal-dialog"><div class="mb-20 text-center"><i class="fas fa-exclamation-circle text-warning text-4xl mb-10"></i><h3 id="confirm-title" data-i18n="lbl_confirm_title" class="mb-5">Konfirmasi</h3><p id="confirm-msg" class="text-muted" data-i18n="msg_confirm_default">Yakin?</p></div><div class="flex-between gap-10"><button class="btn-secondary full-width ripple" onclick="closeModal('modal-confirm')"><span id="btn-conf-cancel" data-i18n="btn_cancel">Batal</span></button><button class="btn-primary full-width ripple" id="btn-conf-yes"><span id="btn-conf-yes-text" data-i18n="btn_yes_delete">Ya</span></button></div></div></div>
+    <div class="modal-overlay" id="modal-lang" style="z-index: 99999;"><div class="modal-sheet"><div class="sheet-handle"></div><div class="modal-header mb-10"><h3 data-i18n="lbl_select_lang">Pilih Bahasa</h3><i class="fas fa-times close-icon" onclick="closeModal('modal-lang')"></i></div><div class="lang-options"><div class="lang-item ripple" onclick="selectLang('id')"><div class="flex-center gap-10"><span class="text-2xl">🇮🇩</span><span>Bahasa Indonesia</span></div><i class="fas fa-check text-primary check-icon" id="check-id"></i></div><div class="lang-item ripple" onclick="selectLang('en')"><div class="flex-center gap-10"><span class="text-2xl">🇺🇸</span><span>English (US)</span></div><i class="fas fa-check text-primary check-icon" id="check-en"></i></div></div></div></div>
+    <div id="pin-overlay" class="pin-overlay hidden"><div class="pin-content"><div class="icon-lock"><i class="fas fa-lock"></i></div><h3 id="pin-title" data-i18n="lbl_enter_pin_title">Masukkan PIN</h3><div class="pin-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div><div class="pin-keypad"><button onclick="pressPin(1)" class="ripple">1</button><button onclick="pressPin(2)" class="ripple">2</button><button onclick="pressPin(3)" class="ripple">3</button><button onclick="pressPin(4)" class="ripple">4</button><button onclick="pressPin(5)" class="ripple">5</button><button onclick="pressPin(6)" class="ripple">6</button><button onclick="pressPin(7)" class="ripple">7</button><button onclick="pressPin(8)" class="ripple">8</button><button onclick="pressPin(9)" class="ripple">9</button><button onclick="pressPin('c')" class="btn-clear ripple"><i class="fas fa-backspace"></i></button><button onclick="pressPin(0)" class="ripple">0</button><button onclick="pressPin('enter')" class="btn-enter ripple"><i class="fas fa-check"></i></button></div><button class="btn-text-white mt-20" id="btn-forgot-pin" onclick="resetData()" data-i18n="lbl_forgot_pin" style="display:none;">Lupa PIN? Reset Data</button></div></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -644,7 +336,6 @@
         
         window.firebaseLib = { initializeApp, getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, getFirestore, doc, getDoc, setDoc, onSnapshot, enableIndexedDbPersistence };
     </script>
-    
     <script src="sw-register.js"></script>
     <script type="module" src="js/main.js"></script>
 </body>

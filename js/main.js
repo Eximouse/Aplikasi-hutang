@@ -5,7 +5,7 @@ import { setupAuthListeners, logoutUser } from './auth.js';
 import * as UI from './ui.js'; 
 import { initMoneyInputs } from './utils.js';
 
-// --- BRIDGE KE WINDOW ---
+// --- BRIDGE KE WINDOW (WAJIB LENGKAP) ---
 const globals = [
     'navTo', 'switchTab', 'openModal', 'closeModal',
     'saveBudget', 'saveBill', 'saveLoan', 'addGoal', 'saveTargetSavings',
@@ -15,9 +15,11 @@ const globals = [
     'toggleFab', 'toggleTheme', 'togglePinSetup', 'pressPin', 
     'exportCSV', 'resetData', 'downloadBackup', 'restoreBackup', 
     'generatePDF', 'openLangModal', 'selectLang',
-    'calculateCompound', 'toggleDcaInput', 'resetCalc', 'calcLoanPreview'
+    'calculateCompound', 'toggleDcaInput', 'resetCalc', 'calcLoanPreview',
+    'refreshAds'
 ];
 
+// Map semua fungsi UI ke window agar bisa dipanggil dari HTML
 globals.forEach(fn => {
     if(UI[fn]) window[fn] = UI[fn];
 });
@@ -37,7 +39,7 @@ window.addEventListener('load', () => {
         auth = getAuth(app);
         db = getFirestore(app);
         
-        // Persistence
+        // Persistence (Offline Mode)
         enableIndexedDbPersistence(db).catch(err => console.log("Persistence:", err.code));
         
         window.dbInstance = db;
@@ -61,7 +63,7 @@ window.addEventListener('load', () => {
             }
         });
     } else {
-        alert("Firebase library failed to load.");
+        alert("Fatal Error: Firebase library failed to load.");
     }
 });
 
@@ -75,7 +77,7 @@ async function startApp() {
     UI.initTheme();
     UI.checkPinLock();
     initMoneyInputs(UI.calcLoanPreview);
-    UI.initBillDateSelect();
+    UI.initBillDateSelect(); // Fitur ini dikembalikan agar dropdown tanggal tagihan muncul
     UI.updateUI();
     
     // Refresh Ads safely

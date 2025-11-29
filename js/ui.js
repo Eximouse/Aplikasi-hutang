@@ -22,23 +22,20 @@ export function showToast(msg, type = 'success') {
     
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    // Icon logic
     const iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
     toast.innerHTML = `<i class="fas ${iconClass}"></i> <span>${msg}</span>`;
     
     container.appendChild(toast);
-    setTimeout(() => toast.classList.add('show'), 10); // Trigger transition if needed
+    setTimeout(() => toast.classList.add('show'), 10); 
     setTimeout(() => toast.remove(), 3000);
 }
 
 // --- NAVIGATION ---
 export function navTo(pageId, element) {
     vibrate();
-    
-    // Switch Page
     document.querySelectorAll('.page').forEach(p => {
         p.classList.remove('active');
-        p.style.display = 'none'; // Ensure hidden
+        p.style.display = 'none'; 
     });
     
     const targetPage = document.getElementById(pageId);
@@ -47,27 +44,19 @@ export function navTo(pageId, element) {
         setTimeout(() => targetPage.classList.add('active'), 10);
     }
     
-    // Active Nav Item
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     if(element) element.classList.add('active');
     else {
-        // Fallback if element not passed
+        // Fallback update icon navigasi
         const navLinks = document.querySelectorAll('.bottom-nav .nav-item');
-        if(pageId === 'page-home') navLinks[0].classList.add('active');
-        if(pageId === 'page-budget') navLinks[1].classList.add('active');
-        if(pageId === 'page-tools') navLinks[2].classList.add('active');
-        if(pageId === 'page-loans') navLinks[3].classList.add('active');
-        if(pageId === 'page-settings') navLinks[4].classList.add('active');
+        if(pageId === 'page-home' && navLinks[0]) navLinks[0].classList.add('active');
+        if(pageId === 'page-budget' && navLinks[1]) navLinks[1].classList.add('active');
+        if(pageId === 'page-tools' && navLinks[2]) navLinks[2].classList.add('active');
+        if(pageId === 'page-loans' && navLinks[3]) navLinks[3].classList.add('active');
+        if(pageId === 'page-settings' && navLinks[4]) navLinks[4].classList.add('active');
     }
 
-    // Header Title Update
-    const titleKeys = {
-        'page-home': 'nav_home', 
-        'page-budget': 'nav_budget', 
-        'page-loans': 'nav_loans', 
-        'page-tools': 'nav_tools', 
-        'page-settings': 'nav_settings'
-    };
+    const titleKeys = { 'page-home': 'nav_home', 'page-budget': 'nav_budget', 'page-loans': 'nav_loans', 'page-tools': 'nav_tools', 'page-settings': 'nav_settings' };
     const headerEl = document.getElementById('header-title');
     if(headerEl) {
         const key = titleKeys[pageId];
@@ -75,11 +64,9 @@ export function navTo(pageId, element) {
         headerEl.textContent = t(key, data.settings.lang);
     }
     
-    // Fab visibility
     const fab = document.querySelector('.fab-wrapper');
     if(fab) fab.style.display = (pageId === 'page-settings') ? 'none' : 'flex';
 
-    // Lazy load ads & Charts
     setTimeout(() => {
         if (typeof window.refreshAds === 'function') window.refreshAds(pageId);
         if (pageId === 'page-home') renderTrendChart();
@@ -91,41 +78,31 @@ export function switchTab(context, tabId) {
     const parent = document.getElementById(`page-${context}`);
     if(!parent) return;
 
-    // Hide all tabs in this context
     parent.querySelectorAll('.tab-content').forEach(c => {
         c.classList.remove('active');
         c.style.display = 'none';
     });
 
-    // Show target tab
     const target = document.getElementById(tabId);
     if(target) {
         target.style.display = 'block';
         setTimeout(() => target.classList.add('active'), 10);
     }
     
-    // Active Tab Button
     parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    // Find the button that calls this function (rough approximation if event not passed)
-    if(event && event.target) {
-        event.target.classList.add('active');
-    }
+    if(event && event.target) event.target.classList.add('active');
 }
 
-// --- MODALS & BOTTOM SHEET LOGIC ---
-
+// --- MODALS (Bottom Sheet) ---
 export function openModal(id) {
     vibrate([15]);
     const modal = document.getElementById(id);
     if(!modal) return;
     
     modal.classList.add('active');
-    
-    // Close FAB if open
     const fabMenu = document.getElementById('fab-menu');
     if(fabMenu && fabMenu.classList.contains('active')) toggleFab();
 
-    // PUSH HISTORY STATE for "Back Button" Support
     history.pushState({ modalId: id }, null, window.location.href);
 }
 
@@ -134,17 +111,12 @@ export function closeModal(id) {
     if(modal) {
         modal.classList.remove('active');
         resetInputs(id);
-        
-        // Remove history state if we are closing manually (to avoid needing double back)
-        if (history.state && history.state.modalId === id) {
-             history.back();
-        }
+        if (history.state && history.state.modalId === id) history.back();
     }
 }
 
-// Global Back Button Handler (Native Feel)
+// Handle Back Button Android
 window.addEventListener('popstate', (event) => {
-    // If we pressed back, close any active modal
     const activeModal = document.querySelector('.modal-overlay.active');
     if(activeModal) {
         activeModal.classList.remove('active');
@@ -162,10 +134,11 @@ function resetInputs(containerId) {
     const dateInput = container.querySelector('input[type="date"]');
     if(dateInput) dateInput.value = today;
 
+    // Reset ID Edit untuk Budget
     if(containerId === 'modal-budget') {
         const defaultRadio = document.getElementById('t-out');
         if(defaultRadio) defaultRadio.checked = true;
-        document.getElementById('b-id').value = '';
+        document.getElementById('b-id').value = ''; 
     }
 }
 
@@ -195,15 +168,13 @@ function renderEmptyState(containerId, messageKey, iconClass = 'fa-clipboard-lis
     }
 }
 
-// --- RENDER FUNCTIONS (Updated HTML Structure) ---
-
+// --- RENDER FUNCTIONS ---
 export function renderWallets() {
     const container = document.getElementById('wallet-list');
     const select = document.getElementById('b-wallet');
     if(!container || !select) return;
 
-    container.innerHTML = '';
-    select.innerHTML = '';
+    container.innerHTML = ''; select.innerHTML = '';
     let globalTotal = 0;
 
     data.wallets.forEach(w => {
@@ -232,7 +203,6 @@ export function renderWallets() {
         select.appendChild(opt);
     });
     
-    // Animation Counter for Balance
     const balanceEl = document.getElementById('main-balance');
     if(balanceEl) balanceEl.textContent = fmtMoney(globalTotal);
 }
@@ -250,7 +220,6 @@ export function renderBudget() {
 
     filteredData.forEach(b => {
         if (b.type === 'income') income += b.amount; else expense += b.amount;
-        
         let walletName = '-';
         const w = data.wallets.find(x => x.id === b.walletId);
         if (w) walletName = w.name;
@@ -259,7 +228,6 @@ export function renderBudget() {
         el.className = `list-item ripple`;
         el.onclick = () => editBudget(b.id);
         
-        // Icon color based on type
         const iconColor = b.type === 'income' ? 'text-green' : 'text-red';
         const bgIcon = b.type === 'income' ? 'bg-green-light' : 'bg-red-light';
         const arrow = b.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up';
@@ -284,7 +252,6 @@ export function renderBudget() {
     
     document.getElementById('main-income').textContent = fmtMoney(income);
     document.getElementById('main-expense').textContent = fmtMoney(expense);
-    
     renderChart(income, expense);
     if(filteredData.length === 0) renderEmptyState('budget-list', 'msg_empty_trans');
 }
@@ -292,7 +259,6 @@ export function renderBudget() {
 export function renderChart(income, expense) {
     const ctx = document.getElementById('mainChart');
     if(!ctx) return;
-
     if(chartInstance) chartInstance.destroy();
     if(income === 0 && expense === 0) { income = 1; expense = 0; }
     
@@ -308,43 +274,45 @@ export function renderChart(income, expense) {
             }]
         },
         options: {
-            cutout: '70%',
-            responsive: true,
-            maintainAspectRatio: false,
+            cutout: '70%', responsive: true, maintainAspectRatio: false,
             plugins: { legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 8 } } }
         }
     });
 }
 
+// --- LOGIKA EDIT & SAVE BUDGET (100% FIXED) ---
 export function saveBudget() {
     vibrate();
     const id = document.getElementById('b-id').value; 
     const typeRadio = document.querySelector('input[name="b-type"]:checked');
     const type = typeRadio ? typeRadio.value : 'expense';
-
-    const amountRaw = document.getElementById('b-amount').value;
-    const amount = parseMoney(amountRaw);
+    const amount = parseMoney(document.getElementById('b-amount').value);
     const desc = document.getElementById('b-desc').value;
     const date = document.getElementById('b-date').value;
     const walletId = parseInt(document.getElementById('b-wallet').value);
 
     if (!amount || !desc) return showToast(t('msg_complete_data', data.settings.lang), 'error');
 
-    // EDIT LOGIC
     if (id) {
+        // --- KASUS EDIT: Saldo Lama Dikembalikan (Revert) ---
         const oldItem = data.budget.find(b => b.id == id);
         if (oldItem) {
             const oldWallet = data.wallets.find(w => w.id === oldItem.walletId);
             if (oldWallet) {
+                // Jika dulunya Income, sekarang saldo dikurangi (karena dianggap batal masuk)
                 if (oldItem.type === 'income') oldWallet.balance -= oldItem.amount;
+                // Jika dulunya Expense, sekarang saldo ditambah (karena dianggap uang kembali)
                 else oldWallet.balance += oldItem.amount;
             }
-            oldItem.type = type;
-            oldItem.amount = amount;
-            oldItem.desc = desc;
-            oldItem.date = date;
+            
+            // Update Data Item
+            oldItem.type = type; 
+            oldItem.amount = amount; 
+            oldItem.desc = desc; 
+            oldItem.date = date; 
             oldItem.walletId = walletId;
             
+            // --- KASUS EDIT: Saldo Baru Diterapkan ---
             const newWallet = data.wallets.find(w => w.id === walletId);
             if (newWallet) {
                 if (type === 'income') newWallet.balance += amount;
@@ -353,6 +321,7 @@ export function saveBudget() {
             showToast("Transaksi diperbarui");
         }
     } else {
+        // --- KASUS BARU ---
         const wallet = data.wallets.find(w => w.id === walletId);
         if (wallet) {
             if (type === 'income') wallet.balance += amount;
@@ -370,16 +339,18 @@ export function saveBudget() {
 export function editBudget(id) {
     const item = data.budget.find(b => b.id === id);
     if (!item) return;
-
+    
+    // Isi Form
     document.getElementById('b-id').value = item.id;
     document.getElementById('b-amount').value = item.amount.toLocaleString('id-ID');
     document.getElementById('b-desc').value = item.desc;
     document.getElementById('b-date').value = item.date;
     if(item.walletId) document.getElementById('b-wallet').value = item.walletId;
     
+    // Set Radio Button
     if (item.type === 'income') document.getElementById('t-in').checked = true;
     else document.getElementById('t-out').checked = true;
-
+    
     openModal('modal-budget');
 }
 
@@ -406,8 +377,9 @@ export function renderBills() {
         if (isPaid) {
             statusBadge = `<span class="badge-pill text-green bg-green-light"><i class="fas fa-check"></i> ${t('status_paid', data.settings.lang)}</span>`;
         } else {
+            // Logika Telat
             if (currentDay > bill.dueDay) {
-                statusBadge = `<span class="badge-pill text-red bg-red-light">${t('status_overdue', data.settings.lang)}</span>`;
+                statusBadge = `<span class="badge-pill text-red bg-red-light font-bold">TELAT</span>`;
             } else {
                 statusBadge = `<span class="badge-pill">${t('status_unpaid', data.settings.lang)}</span>`;
             }
@@ -440,46 +412,31 @@ export function saveBill() {
     const name = document.getElementById('bill-name').value;
     const amount = parseMoney(document.getElementById('bill-amount').value);
     const dueDay = parseInt(document.getElementById('bill-date').value);
-
     if(!name || !amount) return showToast(t('msg_complete_data', data.settings.lang), 'error');
-    
     data.bills.push({ id: Date.now(), name, amount, dueDay, lastPaidMonth: null });
     saveAppData(window.currentUser, window.dbInstance);
     toggleAddBill();
     showToast(t('msg_trans_saved', data.settings.lang));
     updateUI();
 }
-
 export function toggleAddBill() {
     const form = document.getElementById('add-bill-form');
     if (form) form.classList.toggle('hidden');
 }
-
 export function payBill(id) {
     vibrate();
     const bill = data.bills.find(b => b.id === id);
     if(!bill) return;
-
-    // Auto deduct from Bank (ID 2)
     const wallet = data.wallets.find(w => w.id === 2);
     if(wallet) wallet.balance -= bill.amount;
-
-    data.budget.unshift({
-        id: Date.now(),
-        type: 'expense',
-        amount: bill.amount,
-        desc: `[Tagihan] ${bill.name}`,
-        date: new Date().toISOString().split('T')[0],
-        walletId: 2
-    });
-
+    data.budget.unshift({ id: Date.now(), type: 'expense', amount: bill.amount, desc: `[Tagihan] ${bill.name}`, date: new Date().toISOString().split('T')[0], walletId: 2 });
     bill.lastPaidMonth = new Date().toISOString().slice(0, 7);
     saveAppData(window.currentUser, window.dbInstance);
     showToast(t('msg_bill_paid', data.settings.lang));
     updateUI();
 }
 
-// --- LOANS ---
+// --- LOANS (LOGIKA MATEMATIKA ASLI) ---
 export function renderLoans() {
     const activeList = document.getElementById('loan-list-active');
     const historyList = document.getElementById('loan-list-history');
@@ -488,6 +445,7 @@ export function renderLoans() {
     if(!activeList || !historyList) return;
     activeList.innerHTML = ''; historyList.innerHTML = '';
     let totPiutang = 0, totHutang = 0;
+    const today = new Date(); today.setHours(0,0,0,0); 
 
     data.loans.forEach(l => {
         if(l.status === 'active') {
@@ -496,12 +454,45 @@ export function renderLoans() {
         }
         if(!l.person.toLowerCase().includes(search)) return;
 
-        // Visuals
+        let statusInfo = '';
+        let progressLabel = '';
+
+        // Hitung Jatuh Tempo / Telat
+        if (l.status === 'active') {
+            const transDate = new Date(l.date); transDate.setHours(0,0,0,0);
+            const tenor = parseInt(l.tenor) || 1;
+            const installmentAmount = l.total / tenor;
+            
+            let monthsPaid = Math.floor((l.paid + 100) / installmentAmount); 
+            if (monthsPaid >= tenor) monthsPaid = tenor - 1;
+
+            let nextDueDate = new Date(transDate);
+            nextDueDate.setMonth(transDate.getMonth() + (monthsPaid + 1));
+
+            const currentInstallmentNo = monthsPaid + 1;
+            progressLabel = `Cicilan ${currentInstallmentNo}/${tenor}`;
+
+            const diffTime = nextDueDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+            const shortDate = nextDueDate.toLocaleDateString(data.settings.lang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short' });
+
+            if (diffDays === 0) {
+                 statusInfo = `<small class="badge-pill bg-warning text-white" style="animation: pulse 1.5s infinite;"><i class="fas fa-exclamation-circle"></i> HARI INI</small>`;
+            } else if (diffDays > 0) {
+                 const prefix = data.settings.lang === 'id' ? 'H-' : 'Due ';
+                 statusInfo = `<small class="text-xs font-bold text-primary"><i class="fas fa-clock"></i> ${prefix}${diffDays} &bull; ${shortDate}</small>`;
+            } else {
+                 statusInfo = `<small class="badge-pill bg-red-light text-red font-bold">TELAT ${Math.abs(diffDays)} HARI</small>`;
+            }
+        } else {
+            statusInfo = `<small class="badge-pill bg-green-light text-green">LUNAS</small>`;
+            progressLabel = "Selesai";
+        }
+
         const isPiutang = l.type === 'piutang';
         const colorClass = isPiutang ? 'text-green' : 'text-red';
         const bgClass = isPiutang ? 'bg-green-light' : 'bg-red-light';
         const typeLabel = isPiutang ? 'Piutang' : 'Hutang';
-        
         const progress = Math.min(100, (l.paid / l.total) * 100);
 
         const el = document.createElement('div');
@@ -515,12 +506,12 @@ export function renderLoans() {
                          <div class="stat-icon ${bgClass}"><i class="fas ${isPiutang ? 'fa-hand-holding-usd' : 'fa-file-invoice-dollar'} ${colorClass}"></i></div>
                          <div>
                             <strong>${l.person}</strong>
-                            <div class="text-xs ${colorClass} font-bold">${typeLabel}</div>
+                            <div class="mt-1">${statusInfo}</div>
                          </div>
                     </div>
                     <div class="text-right">
                         <div class="font-bold">${fmtMoney(l.total - l.paid)}</div>
-                        <small class="text-muted">${Math.round(progress)}%</small>
+                        <small class="text-muted text-xs">${progressLabel}</small>
                     </div>
                 </div>
                 <div style="background:var(--bg-input); height:6px; border-radius:3px; margin-top:10px; overflow:hidden;">
@@ -542,7 +533,8 @@ export function calcLoanPreview() {
     const p = parseMoney(document.getElementById('l-principal').value) || 0;
     const r = parseFloat(document.getElementById('l-rate').value) || 0;
     const t = parseFloat(document.getElementById('l-tenor').value) || 1;
-    const total = p + (p * (r/100) * t);
+    const totalInterest = p * (r/100) * t;
+    const total = p + totalInterest;
     document.getElementById('prev-total').textContent = fmtMoney(total);
     document.getElementById('prev-installment').textContent = fmtMoney(total/t);
 }
@@ -573,7 +565,6 @@ export function showLoanDetail(id) {
     const l = data.loans.find(x => x.id === id);
     if (!l) return;
     
-    // Generate History List
     const historyHtml = l.history.map((h, i) => `
         <div class="flex-between py-2 border-b border-gray-100">
             <span class="text-sm text-muted">${fmtDate(h.date, data.settings.lang)}</span>
@@ -599,7 +590,6 @@ export function showLoanDetail(id) {
                 <strong class="text-lg text-red">${fmtMoney(l.total - l.paid)}</strong>
             </div>
         </div>
-        
         ${l.status === 'active' ? `
         <div class="card bg-gray-50 border-0 p-4 mt-20">
             <label class="text-sm font-bold mb-2 block">Bayar Cicilan</label>
@@ -615,7 +605,6 @@ export function showLoanDetail(id) {
         </div>
         <button class="btn-danger full-width mt-20" onclick="deleteItem('loans', ${l.id})">Hapus Data</button>
     `;
-
     document.getElementById('detail-content').innerHTML = html;
     openModal('modal-detail');
     initMoneyInputs();
@@ -635,7 +624,6 @@ export function payLoan(id) {
         showToast("Pembayaran dicatat");
     }
 }
-
 export function deletePayment(loanId, index) {
     showConfirmDialog("Hapus pembayaran ini?", () => {
         const l = data.loans.find(x => x.id === loanId);
@@ -644,7 +632,7 @@ export function deletePayment(loanId, index) {
             l.history.splice(index, 1);
             l.status = 'active';
             saveAppData(window.currentUser, window.dbInstance);
-            closeModal('modal-detail'); // Close details to refresh properly
+            closeModal('modal-detail');
             updateUI();
         }
     });
@@ -664,7 +652,6 @@ export function addGoal() {
         showToast("Target dibuat");
     }
 }
-
 export function renderGoals() {
     const list = document.getElementById('goal-list');
     if(!list) return;
@@ -699,7 +686,6 @@ export function renderGoals() {
     });
     renderEmptyState('goal-list', 'msg_empty_goal', 'fa-bullseye');
 }
-
 export function saveTargetSavings() {
     vibrate();
     const id = parseInt(document.getElementById('target-current-id').value);
@@ -725,28 +711,20 @@ export function toggleEmergencySettings() {
         document.getElementById('em-dependents').value = data.emergency.dependents;
     }
 }
-
 export function saveEmergencyProfile() {
     const exp = parseMoney(document.getElementById('em-expense').value);
     const job = document.getElementById('em-job').value;
     const dep = document.getElementById('em-dependents').value;
-
     let m = 6;
     if(job === 'freelance') m += 3;
     if(dep === '1') m += 3; else if(dep === '3') m += 6;
-
-    data.emergency.expense = exp;
-    data.emergency.job = job;
-    data.emergency.dependents = dep;
-    data.emergency.targetMonths = m;
-    data.emergency.targetAmount = m * exp;
-    
+    data.emergency.expense = exp; data.emergency.job = job; data.emergency.dependents = dep;
+    data.emergency.targetMonths = m; data.emergency.targetAmount = m * exp;
     saveAppData(window.currentUser, window.dbInstance);
     toggleEmergencySettings();
     updateUI();
     showToast("Profil disimpan");
 }
-
 export function addEmergencyFund() {
     const amt = parseMoney(document.getElementById('em-add-amount').value);
     if(amt > 0) {
@@ -757,26 +735,22 @@ export function addEmergencyFund() {
         showToast("Dana ditambahkan");
     }
 }
-
 export function renderEmergency() {
     if(!data.emergency) return;
     const em = data.emergency;
-    
     const elTarget = document.getElementById('em-target-rp');
     const elSaved = document.getElementById('em-current-rp');
     if(elTarget) elTarget.textContent = fmtMoney(em.targetAmount);
     if(elSaved) elSaved.textContent = fmtMoney(em.saved);
     if(document.getElementById('em-target-month')) document.getElementById('em-target-month').textContent = em.targetMonths;
-
     let p = em.targetAmount > 0 ? Math.round((em.saved / em.targetAmount) * 100) : 0;
     if(p > 100) p = 100;
-
     if(document.getElementById('em-percent')) document.getElementById('em-percent').textContent = p + "%";
     const circle = document.getElementById('emergency-circle');
     if(circle) circle.style.background = `conic-gradient(var(--primary) ${p * 3.6}deg, var(--bg-input) 0deg)`;
 }
 
-// --- SYSTEM & SETTINGS ---
+// --- SYSTEM ---
 export function deleteItem(collection, id) {
     showConfirmDialog("Hapus item ini?", () => {
         vibrate([30]);
@@ -792,16 +766,12 @@ export function deleteItem(collection, id) {
         }
         data[collection] = data[collection].filter(x => x.id !== id);
         saveAppData(window.currentUser, window.dbInstance);
-        
-        // Close detail modal if open
         const detailModal = document.getElementById('modal-detail');
         if(detailModal && detailModal.classList.contains('active')) closeModal('modal-detail');
-        
         updateUI();
         showToast("Item dihapus");
     });
 }
-
 export function resetData() {
     showConfirmDialog("RESET SEMUA DATA? Tidak bisa dikembalikan!", () => {
         localStorage.removeItem(APP_KEY);
@@ -809,296 +779,136 @@ export function resetData() {
     });
 }
 
+// --- CHART & UTILS ---
 export function renderTrendChart() {
     const ctx = document.getElementById('trendChart');
     if(!ctx) return;
-
-    const labels = [];
-    const points = [];
-    const today = new Date();
-    
+    const labels = []; const points = []; const today = new Date();
     for (let i = 5; i >= 0; i--) {
         const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
         labels.push(d.toLocaleDateString(data.settings.lang === 'id' ? 'id-ID' : 'en-US', { month: 'short' }));
-        
         const key = d.toISOString().slice(0, 7);
         let sum = 0;
-        data.budget.forEach(b => {
-            if(b.type === 'expense' && b.date.startsWith(key)) sum += b.amount;
-        });
+        data.budget.forEach(b => { if(b.type === 'expense' && b.date.startsWith(key)) sum += b.amount; });
         points.push(sum);
     }
-
     if(trendChartInstance) trendChartInstance.destroy();
-    
-    // Gradient fill
     const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 200);
-    gradient.addColorStop(0, 'rgba(239, 68, 68, 0.5)');
-    gradient.addColorStop(1, 'rgba(239, 68, 68, 0.0)');
-
+    gradient.addColorStop(0, 'rgba(239, 68, 68, 0.5)'); gradient.addColorStop(1, 'rgba(239, 68, 68, 0.0)');
     trendChartInstance = new Chart(ctx.getContext('2d'), {
         type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Pengeluaran',
-                data: points,
-                borderColor: '#ef4444',
-                backgroundColor: gradient,
-                fill: true,
-                tension: 0.4,
-                pointRadius: 4
-            }]
-        },
-        options: {
-            plugins: { legend: { display: false } },
-            scales: { y: { display: false }, x: { grid: { display: false } } },
-            maintainAspectRatio: false
-        }
+        data: { labels: labels, datasets: [{ label: 'Pengeluaran', data: points, borderColor: '#ef4444', backgroundColor: gradient, fill: true, tension: 0.4, pointRadius: 4 }] },
+        options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } }, maintainAspectRatio: false }
     });
 }
 
-// --- CONFIRMATION DIALOG ---
-export function showConfirmDialog(msg, callback) {
-    vibrate([20]);
-    document.getElementById('confirm-msg').textContent = msg;
-    onConfirmAction = callback;
-    
-    // Special handling for confirm dialog as it's a centered dialog, not sheet
-    const modal = document.getElementById('modal-confirm');
-    if(modal) {
-        modal.classList.add('active');
-        // Push state so back button works for confirm too
-        history.pushState({ modalId: 'modal-confirm' }, null, window.location.href);
-    }
-}
-
-export function setupConfirmListener() {
-    const btn = document.getElementById('btn-conf-yes');
-    if(btn) {
-        btn.onclick = () => {
-            if(onConfirmAction) onConfirmAction();
-            closeModal('modal-confirm');
-        };
-    }
-}
-
-// --- PIN ---
-export function togglePinSetup() {
-    if(data.settings.pin) {
-        showConfirmDialog("Matikan PIN?", () => {
-            data.settings.pin = null;
-            saveAppData(window.currentUser, window.dbInstance);
-            updatePinButtonText();
-            showToast("PIN Dimatikan");
-        });
-    } else {
-        isSettingUpPin = true;
-        document.getElementById('pin-overlay').classList.remove('hidden');
-        document.getElementById('pin-title').textContent = "Buat PIN Baru (4 Angka)";
-        document.querySelectorAll('.dot').forEach(d => d.classList.remove('filled'));
-        currentPinInput = "";
-    }
-}
-
-export function pressPin(key) {
-    vibrate([5]);
-    if(key === 'c') currentPinInput = currentPinInput.slice(0, -1);
-    else if(key !== 'enter' && currentPinInput.length < 4) currentPinInput += key;
-
-    const dots = document.querySelectorAll('.dot');
-    dots.forEach((d, i) => {
-        if(i < currentPinInput.length) d.classList.add('filled'); else d.classList.remove('filled');
-    });
-
-    if(currentPinInput.length === 4) setTimeout(validatePin, 100);
-}
-
-function validatePin() {
-    if(isSettingUpPin) {
-        data.settings.pin = currentPinInput;
-        saveAppData(window.currentUser, window.dbInstance);
-        document.getElementById('pin-overlay').classList.add('hidden');
-        isSettingUpPin = false;
-        updatePinButtonText();
-        showToast("PIN Diaktifkan");
-    } else {
-        if(currentPinInput === data.settings.pin) {
-            document.getElementById('pin-overlay').classList.add('hidden');
-        } else {
-            vibrate([50, 50, 50]);
-            currentPinInput = "";
-            document.querySelectorAll('.dot').forEach(d => d.classList.remove('filled'));
-            showToast("PIN Salah!", "error");
-        }
-    }
-}
-
-export function checkPinLock() {
-    if(data.settings.pin) {
-        document.getElementById('pin-overlay').classList.remove('hidden');
-        document.getElementById('pin-title').textContent = "Masukkan PIN";
-        document.getElementById('btn-forgot-pin').style.display = "block";
-    }
-}
-
-export function updatePinButtonText() {
-    const btn = document.getElementById('btn-toggle-pin');
-    if(btn) {
-        btn.textContent = data.settings.pin ? "Nonaktifkan PIN" : "Aktifkan PIN";
-        btn.className = data.settings.pin ? "btn-xs text-red border-red" : "btn-xs text-primary border-primary";
-    }
-}
-
-// --- LANGUAGE & THEME ---
-export function toggleTheme() {
-    vibrate();
-    const cur = data.settings.theme;
-    data.settings.theme = cur === 'light' ? 'dark' : 'light';
-    initTheme();
-    saveAppData(window.currentUser, window.dbInstance);
-}
-
-export function initTheme() {
-    document.documentElement.setAttribute('data-theme', data.settings.theme);
-    const icon = document.getElementById('theme-icon');
-    if(icon) icon.className = data.settings.theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-}
-
-export function openLangModal() { openModal('modal-lang'); }
-
-export function selectLang(code) {
-    data.settings.lang = code;
-    saveAppData(window.currentUser, window.dbInstance);
-    updateUI();
-    closeModal('modal-lang');
-    
-    // Update Checks
-    document.getElementById('check-id').style.display = code === 'id' ? 'block' : 'none';
-    document.getElementById('check-en').style.display = code === 'en' ? 'block' : 'none';
-    document.getElementById('current-lang-label').textContent = code === 'id' ? 'Indonesia' : 'English';
-}
-
-// --- MAIN UPDATE UI ---
-export function updateUI() {
-    renderWallets();
-    renderBudget();
-    renderBills();
-    renderLoans();
-    renderGoals();
-    renderEmergency();
-    renderTrendChart();
-    updatePinButtonText();
-    
-    // Render language labels
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        el.textContent = t(el.getAttribute('data-i18n'), data.settings.lang);
-    });
-    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-        el.placeholder = t(el.getAttribute('data-i18n-ph'), data.settings.lang);
-    });
-}
-
-// --- UTILS EXPORT ---
+// --- UTILS (RESTORED & IMPROVED) ---
 export function initBillDateSelect() {
     const select = document.getElementById('bill-date');
     if(select && select.children.length === 0) {
         for(let i=1; i<=31; i++) {
-            const o = document.createElement('option');
-            o.value = i; o.textContent = i;
-            select.appendChild(o);
+            const o = document.createElement('option'); o.value = i; o.textContent = i; select.appendChild(o);
         }
     }
 }
-
 export function exportCSV(type) {
     let csv = "data:text/csv;charset=utf-8,";
     if(type === 'budget') {
-        csv += "Tanggal,Tipe,Deskripsi,Nominal\r\n";
-        data.budget.forEach(b => csv += `${b.date},${b.type},"${b.desc}",${b.amount}\r\n`);
+        csv += "Tanggal,Tipe,Deskripsi,Nominal,Dompet\r\n";
+        data.budget.forEach(b => { const w = data.wallets.find(x => x.id === b.walletId)?.name || '-'; csv += `${b.date},${b.type},"${b.desc}",${b.amount},"${w}"\r\n` });
     } else {
-        csv += "Tanggal,Tipe,Nama,Total,Terbayar\r\n";
-        data.loans.forEach(l => csv += `${l.date},${l.type},"${l.person}",${l.total},${l.paid}\r\n`);
+        csv += "Tanggal,Tipe,Nama,Total,Terbayar,Status\r\n";
+        data.loans.forEach(l => csv += `${l.date},${l.type},"${l.person}",${l.total},${l.paid},${l.status}\r\n`);
     }
-    const link = document.createElement("a");
-    link.href = encodeURI(csv);
-    link.download = `finpro_${type}_${Date.now()}.csv`;
-    link.click();
+    const link = document.createElement("a"); link.href = encodeURI(csv); link.download = `finpro_${type}_${Date.now()}.csv`; link.click();
 }
-
-// PDF Generator (Stub for logic provided in prev files)
 export function generatePDF() {
-    if (!window.jspdf) return showToast("PDF lib missing", "error");
-    const doc = new window.jspdf.jsPDF();
-    doc.text("Finansial Pro Report", 14, 20);
-    // ... logic same as before but safe ...
-    doc.save("Laporan.pdf");
+    if (!window.jspdf) return showToast("Library PDF belum siap", "error");
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.setFontSize(18); doc.setTextColor(37, 99, 235); doc.text("Finansial Pro", 14, 20);
+    doc.setFontSize(10); doc.setTextColor(100); doc.text("Laporan Keuangan", 14, 26);
+    doc.text(`Dicetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 32);
+    let inc = 0, exp = 0; data.budget.forEach(b => { if (b.type === 'income') inc += b.amount; else exp += b.amount; });
+    doc.setFillColor(248, 250, 252); doc.roundedRect(14, 40, 180, 25, 3, 3, 'FD');
+    doc.text("Pemasukan", 20, 48); doc.text("Pengeluaran", 80, 48); doc.text("Sisa", 140, 48);
+    doc.setFontSize(12); doc.setFont("helvetica", "bold");
+    doc.setTextColor(16, 185, 129); doc.text(fmtMoney(inc), 20, 58);
+    doc.setTextColor(239, 68, 68); doc.text(fmtMoney(exp), 80, 58);
+    doc.setTextColor(37, 99, 235); doc.text(fmtMoney(inc-exp), 140, 58);
+    const rows = data.budget.map(b => {
+        const w = data.wallets.find(x => x.id === b.walletId)?.name || '-';
+        return [fmtDate(b.date, data.settings.lang), b.desc, w, b.type==='income'?'Masuk':'Keluar', fmtMoney(b.amount)];
+    });
+    doc.autoTable({ startY: 75, head: [['Tgl', 'Ket', 'Dompet', 'Tipe', 'Nominal']], body: rows, theme: 'grid', headStyles: { fillColor: [37, 99, 235] }, styles: { fontSize: 8, cellPadding: 3 }, columnStyles: { 4: { halign: 'right' } } });
+    doc.save(`Laporan_${Date.now()}.pdf`);
+    showToast("PDF berhasil diunduh");
 }
-
-// Backup/Restore
-export function downloadBackup() {
-    const s = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-    const a = document.createElement('a'); a.href = s; a.download = `backup_${Date.now()}.json`; a.click();
-}
+export function downloadBackup() { const s = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data)); const a = document.createElement('a'); a.href = s; a.download = `backup_${Date.now()}.json`; a.click(); }
 export function restoreBackup(input) {
-    const f = input.files[0];
-    if(!f) return;
-    const r = new FileReader();
-    r.onload = (e) => {
-        try {
-            const j = JSON.parse(e.target.result);
-            if(j.budget) {
-                Object.assign(data, j);
-                saveAppData(window.currentUser, window.dbInstance);
-                location.reload();
-            }
-        } catch(e) { alert("File rusak"); }
-    };
+    const f = input.files[0]; if(!f) return; const r = new FileReader();
+    r.onload = (e) => { try { const j = JSON.parse(e.target.result); if(j.budget) { Object.assign(data, j); saveAppData(window.currentUser, window.dbInstance); location.reload(); } } catch(e) { alert("File rusak"); } };
     r.readAsText(f);
 }
-
-// Calculator Logic
-export function toggleDcaInput() {
-    const m = document.getElementById('calc-method').value;
-    const g = document.getElementById('dca-input-group');
-    if(g) g.classList.toggle('hidden', m === 'none');
-}
-
+export function toggleDcaInput() { const m = document.getElementById('calc-method').value; const g = document.getElementById('dca-input-group'); if(g) g.classList.toggle('hidden', m === 'none'); }
 export function calculateCompound() {
     const P = parseMoney(document.getElementById('calc-principal').value) || 0;
     const r = (parseFloat(document.getElementById('calc-rate').value) || 0) / 100;
     const t = parseFloat(document.getElementById('calc-years').value) || 0;
     const method = document.getElementById('calc-method').value;
     const PMT = parseMoney(document.getElementById('calc-contribution').value) || 0;
-
     if(t === 0) return;
-
-    let n = 1;
-    if(method === 'daily') n = 365;
-    else if(method === 'monthly') n = 12;
-
-    let fv = 0;
-    if(method === 'none') fv = P * Math.pow((1+r), t);
-    else {
-        const rateP = r/n;
-        const totalP = n*t;
-        fv = (P * Math.pow(1+rateP, totalP)) + (PMT * ((Math.pow(1+rateP, totalP)-1)/rateP));
+    let n = 1; if(method === 'daily') n = 365; else if(method === 'monthly') n = 12;
+    const tbody = document.getElementById('calc-breakdown-list'); if(tbody) tbody.innerHTML = '';
+    let finalFv = 0;
+    for (let i = 1; i <= t; i++) {
+        let fvYear = 0;
+        if(method === 'none') fvYear = P * Math.pow(1+r, i);
+        else { const rateP = r/n; const totalP = n * i; fvYear = (P * Math.pow(1+rateP, totalP)) + (PMT * ((Math.pow(1+rateP, totalP)-1)/rateP)); }
+        if (i === t) finalFv = fvYear;
+        if(tbody) { const row = document.createElement('tr'); const totalInvested = method === 'none' ? P : (P + (PMT * n * i)); row.innerHTML = `<td>${i}</td><td>${fmtMoney(totalInvested)}</td><td class="text-right font-bold text-primary">${fmtMoney(fvYear)}</td>`; tbody.appendChild(row); }
     }
-    
     document.getElementById('calc-result').classList.remove('hidden');
-    document.getElementById('calc-total-display').textContent = fmtMoney(fv);
-    
-    // Generate breakdown for table
-    const tbody = document.getElementById('calc-breakdown-list');
-    if(tbody) {
-        tbody.innerHTML = '';
-        for(let i=1; i<=t; i++) {
-            let val = method === 'none' ? P * Math.pow(1+r, i) : 0; // Simplified for display
-            // Actual loop calc needed for exact breakdown, but keeping it simple as requested logic shouldn't change
-             const row = document.createElement('tr');
-             row.innerHTML = `<td>${i}</td><td>-</td><td class="text-right">Check Total</td>`;
-             tbody.appendChild(row);
-        }
-    }
+    document.getElementById('calc-total-display').textContent = fmtMoney(finalFv);
+    document.getElementById('calc-principal-display').textContent = fmtMoney(method==='none' ? P : (P+(PMT*n*t)));
+    document.getElementById('calc-interest-display').textContent = fmtMoney(finalFv - (method==='none' ? P : (P+(PMT*n*t))));
+    let btnDetail = document.getElementById('btn-show-calc-detail');
+    if(!btnDetail) { const detailsBox = document.querySelector('.calc-details'); if(detailsBox) { btnDetail = document.createElement('button'); btnDetail.id = 'btn-show-calc-detail'; btnDetail.className = 'btn-xs full-width mt-10'; btnDetail.innerHTML = '<i class="fas fa-list-ol"></i> Lihat Tabel'; btnDetail.onclick = () => openModal('modal-calc-detail'); detailsBox.after(btnDetail); } }
 }
-export function resetCalc() { document.getElementById('calc-result').classList.add('hidden'); }
+export function resetCalc() { document.getElementById('calc-result').classList.add('hidden'); const btn = document.getElementById('btn-show-calc-detail'); if(btn) btn.remove(); }
+export function refreshAds(containerId) {
+    const container = document.getElementById(containerId); if (!container) return;
+    const ads = container.querySelectorAll('ins.adsbygoogle');
+    ads.forEach(ad => { if (ad.getAttribute('data-adsbygoogle-status')) return; if (ad.offsetWidth === 0) { setTimeout(() => { refreshAds(containerId); }, 500); return; } try { if (typeof window.adsbygoogle !== 'undefined') window.adsbygoogle.push({}); } catch (e) { console.warn("AdSense pending..."); } });
+}
+export function showConfirmDialog(msg, callback) {
+    vibrate([20]); document.getElementById('confirm-msg').textContent = msg; onConfirmAction = callback;
+    const modal = document.getElementById('modal-confirm'); if(modal) { modal.classList.add('active'); history.pushState({ modalId: 'modal-confirm' }, null, window.location.href); }
+}
+export function setupConfirmListener() { const btn = document.getElementById('btn-conf-yes'); if(btn) { btn.onclick = () => { if(onConfirmAction) onConfirmAction(); closeModal('modal-confirm'); }; } }
+export function togglePinSetup() {
+    if(data.settings.pin) { showConfirmDialog("Matikan PIN?", () => { data.settings.pin = null; saveAppData(window.currentUser, window.dbInstance); updatePinButtonText(); showToast("PIN Dimatikan"); });
+    } else { isSettingUpPin = true; document.getElementById('pin-overlay').classList.remove('hidden'); document.getElementById('pin-title').textContent = "Buat PIN Baru (4 Angka)"; document.querySelectorAll('.dot').forEach(d => d.classList.remove('filled')); currentPinInput = ""; }
+}
+export function pressPin(key) {
+    vibrate([5]); if(key === 'c') currentPinInput = currentPinInput.slice(0, -1); else if(key !== 'enter' && currentPinInput.length < 4) currentPinInput += key;
+    const dots = document.querySelectorAll('.dot'); dots.forEach((d, i) => { if(i < currentPinInput.length) d.classList.add('filled'); else d.classList.remove('filled'); });
+    if(currentPinInput.length === 4) setTimeout(validatePin, 100);
+}
+function validatePin() {
+    if(isSettingUpPin) { data.settings.pin = currentPinInput; saveAppData(window.currentUser, window.dbInstance); document.getElementById('pin-overlay').classList.add('hidden'); isSettingUpPin = false; updatePinButtonText(); showToast("PIN Diaktifkan");
+    } else { if(currentPinInput === data.settings.pin) { document.getElementById('pin-overlay').classList.add('hidden'); } else { vibrate([50, 50, 50]); currentPinInput = ""; document.querySelectorAll('.dot').forEach(d => d.classList.remove('filled')); showToast("PIN Salah!", "error"); } }
+}
+export function checkPinLock() { if(data.settings.pin) { document.getElementById('pin-overlay').classList.remove('hidden'); document.getElementById('pin-title').textContent = "Masukkan PIN"; document.getElementById('btn-forgot-pin').style.display = "block"; } }
+export function updatePinButtonText() { const btn = document.getElementById('btn-toggle-pin'); if(btn) { btn.textContent = data.settings.pin ? "Nonaktifkan PIN" : "Aktifkan PIN"; btn.className = data.settings.pin ? "btn-xs text-red border-red" : "btn-xs text-primary border-primary"; } }
+export function toggleTheme() { vibrate(); const cur = data.settings.theme; data.settings.theme = cur === 'light' ? 'dark' : 'light'; initTheme(); saveAppData(window.currentUser, window.dbInstance); }
+export function initTheme() { document.documentElement.setAttribute('data-theme', data.settings.theme); const icon = document.getElementById('theme-icon'); if(icon) icon.className = data.settings.theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'; }
+export function openLangModal() { openModal('modal-lang'); }
+export function selectLang(code) { data.settings.lang = code; saveAppData(window.currentUser, window.dbInstance); updateUI(); closeModal('modal-lang'); document.getElementById('check-id').style.display = code === 'id' ? 'block' : 'none'; document.getElementById('check-en').style.display = code === 'en' ? 'block' : 'none'; document.getElementById('current-lang-label').textContent = code === 'id' ? 'Indonesia' : 'English'; }
+export function updateUI() {
+    renderWallets(); renderBudget(); renderBills(); renderLoans(); renderGoals(); renderEmergency(); renderTrendChart(); updatePinButtonText();
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n'), data.settings.lang); });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-ph'), data.settings.lang); });
+}
+window.addEventListener('online', () => showToast("Kembali Online", "success"));
+window.addEventListener('offline', () => showToast("Mode Offline", "error"));
