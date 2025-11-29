@@ -92,7 +92,7 @@ export function closeModal(id) {
     resetInputs(id); // Reset form saat ditutup
 }
 
-function resetInputs(containerId) {
+export function resetInputs(containerId) {
     const container = document.getElementById(containerId);
     if(!container) return;
     
@@ -112,7 +112,7 @@ function resetInputs(containerId) {
     }
 }
 
-function renderEmptyState(containerId, messageKey, iconClass = 'fa-clipboard-list') {
+export function renderEmptyState(containerId, messageKey, iconClass = 'fa-clipboard-list') {
     const container = document.getElementById(containerId);
     if (!container) return;
     if (container.children.length === 0) {
@@ -495,7 +495,7 @@ export function renderGoals() {
     renderEmptyState('goal-list', 'msg_empty_goal', 'fa-bullseye');
 }
 
-exort function openGoalModal(id) {
+export function openGoalModal(id) {
     document.getElementById('target-current-id').value = id;
     document.getElementById('target-add-amount').value = '';
     openModal('modal-target-add');
