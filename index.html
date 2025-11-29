@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <meta name="theme-color" content="#2b2d42">
+    <meta name="theme-color" content="#f4f7f6" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1e272e" media="(prefers-color-scheme: dark)">
+    
     <title>Finansial Pro</title>
     
     <link rel="manifest" href="manifest.json">
     <link rel="shortcut icon" href="favicon.ico" type ="image/x-icon">
     <link rel="apple-touch-icon" href="icon-192.png">
 
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="style.css">
@@ -23,165 +25,176 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4170035550920357" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div id="loading-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-body); z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-        <div class="loader" style="border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;"></div>
-        <p style="margin-top:15px; color:var(--text-muted); font-size:0.9rem;" data-i18n="msg_loading">Memuat data...</p>
+    <div id="loading-overlay">
+        <div class="loader"></div>
+        <p data-i18n="msg_loading">Memuat data...</p>
     </div>
 
-    <div id="login-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-body); z-index:99999; display:none; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
-        <div class="balance-card glass-effect" style="width:100%; max-width:350px; margin-bottom:30px; padding:40px 20px;">
-            <div style="font-size:3rem; margin-bottom:10px;">💎</div>
-            <h1 style="margin-bottom:10px;">Finansial Pro</h1>
-            <p style="opacity:0.8; font-size:0.9rem; margin-bottom:30px;" data-i18n="login_desc">Kelola keuanganmu dengan aman, tersinkronisasi di awan.</p>
+    <div id="login-screen">
+        <div class="login-content glass-effect">
+            <div class="login-icon">💎</div>
+            <h1>Finansial Pro</h1>
+            <p data-i18n="login_desc">Kelola keuanganmu dengan aman, tersinkronisasi di awan.</p>
             
-            <button id="btn-google-login" class="btn-primary full-width" style="background: white; color: #333; display:flex; align-items:center; justify-content:center; gap:10px;">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
+            <button id="btn-google-login" class="btn-google">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" alt="Google">
                 <span data-i18n="btn_login_google">Masuk dengan Google</span>
             </button>
             
-            <p id="login-status" class="text-muted mt-20" style="font-size:0.8rem;"></p>
+            <p id="login-status" class="text-muted"></p>
         </div>
-        <small class="text-muted">v4.2 (Cloud Enabled)</small>
+        <small class="version-tag">v4.3 Native Cloud</small>
     </div>
 
     <header class="top-bar">
         <div class="user-info">
-            <small class="text-muted" data-i18n="welcome_msg">Selamat Datang di Aplikasi Finansial Pro</small>
+            <small class="text-muted" data-i18n="welcome_msg">Selamat Datang</small>
             <h2 id="header-title" data-i18n="nav_home">Ringkasan</h2>
         </div>
         <div class="header-actions">
-            <button class="icon-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+            <button class="icon-btn ripple" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
         </div>
     </header>
 
     <main class="app-container">
+        
         <section id="page-home" class="page active">
-            <div class="balance-card glass-effect">
-                <div class="wallet-container-scroll mb-20">
+            <div class="balance-card ripple-card">
+                <div class="wallet-container-scroll mb-10">
                     <div id="wallet-list" class="wallet-list-row"></div>
                 </div>
-                <span style="opacity: 0.8;" data-i18n="total_net_worth">Total Kekayaan Bersih</span>
+                <span style="opacity: 0.9; font-size: 0.85rem;" data-i18n="total_net_worth">Total Kekayaan</span>
                 <h1 id="main-balance">Rp 0</h1>
                 <div class="balance-row">
-                    <div><i class="fas fa-arrow-down text-green"></i> <span data-i18n="lbl_in">Masuk</span>: <span id="main-income">0</span></div>
-                    <div><i class="fas fa-arrow-up text-red"></i> <span data-i18n="lbl_out">Keluar</span>: <span id="main-expense">0</span></div>
+                    <div class="row-item"><i class="fas fa-arrow-down text-green"></i> <span data-i18n="lbl_in">Masuk</span> <span id="main-income" class="font-bold">0</span></div>
+                    <div class="vertical-divider"></div>
+                    <div class="row-item"><i class="fas fa-arrow-up text-red"></i> <span data-i18n="lbl_out">Keluar</span> <span id="main-expense" class="font-bold">0</span></div>
                 </div>
             </div>
 
             <div class="quick-stats-grid">
-                <div class="stat-card border-left-green">
-                    <i class="fas fa-hand-holding-usd text-green"></i>
-                    <div><small data-i18n="total_receivable">Total Piutang</small><strong id="main-piutang">Rp 0</strong></div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-green-light"><i class="fas fa-hand-holding-usd text-green"></i></div>
+                    <div class="stat-info">
+                        <small data-i18n="total_receivable">Piutang</small>
+                        <strong id="main-piutang">Rp 0</strong>
+                    </div>
                 </div>
-                <div class="stat-card border-left-red">
-                    <i class="fas fa-file-invoice-dollar text-red"></i>
-                    <div><small data-i18n="total_debt">Total Hutang</small><strong id="main-hutang">Rp 0</strong></div>
+                <div class="stat-card">
+                    <div class="stat-icon bg-red-light"><i class="fas fa-file-invoice-dollar text-red"></i></div>
+                    <div class="stat-info">
+                        <small data-i18n="total_debt">Hutang</small>
+                        <strong id="main-hutang">Rp 0</strong>
+                    </div>
                 </div>
             </div>
 
             <div class="ad-slot">
-                <small style="display:block; font-size:0.6rem; color:#ccc; margin-bottom:5px;">Advertisement</small>
+                <small class="ad-label">Advertisement</small>
                 <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fs+3n+7a-ag-4h" data-ad-client="ca-pub-4170035550920357" data-ad-slot="6949327399"></ins> 
             </div>
             
-            <div class="card" onclick="navTo('page-tools'); switchTab('tools', 'tab-emergency')" style="cursor: pointer; background: var(--bg-input);">
+            <div class="card ripple" onclick="navTo('page-tools'); switchTab('tools', 'tab-emergency')">
                 <div class="flex-between">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <i class="fas fa-shield-alt text-primary" style="font-size: 1.2rem;"></i>
-                        <div><strong data-i18n="em_fund_title">Dana Darurat</strong><br><small class="text-muted" id="home-emergency-status" data-i18n="em_check_status">Cek Status Aman</small></div>
+                    <div class="flex-center gap-10">
+                        <div class="icon-box bg-primary-light"><i class="fas fa-shield-alt text-primary"></i></div>
+                        <div><strong data-i18n="em_fund_title">Dana Darurat</strong><br><small class="text-muted" id="home-emergency-status" data-i18n="em_check_status">Cek Status</small></div>
                     </div>
                     <i class="fas fa-chevron-right text-muted"></i>
                 </div>
             </div>
 
             <div class="chart-section mt-20">
-                <h3><i class="fas fa-chart-pie"></i> <span data-i18n="cashflow_title">Arus Kas Bulan Ini</span></h3>
+                <h3><span data-i18n="cashflow_title">Arus Kas</span></h3>
                 <div class="chart-container">
                     <canvas id="mainChart"></canvas>
                 </div>
             </div>
 
             <div class="chart-section mt-20">
-                <h3><i class="fas fa-chart-line"></i> <span data-i18n="lbl_trend_chart">Tren Pengeluaran (6 Bulan)</span></h3>
+                <h3><span data-i18n="lbl_trend_chart">Tren 6 Bulan</span></h3>
                 <div class="chart-container">
                     <canvas id="trendChart"></canvas>
                 </div>
             </div>
-        </section>
+            <div style="height: 100px;"></div> </section>
 
         <section id="page-budget" class="page">
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab('budget', 'tab-budget-list')" data-i18n="tab_trans">Transaksi</button>
-                <button class="tab" onclick="switchTab('budget', 'tab-bills')" data-i18n="tab_bills">Tagihan</button>
-                <button class="tab" onclick="switchTab('budget', 'tab-budget-plan')" data-i18n="tab_plan">Target</button>
+            <div class="tabs-wrapper">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('budget', 'tab-budget-list')" data-i18n="tab_trans">Transaksi</button>
+                    <button class="tab" onclick="switchTab('budget', 'tab-bills')" data-i18n="tab_bills">Tagihan</button>
+                    <button class="tab" onclick="switchTab('budget', 'tab-budget-plan')" data-i18n="tab_plan">Target</button>
+                </div>
             </div>
 
             <div id="tab-budget-list" class="tab-content active">
                 <div class="list-header">
-                    <h3 data-i18n="recent_history">Riwayat Terakhir</h3>
-                    <div style="display:flex; gap:5px;">
-                        <button class="btn-xs" onclick="exportCSV('budget')" style="background:#eee; color:#333;"><i class="fas fa-file-csv"></i> CSV</button>
-                        <button class="btn-xs" onclick="generatePDF()" style="background:var(--primary); color:white; border:none;"><i class="fas fa-file-pdf"></i> PDF</button>
+                    <h3 data-i18n="recent_history">Riwayat</h3>
+                    <div class="action-group">
+                        <button class="btn-icon-sm" onclick="exportCSV('budget')"><i class="fas fa-file-csv"></i></button>
+                        <button class="btn-icon-sm primary" onclick="generatePDF()"><i class="fas fa-file-pdf"></i></button>
                     </div>
                 </div>
-                <div class="search-wrapper mb-10" style="position:relative; margin-bottom: 15px;">
-                    <i class="fas fa-search" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); color:var(--text-muted);"></i>
-                    <input type="text" id="budget-search" data-i18n-ph="lbl_search_budget" placeholder="Cari transaksi..." onkeyup="renderBudget()" style="padding-left: 40px; margin-bottom:0;">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="budget-search" data-i18n-ph="lbl_search_budget" placeholder="Cari transaksi..." onkeyup="renderBudget()">
                 </div>
 
-                <div class="ad-slot" style="margin: 10px 0;">
+                <div class="ad-slot small">
                     <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4170035550920357" data-ad-slot="1369506733" data-ad-format="auto" data-full-width-responsive="true"></ins>
                 </div>
-                <div id="budget-list" class="transaction-list mt-10"></div>
+                <div id="budget-list" class="transaction-list"></div>
             </div>
 
             <div id="tab-bills" class="tab-content">
-                <div class="card luxury-card">
-                    <div class="flex-between" onclick="toggleAddBill()" style="cursor: pointer;">
-                        <h3><i class="fas fa-file-invoice"></i> <span data-i18n="add_bill_title">Tambah Tagihan</span></h3>
-                        <i class="fas fa-plus-circle text-primary"></i>
+                <div class="card highlight-card ripple" onclick="toggleAddBill()">
+                    <div class="flex-between">
+                        <h3><i class="fas fa-plus-circle"></i> <span data-i18n="add_bill_title">Tambah Tagihan</span></h3>
                     </div>
-                    <div id="add-bill-form" class="hidden mt-20">
+                    <div id="add-bill-form" class="hidden mt-20 form-slide">
                         <div class="form-group">
-                            <input type="text" id="bill-name" data-i18n-ph="ph_bill_name" placeholder="Nama (cth: WiFi, Listrik)">
-                            <input type="text" inputmode="numeric" class="money-input" id="bill-amount" data-i18n-ph="lbl_routine_amount" placeholder="Nominal Rutin (Rp)">
-                            <label style="font-size:0.8rem; color:var(--text-muted);" data-i18n="lbl_due_date">Setiap Tanggal:</label>
-                            <select id="bill-date" style="margin-top:5px;"></select>
-                            <button class="btn-primary full-width mt-10" onclick="saveBill()" data-i18n="btn_save">Simpan Tagihan</button>
+                            <input type="text" id="bill-name" data-i18n-ph="ph_bill_name" placeholder="Nama Tagihan">
+                            <input type="text" inputmode="numeric" class="money-input" id="bill-amount" data-i18n-ph="lbl_routine_amount" placeholder="Nominal (Rp)">
+                            <label class="text-sm text-muted" data-i18n="lbl_due_date">Tgl Jatuh Tempo:</label>
+                            <select id="bill-date" class="modern-select"></select>
+                            <button class="btn-primary full-width mt-10" onclick="saveBill()" data-i18n="btn_save">Simpan</button>
                         </div>
                     </div>
                 </div>
                 <div class="list-header mt-20">
                     <h3 data-i18n="bill_list_title">Tagihan Bulan Ini</h3>
-                    <small id="bill-status-summary" class="badge-gray">0 Lunas</small>
+                    <small id="bill-status-summary" class="badge-pill">0 Lunas</small>
                 </div>
-                <div id="bill-list" class="transaction-list mt-10"></div>
+                <div id="bill-list" class="transaction-list"></div>
             </div>
 
             <div id="tab-budget-plan" class="tab-content">
-                <div class="card luxury-card">
-                    <h3><i class="fas fa-bullseye"></i> <span data-i18n="add_new_goal">Tambah Target Baru</span></h3>
-                    <div class="form-group">
-                        <input type="text" id="goal-name" data-i18n-ph="ph_goal_name" placeholder="Nama Target (misal: Beli iPhone)">
+                <div class="card highlight-card">
+                    <h3><i class="fas fa-bullseye"></i> <span data-i18n="add_new_goal">Target Baru</span></h3>
+                    <div class="form-group mt-10">
+                        <input type="text" id="goal-name" data-i18n-ph="ph_goal_name" placeholder="Nama Target">
                         <input type="text" inputmode="numeric" class="money-input" id="goal-amount" data-i18n-ph="ph_goal_amount" placeholder="Target Nominal (Rp)">
                         <button class="btn-primary full-width" onclick="addGoal()" data-i18n="btn_save">Simpan</button>
                     </div>
                 </div>
-                <div class="mt-20"><small class="text-muted" data-i18n="goal_hint">Klik pada kartu target untuk menambah tabungan.</small></div>
                 <div id="goal-list" class="goal-list mt-10"></div>
             </div>
+            <div style="height: 100px;"></div>
         </section>
 
         <section id="page-loans" class="page">
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab('loans', 'tab-loans-active')" data-i18n="tab_active">Aktif</button>
-                <button class="tab" onclick="switchTab('loans', 'tab-loans-history')" data-i18n="tab_history">Riwayat Lunas</button>
+            <div class="tabs-wrapper">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('loans', 'tab-loans-active')" data-i18n="tab_active">Aktif</button>
+                    <button class="tab" onclick="switchTab('loans', 'tab-loans-history')" data-i18n="tab_history">Riwayat</button>
+                </div>
             </div>
-            <div class="search-wrapper mb-20">
+            <div class="search-box mb-20">
                 <i class="fas fa-search"></i>
                 <input type="text" id="loan-search" data-i18n-ph="lbl_search_loan" placeholder="Cari nama..." onkeyup="renderLoans()">
             </div>
-            <div class="ad-slot" style="margin: 10px 0;">
+            <div class="ad-slot small">
                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4170035550920357" data-ad-slot="3450258051" data-ad-format="auto" data-full-width-responsive="true"></ins>
             </div>
             <div id="tab-loans-active" class="tab-content active">
@@ -190,20 +203,23 @@
             <div id="tab-loans-history" class="tab-content">
                  <div class="list-header">
                     <h3 data-i18n="archive_paid">Arsip Lunas</h3>
-                    <button class="btn-xs" onclick="exportCSV('loans')"><i class="fas fa-download"></i> CSV</button>
+                    <button class="btn-icon-sm" onclick="exportCSV('loans')"><i class="fas fa-download"></i></button>
                 </div>
                 <div id="loan-list-history" class="loan-grid mt-10"></div>
             </div>
+            <div style="height: 100px;"></div>
         </section>
 
         <section id="page-tools" class="page">
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab('tools', 'tab-emergency')" data-i18n="em_fund_title">Dana Darurat</button>
-                <button class="tab" onclick="switchTab('tools', 'tab-calc')" data-i18n="nav_calc">Kalkulator</button>
+            <div class="tabs-wrapper">
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('tools', 'tab-emergency')" data-i18n="em_fund_title">Dana Darurat</button>
+                    <button class="tab" onclick="switchTab('tools', 'tab-calc')" data-i18n="nav_calc">Kalkulator</button>
+                </div>
             </div>
 
             <div id="tab-emergency" class="tab-content active">
-                <div class="card text-center" style="position: relative; overflow: hidden;">
+                <div class="card text-center relative overflow-hidden">
                     <div class="progress-circle-conic" id="emergency-circle">
                         <div class="inner-circle">
                             <span class="percentage" id="em-percent">0%</span>
@@ -211,69 +227,66 @@
                         </div>
                     </div>
                     <div class="quick-stats-grid mt-20">
-                        <div class="stat-card" style="display:block; padding:10px;">
-                            <small class="text-muted" data-i18n="your_target">Target Kamu</small><br>
+                        <div class="stat-card">
+                            <small class="text-muted" data-i18n="your_target">Target</small>
                             <strong id="em-target-rp" class="text-primary">Rp 0</strong>
-                            <br><small style="font-size:0.7rem">(<span id="em-target-month">0</span> <span data-i18n="month">Bulan</span>)</small>
+                            <small class="text-xs text-muted">(<span id="em-target-month">0</span> <span data-i18n="month">Bln</span>)</small>
                         </div>
-                        <div class="stat-card" style="display:block; padding:10px;">
-                            <small class="text-muted" data-i18n="collected">Terkumpul</small><br>
+                        <div class="stat-card">
+                            <small class="text-muted" data-i18n="collected">Terkumpul</small>
                             <strong id="em-current-rp" class="text-green">Rp 0</strong>
                         </div>
                     </div>
-                    <button class="btn-primary full-width mt-10" onclick="openModal('modal-emergency-add')"><i class="fas fa-plus-circle"></i> <span data-i18n="btn_add_savings">Tambah Tabungan</span></button>
+                    <button class="btn-primary full-width mt-10" onclick="openModal('modal-emergency-add')"><i class="fas fa-plus"></i> <span data-i18n="btn_add_savings">Tambah</span></button>
                 </div>
 
                 <div class="ad-slot">
-                     <small style="display:block; font-size:0.6rem; color:#ccc; margin-bottom:5px;">Advertisement</small>
+                     <small class="ad-label">Advertisement</small>
                      <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fs+3n+7a-ag-4h" data-ad-client="ca-pub-4170035550920357" data-ad-slot="4634047443"></ins>
                 </div>
 
-                <div class="card mt-20">
-                    <div class="flex-between" onclick="toggleEmergencySettings()" style="cursor: pointer;">
-                        <h3><i class="fas fa-sliders-h"></i> <span data-i18n="risk_profile_title">Atur Profil Risiko</span></h3>
+                <div class="card mt-20 ripple" onclick="toggleEmergencySettings()">
+                    <div class="flex-between">
+                        <h3><i class="fas fa-sliders-h"></i> <span data-i18n="risk_profile_title">Profil Risiko</span></h3>
                         <i class="fas fa-chevron-down" id="em-settings-icon"></i>
                     </div>
-                    <div id="emergency-settings-form" class="hidden mt-20">
-                        <div class="info-box mb-20" data-i18n="risk_profile_desc">Aplikasi akan menghitung target ideal berdasarkan profil risiko hidup Anda secara otomatis.</div>
+                    <div id="emergency-settings-form" class="hidden mt-20 form-slide">
+                        <div class="info-box mb-20" data-i18n="risk_profile_desc">Hitung otomatis berdasarkan profil risiko.</div>
                         <div class="form-group">
-                            <label data-i18n="lbl_expense">Pengeluaran Bulanan (Rata-rata)</label>
+                            <label data-i18n="lbl_expense">Pengeluaran/Bln</label>
                             <input type="text" inputmode="numeric" class="money-input" id="em-expense" data-i18n-ph="ph_expense" placeholder="Contoh: 3.000.000">
                         </div>
                         <div class="form-group">
-                            <label data-i18n="lbl_job_status">Status Pekerjaan</label>
-                            <select id="em-job">
-                                <option value="stable" data-i18n="opt_stable">Karyawan Tetap / PNS (Stabil)</option>
-                                <option value="freelance" data-i18n="opt_freelance">Freelance / Bisnis (Fluktuatif)</option>
+                            <label data-i18n="lbl_job_status">Pekerjaan</label>
+                            <select id="em-job" class="modern-select">
+                                <option value="stable" data-i18n="opt_stable">Karyawan Tetap (Stabil)</option>
+                                <option value="freelance" data-i18n="opt_freelance">Freelance (Fluktuatif)</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label data-i18n="lbl_dependents">Jumlah Tanggungan</label>
-                            <select id="em-dependents">
-                                <option value="0" data-i18n="opt_single">Sendiri (Single)</option>
-                                <option value="1" data-i18n="opt_family_small">1-2 Orang (Keluarga Kecil)</option>
-                                <option value="3" data-i18n="opt_family_large">3+ Orang (Keluarga Besar)</option>
+                            <label data-i18n="lbl_dependents">Tanggungan</label>
+                            <select id="em-dependents" class="modern-select">
+                                <option value="0" data-i18n="opt_single">Single</option>
+                                <option value="1" data-i18n="opt_family_small">Keluarga Kecil (1-2)</option>
+                                <option value="3" data-i18n="opt_family_large">Keluarga Besar (3+)</option>
                             </select>
                         </div>
-                        <button class="btn-primary full-width" onclick="saveEmergencyProfile()" data-i18n="btn_recalc">Hitung Ulang Target</button>
+                        <button class="btn-primary full-width" onclick="saveEmergencyProfile()" data-i18n="btn_recalc">Hitung Ulang</button>
                     </div>
                 </div>
             </div>
 
             <div id="tab-calc" class="tab-content">
-                <div class="card luxury-card">
-                    <div class="card-header-icon"><i class="fas fa-calculator"></i></div>
-                    <h3 class="text-center mb-20" data-i18n="lbl_calc_title">Compound Interest</h3>
+                <div class="card">
+                    <h3 class="mb-20"><i class="fas fa-calculator text-primary"></i> <span data-i18n="lbl_calc_title">Compound Interest</span></h3>
                     <div class="form-group">
-                        <label data-i18n="lbl_principal">Modal Awal/Modal Saat Ini (Rp)</label>
+                        <label data-i18n="lbl_principal">Modal Awal (Rp)</label>
                         <input type="text" inputmode="numeric" class="money-input" id="calc-principal" placeholder="10.000.000">
                     </div>
                     <div class="form-group">
-                        <label data-i18n="lbl_inv_method">Pilih Metode Investasi</label>
-                        <select id="calc-method" onchange="toggleDcaInput()">
-                            <option value="none" data-i18n="opt_lump">Tidak Ada (Lump Sum)</option>
-                            <option value="daily" data-i18n="opt_daily">Nabung Harian</option>
-                            <option value="weekly" data-i18n="opt_weekly">Nabung Mingguan</option>
+                        <label data-i18n="lbl_inv_method">Metode Investasi</label>
+                        <select id="calc-method" class="modern-select" onchange="toggleDcaInput()">
+                            <option value="none" data-i18n="opt_lump">Lump Sum</option>
                             <option value="monthly" data-i18n="opt_monthly">Nabung Bulanan</option>
                             <option value="yearly" data-i18n="opt_yearly">Nabung Tahunan</option>
                         </select>
@@ -283,83 +296,80 @@
                         <input type="text" inputmode="numeric" class="money-input" id="calc-contribution" placeholder="50.000">
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label data-i18n="lbl_return_rate">Return (%/thn)</label>
+                        <div class="form-group half">
+                            <label data-i18n="lbl_return_rate">Return (%)</label>
                             <input type="number" id="calc-rate" placeholder="10">
                         </div>
-                        <div class="form-group">
-                            <label data-i18n="lbl_duration">Durasi (Thn)</label>
+                        <div class="form-group half">
+                            <label data-i18n="lbl_duration">Tahun</label>
                             <input type="number" id="calc-years" placeholder="5">
                         </div>
                     </div>
-                    <button class="btn-primary full-width mt-10" onclick="calculateCompound()" data-i18n="btn_calc_sim">Hitung Simulasi</button>
+                    <button class="btn-primary full-width mt-10" onclick="calculateCompound()" data-i18n="btn_calc_sim">Hitung</button>
                 </div>
                 <div id="calc-result" class="result-box hidden mt-20 fade-in">
                     <div class="flex-between mb-10">
-                        <small data-i18n="est_total">Estimasi Total Akhir:</small>
-                        <i class="fas fa-times" onclick="resetCalc()" style="cursor:pointer; color:var(--text-muted); padding:5px;"></i>
+                        <small data-i18n="est_total">Estimasi Total:</small>
+                        <i class="fas fa-times close-result" onclick="resetCalc()"></i>
                     </div>
                     <h2 id="calc-total-display" class="text-primary">Rp 0</h2>
                     <div class="calc-details mb-20">
-                        <div class="detail-row"><span data-i18n="lbl_capital">Modal Disetor:</span> <strong id="calc-principal-display">Rp 0</strong></div>
-                        <div class="detail-row"><span data-i18n="lbl_interest">Bunga/Cuan:</span> <strong id="calc-interest-display" class="text-green">Rp 0</strong></div>
+                        <div class="detail-row"><span data-i18n="lbl_capital">Modal:</span> <strong id="calc-principal-display">Rp 0</strong></div>
+                        <div class="detail-row"><span data-i18n="lbl_interest">Bunga:</span> <strong id="calc-interest-display" class="text-green">Rp 0</strong></div>
                     </div>
                 </div>
             </div>
+            <div style="height: 100px;"></div>
         </section>
 
         <section id="page-settings" class="page">
             <div class="card">
                 <h3><i class="fas fa-cog"></i> <span data-i18n="pref_title">Preferensi</span></h3>
-                <div class="setting-item" onclick="openLangModal()" style="cursor: pointer;">
+                <div class="setting-item ripple" onclick="openLangModal()">
                     <span data-i18n="lbl_lang">Bahasa</span>
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <span id="current-lang-label" class="text-muted text-sm">Indonesia</span>
-                        <i class="fas fa-chevron-right text-muted"></i>
+                    <div class="setting-value">
+                        <span id="current-lang-label">Indonesia</span>
+                        <i class="fas fa-chevron-right"></i>
                     </div>
                 </div>
                 <div class="setting-item">
-                    <span data-i18n="security_title">Keamanan Aplikasi</span>
+                    <span data-i18n="security_title">Keamanan</span>
                     <button id="btn-toggle-pin" class="btn-xs" onclick="togglePinSetup()" data-i18n="enable_pin">Aktifkan PIN</button>
                 </div>
                 <div class="setting-item">
-                    <span data-i18n="lbl_backup_data">Backup Data (JSON)</span>
-                   <button class="btn-xs" onclick="downloadBackup()"><i class="fas fa-download"></i> <span data-i18n="btn_download">Simpan</span></button>
+                    <span data-i18n="lbl_backup_data">Backup</span>
+                   <button class="btn-xs" onclick="downloadBackup()"><i class="fas fa-download"></i></button>
                 </div>
                 <div class="setting-item">
-                    <span data-i18n="lbl_restore_data">Restore Data (JSON)</span>
-                    <label class="btn-xs file-label" style="background: var(--bg-input); border: 1px dashed var(--primary);">
-                        <span data-i18n="btn_choose_file">Pilih File</span> 
+                    <span data-i18n="lbl_restore_data">Restore</span>
+                    <label class="btn-xs file-label">
+                        <i class="fas fa-upload"></i>
                         <input type="file" id="restore-file" hidden onchange="restoreBackup(this)">
                     </label>
                 </div>
-                <div class="setting-item">
-                    <span>Finansial Pro</span>
-                    <small class="badge-gray">Version: 4.2</small>
+                <div class="setting-item no-border">
+                    <span>Versi App</span>
+                    <small class="badge-pill">v4.3</small>
                 </div>
             </div>
             <div class="card mt-20">
-                <div class="setting-item">
-                    <span data-i18n="lbl_google_account">Akun Google</span>
-                    <button class="btn-xs" onclick="logoutUser()" data-i18n="btn_logout" style="background:var(--bg-input); border:1px solid var(--border);">Keluar / Logout</button>
+                <div class="setting-item ripple" onclick="logoutUser()">
+                    <span data-i18n="btn_logout">Keluar</span>
+                    <i class="fas fa-sign-out-alt text-red"></i>
                 </div>
             </div>
             <div class="card mt-20">
-                <div class="setting-item">
-                    <span data-i18n="lbl_about_privacy">Tentang & Privasi</span>
-                    <a href="privacy.html" class="btn-xs" data-i18n="btn_read" style="text-decoration:none; display:flex; align-items:center; justify-content:center; background:var(--bg-input); color:var(--text-main); border:1px solid var(--border);">Baca</a>
-                </div>
-                <div class="setting-item">
-                    <span data-i18n="lbl_contact_dev">Kontak Developer</span>
-                    <a href="mailto:scoopybalap16@gmail.com" class="btn-xs" data-i18n="btn_email" style="text-decoration:none; display:flex; align-items:center; justify-content:center; background:var(--bg-input); color:var(--text-main); border:1px solid var(--border);">Email</a>
+                <div class="setting-item ripple">
+                    <span data-i18n="lbl_contact_dev">Hubungi Developer</span>
+                    <a href="mailto:scoopybalap16@gmail.com" class="btn-icon-sm"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
 
             <div class="card mt-20 border-red">
-                <h3><span data-i18n="danger_zone_title">Hapus Data !</span></h3>
-                <p class="text-muted text-sm mb-10" data-i18n="danger_zone_desc">Data yang dihapus tidak bisa dipulihkan.</p>
-                <button class="btn-danger full-width" onclick="resetData()" data-i18n="btn_reset_data">Reset Semua Data</button>
+                <h3 class="text-red"><i class="fas fa-exclamation-triangle"></i> Zona Bahaya</h3>
+                <button class="btn-danger full-width mt-10" onclick="resetData()" data-i18n="btn_reset_data">Reset Data Aplikasi</button>
             </div>
+            <div style="height: 100px;"></div>
         </section>
     </main>
 
@@ -367,25 +377,52 @@
 
     <div class="fab-wrapper">
         <div class="fab-menu" id="fab-menu">
-            <button onclick="openModal('modal-budget')" data-label="Catat Transaksi" data-i18n-label="fab_trans"><i class="fas fa-wallet"></i></button>
-            <button onclick="openModal('modal-loan')" data-label="Catat Hutang/Piutang" data-i18n-label="fab_loan"><i class="fas fa-handshake"></i></button>
-            <button onclick="openModal('modal-emergency-add')" data-label="Tabung Dana Darurat" data-i18n-label="fab_emergency"><i class="fas fa-shield-alt"></i></button>
+            <button onclick="openModal('modal-budget')" class="fab-item">
+                <span class="fab-label" data-i18n="fab_trans">Transaksi</span>
+                <i class="fas fa-wallet"></i>
+            </button>
+            <button onclick="openModal('modal-loan')" class="fab-item">
+                <span class="fab-label" data-i18n="fab_loan">Pinjaman</span>
+                <i class="fas fa-handshake"></i>
+            </button>
+            <button onclick="openModal('modal-emergency-add')" class="fab-item">
+                <span class="fab-label" data-i18n="fab_emergency">Dana Darurat</span>
+                <i class="fas fa-shield-alt"></i>
+            </button>
         </div>
-        <button class="fab-main" onclick="toggleFab()"><i class="fas fa-plus" id="fab-icon"></i></button>
+        <button class="fab-main ripple" onclick="toggleFab()">
+            <i class="fas fa-plus" id="fab-icon"></i>
+        </button>
     </div>
 
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active" onclick="navTo('page-home')"><i class="fas fa-home"></i><span data-i18n="nav_home">Beranda</span></a>
-        <a href="#" class="nav-item" onclick="navTo('page-budget')"><i class="fas fa-wallet"></i><span data-i18n="nav_budget">BudgetKu</span></a>
-        <a href="#" class="nav-item" onclick="navTo('page-tools')"><i class="fas fa-layer-group"></i><span data-i18n="nav_tools">Tools</span></a>
-        <a href="#" class="nav-item" onclick="navTo('page-loans')"><i class="fas fa-file-invoice-dollar"></i><span data-i18n="nav_loans">Pinjaman</span></a>
-        <a href="#" class="nav-item" onclick="navTo('page-settings')"><i class="fas fa-cog"></i><span data-i18n="nav_settings">Setelan</span></a>
+        <a href="#" class="nav-item active ripple" onclick="navTo('page-home', this)">
+            <div class="nav-icon"><i class="fas fa-home"></i></div>
+            <span data-i18n="nav_home">Beranda</span>
+        </a>
+        <a href="#" class="nav-item ripple" onclick="navTo('page-budget', this)">
+            <div class="nav-icon"><i class="fas fa-wallet"></i></div>
+            <span data-i18n="nav_budget">Budget</span>
+        </a>
+        <a href="#" class="nav-item ripple" onclick="navTo('page-tools', this)">
+            <div class="nav-icon"><i class="fas fa-layer-group"></i></div>
+            <span data-i18n="nav_tools">Tools</span>
+        </a>
+        <a href="#" class="nav-item ripple" onclick="navTo('page-loans', this)">
+            <div class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+            <span data-i18n="nav_loans">Hutang</span>
+        </a>
+        <a href="#" class="nav-item ripple" onclick="navTo('page-settings', this)">
+            <div class="nav-icon"><i class="fas fa-cog"></i></div>
+            <span data-i18n="nav_settings">Setelan</span>
+        </a>
     </nav>
 
     <div class="modal-overlay" id="modal-budget">
-        <div class="modal-card">
+        <div class="modal-sheet">
+            <div class="sheet-handle"></div>
             <div class="modal-header">
-                <h3 data-i18n="modal_trans_title">Catat Keuangan</h3>
+                <h3 data-i18n="modal_trans_title">Catat Transaksi</h3>
                 <i class="fas fa-times close-icon" onclick="closeModal('modal-budget')"></i>
             </div>
             <div class="modal-body">
@@ -395,12 +432,16 @@
                     <input type="radio" name="b-type" id="t-in" value="income">
                     <label for="t-in" class="type-btn income" data-i18n="lbl_income_type">Pemasukan</label>
                 </div>
-                <div class="form-group" style="margin-bottom: 10px;">
-                    <select id="b-wallet" style="padding: 10px; border-radius: 12px; background: var(--bg-input);"></select>
+                <div class="form-group">
+                    <select id="b-wallet" class="modern-select"></select>
                 </div>
-                <input type="text" inputmode="numeric" class="money-input input-lg" id="b-amount" data-i18n-ph="ph_amount" placeholder="Nominal (Rp)">
-                <input type="text" id="b-desc" data-i18n-ph="ph_desc" placeholder="Keterangan (cth: Makan Siang)">
-                <input type="date" id="b-date">
+                <input type="text" inputmode="numeric" class="money-input input-lg" id="b-amount" data-i18n-ph="ph_amount" placeholder="0">
+                <div class="form-group mt-10">
+                    <input type="text" id="b-desc" data-i18n-ph="ph_desc" placeholder="Keterangan">
+                </div>
+                <div class="form-group">
+                    <input type="date" id="b-date" class="modern-input">
+                </div>
                 <input type="hidden" id="b-id">
                 <button class="btn-primary full-width mt-20" onclick="saveBudget()" data-i18n="btn_save">Simpan</button>
             </div>
@@ -408,44 +449,45 @@
     </div>
 
     <div class="modal-overlay" id="modal-loan">
-        <div class="modal-card">
+        <div class="modal-sheet">
+            <div class="sheet-handle"></div>
             <div class="modal-header">
                 <h3 data-i18n="modal_loan_title">Catat Pinjaman</h3>
                 <i class="fas fa-times close-icon" onclick="closeModal('modal-loan')"></i>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label data-i18n="lbl_trans_type">Tipe Transaksi</label>
-                    <select id="l-type">
+                    <label data-i18n="lbl_trans_type">Jenis</label>
+                    <select id="l-type" class="modern-select">
                         <option value="piutang" data-i18n="opt_lend">Saya Meminjamkan (Piutang)</option>
                         <option value="hutang" data-i18n="opt_borrow">Saya Berhutang (Hutang)</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label data-i18n="lbl_person_name">Nama Orang/Pihak Kedua</label>
-                    <input type="text" id="l-person" placeholder="Nama lengkap">
+                    <label data-i18n="lbl_person_name">Nama</label>
+                    <input type="text" id="l-person" placeholder="Nama orang">
                 </div>
                 <div class="form-group">
-                    <label data-i18n="lbl_principal_loan">Pokok Pinjaman</label>
+                    <label data-i18n="lbl_principal_loan">Nominal</label>
                     <input type="text" inputmode="numeric" class="money-input" id="l-principal" oninput="calcLoanPreview()" placeholder="0">
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label data-i18n="lbl_interest_rate">Bunga (%/bln)</label>
+                    <div class="form-group half">
+                        <label data-i18n="lbl_interest_rate">Bunga (%)</label>
                         <input type="number" id="l-rate" placeholder="0" oninput="calcLoanPreview()">
                     </div>
-                    <div class="form-group">
-                        <label data-i18n="lbl_tenor_month">Tenor (Bulan)</label>
+                    <div class="form-group half">
+                        <label data-i18n="lbl_tenor_month">Bulan</label>
                         <input type="number" id="l-tenor" value="1" oninput="calcLoanPreview()">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label data-i18n="lbl_trans_date">Tanggal Transaksi</label>
-                    <input type="date" id="l-date">
+                    <label data-i18n="lbl_trans_date">Tanggal</label>
+                    <input type="date" id="l-date" class="modern-input">
                 </div>
                 <div class="info-preview">
-                    <div class="flex-between"><span data-i18n="lbl_installment">Cicilan/bln:</span> <strong id="prev-installment">Rp 0</strong></div>
-                    <div class="flex-between"><span data-i18n="lbl_total_final">Total Akhir:</span> <strong id="prev-total">Rp 0</strong></div>
+                    <div class="flex-between"><span data-i18n="lbl_installment">Cicilan:</span> <strong id="prev-installment">Rp 0</strong></div>
+                    <div class="flex-between"><span data-i18n="lbl_total_final">Total:</span> <strong id="prev-total">Rp 0</strong></div>
                 </div>
                 <button class="btn-primary full-width mt-20" onclick="saveLoan()" data-i18n="btn_save">Simpan</button>
             </div>
@@ -453,9 +495,10 @@
     </div>
 
     <div class="modal-overlay" id="modal-detail">
-        <div class="modal-card">
+        <div class="modal-sheet">
+            <div class="sheet-handle"></div>
             <div class="modal-header">
-                <h3 data-i18n="modal_detail_title">Rincian Transaksi</h3>
+                <h3 data-i18n="modal_detail_title">Rincian</h3>
                 <i class="fas fa-times close-icon" onclick="closeModal('modal-detail')"></i>
             </div>
             <div class="modal-body" id="detail-content"></div>
@@ -463,134 +506,134 @@
     </div>
 
     <div class="modal-overlay" id="modal-target-add">
-        <div class="modal-card">
+        <div class="modal-sheet">
+            <div class="sheet-handle"></div>
             <div class="modal-header">
                 <h3 data-i18n="lbl_target_add_title">Tambah Tabungan</h3>
                 <i class="fas fa-times close-icon" onclick="closeModal('modal-target-add')"></i>
             </div>
             <div class="modal-body">
-                <p class="text-muted text-center mb-20" data-i18n="ask_amount_add">Berapa nominal yang ingin kamu tambahkan?</p>
+                <p class="text-center text-muted mb-20" data-i18n="ask_amount_add">Masukkan nominal setoran</p>
                 <div class="form-group">
-                    <label data-i18n="lbl_deposit_amount">Nominal Setor (Rp)</label>
                     <input type="text" inputmode="numeric" class="money-input input-lg" id="target-add-amount" placeholder="0">
                 </div>
                 <input type="hidden" id="target-current-id">
-                <button class="btn-primary full-width mt-10" onclick="saveTargetSavings()" data-i18n="btn_add_savings">Tambah Tabungan</button>
+                <button class="btn-primary full-width mt-10" onclick="saveTargetSavings()" data-i18n="btn_add_savings">Tambah</button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="modal-emergency-add">
-        <div class="modal-card">
+        <div class="modal-sheet">
+            <div class="sheet-handle"></div>
             <div class="modal-header">
                 <h3><i class="fas fa-shield-alt text-primary"></i> <span data-i18n="em_fund_title">Dana Darurat</span></h3>
                 <i class="fas fa-times close-icon" onclick="closeModal('modal-emergency-add')"></i>
             </div>
             <div class="modal-body">
-                <p class="text-muted text-center mb-20" data-i18n="em_modal_desc">Amankan masa depanmu dengan menabung hari ini.</p>
+                <p class="text-center text-muted mb-20" data-i18n="em_modal_desc">Tabung untuk masa depan.</p>
                 <div class="form-group">
-                    <label data-i18n="lbl_deposit_amount">Nominal Setor (Rp)</label>
                     <input type="text" inputmode="numeric" class="money-input input-lg" id="em-add-amount" placeholder="0">
                 </div>
-                <div class="card" style="background: var(--bg-input); padding: 15px; border:none;">
-                    <small class="text-muted"><i class="fas fa-lightbulb text-warning"></i> Tips:</small>
-                    <p style="font-size: 0.85rem; margin-top:5px;" data-i18n="em_tip">Sisihkan uang receh atau sisa belanja harian Anda di sini agar tidak terasa berat.</p>
+                <div class="info-box icon-left">
+                    <i class="fas fa-lightbulb text-warning"></i>
+                    <small data-i18n="em_tip">Sisihkan uang receh atau sisa belanja agar tidak terasa berat.</small>
                 </div>
-                <button class="btn-primary full-width mt-10" onclick="addEmergencyFund()" data-i18n="btn_save_savings">Simpan Tabungan</button>
+                <button class="btn-primary full-width mt-20" onclick="addEmergencyFund()" data-i18n="btn_save_savings">Simpan</button>
             </div>
-        </div>
-    </div>
-
-    <div id="pin-overlay" class="pin-overlay hidden">
-        <div class="pin-card glass-effect">
-            <div class="icon-lock mb-20">
-                <i class="fas fa-lock" style="font-size: 2rem; color: white;"></i>
-            </div>
-            <h3 id="pin-title" style="color: white; margin-bottom: 20px;" data-i18n="lbl_enter_pin_title">Masukkan PIN</h3>
-            <div class="pin-dots">
-                <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
-            </div>
-            <div class="pin-keypad">
-                <button onclick="pressPin(1)">1</button>
-                <button onclick="pressPin(2)">2</button>
-                <button onclick="pressPin(3)">3</button>
-                <button onclick="pressPin(4)">4</button>
-                <button onclick="pressPin(5)">5</button>
-                <button onclick="pressPin(6)">6</button>
-                <button onclick="pressPin(7)">7</button>
-                <button onclick="pressPin(8)">8</button>
-                <button onclick="pressPin(9)">9</button>
-                <button onclick="pressPin('c')" class="btn-clear"><i class="fas fa-backspace"></i></button>
-                <button onclick="pressPin(0)">0</button>
-                <button onclick="pressPin('enter')" class="btn-enter"><i class="fas fa-check"></i></button>
-            </div>
-            <button class="btn-xs mt-20" id="btn-forgot-pin" onclick="resetData()" data-i18n="lbl_forgot_pin" style="background: rgba(255,0,0,0.3); color: white; border:none; display:none;">Lupa PIN? Reset Data</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="modal-calc-detail">
-        <div class="modal-card">
+        <div class="modal-sheet">
+            <div class="sheet-handle"></div>
             <div class="modal-header">
                 <h3 data-i18n="lbl_asset_growth">Pertumbuhan Aset</h3>
                 <i class="fas fa-times close-icon" onclick="closeModal('modal-calc-detail')"></i>
             </div>
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="w-full text-left" style="width:100%; border-collapse: collapse; font-size: 0.9rem;">
-                        <thead>
-                            <tr style="border-bottom: 2px solid var(--border);">
-                                <th style="padding:10px 5px;" data-i18n="col_year">Thn</th>
-                                <th style="padding:10px 5px;" data-i18n="col_total_modal">Total Modal</th>
-                                <th style="padding:10px 5px; text-align:right;" data-i18n="col_final_bal">Saldo Akhir</th>
-                            </tr>
-                        </thead>
-                        <tbody id="calc-breakdown-list"></tbody>
-                    </table>
-                </div>
+            <div class="modal-body scrollable-y" style="max-height: 60vh;">
+                <table class="w-full text-left modern-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="col_year">Thn</th>
+                            <th data-i18n="col_total_modal">Modal</th>
+                            <th class="text-right" data-i18n="col_final_bal">Saldo</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calc-breakdown-list"></tbody>
+                </table>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="modal-confirm" style="z-index: 99999;">
-        <div class="modal-card" style="max-width: 320px; text-align: center;">
-            <div class="mb-20">
-                <i class="fas fa-exclamation-circle text-warning" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                <h3 id="confirm-title" data-i18n="lbl_confirm_title" style="margin-bottom: 10px;">Konfirmasi</h3>
-                <p id="confirm-msg" class="text-muted" data-i18n="msg_confirm_default">Apakah anda yakin?</p>
+        <div class="modal-dialog">
+            <div class="mb-20 text-center">
+                <i class="fas fa-exclamation-circle text-warning text-4xl mb-10"></i>
+                <h3 id="confirm-title" data-i18n="lbl_confirm_title" class="mb-5">Konfirmasi</h3>
+                <p id="confirm-msg" class="text-muted" data-i18n="msg_confirm_default">Yakin?</p>
             </div>
-            <div class="flex-between" style="gap: 10px;">
-                <button class="btn-xs full-width" onclick="closeModal('modal-confirm')" style="background: var(--bg-input); border: 1px solid var(--border);">
+            <div class="flex-between gap-10">
+                <button class="btn-secondary full-width" onclick="closeModal('modal-confirm')">
                     <span id="btn-conf-cancel" data-i18n="btn_cancel">Batal</span>
                 </button>
-                <button class="btn-xs full-width btn-primary" id="btn-conf-yes">
-                    <span id="btn-conf-yes-text" data-i18n="btn_yes_delete">Ya, Hapus</span>
+                <button class="btn-primary full-width" id="btn-conf-yes">
+                    <span id="btn-conf-yes-text" data-i18n="btn_yes_delete">Ya</span>
                 </button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="modal-lang" style="z-index: 99999;">
-        <div class="modal-card" style="max-width: 350px;">
-            <div class="modal-header mb-20">
+        <div class="modal-sheet">
+            <div class="sheet-handle"></div>
+            <div class="modal-header mb-10">
                 <h3 data-i18n="lbl_select_lang">Pilih Bahasa</h3>
                 <i class="fas fa-times close-icon" onclick="closeModal('modal-lang')"></i>
             </div>
             <div class="lang-options">
-                <div class="lang-item" onclick="selectLang('id')">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <span style="font-size:1.5rem">🇮🇩</span>
+                <div class="lang-item ripple" onclick="selectLang('id')">
+                    <div class="flex-center gap-10">
+                        <span class="text-2xl">🇮🇩</span>
                         <span>Bahasa Indonesia</span>
                     </div>
                     <i class="fas fa-check text-primary check-icon" id="check-id"></i>
                 </div>
-                <div class="lang-item" onclick="selectLang('en')">
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <span style="font-size:1.5rem">🇺🇸</span>
+                <div class="lang-item ripple" onclick="selectLang('en')">
+                    <div class="flex-center gap-10">
+                        <span class="text-2xl">🇺🇸</span>
                         <span>English (US)</span>
                     </div>
                     <i class="fas fa-check text-primary check-icon" id="check-en"></i>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="pin-overlay" class="pin-overlay hidden">
+        <div class="pin-content">
+            <div class="icon-lock">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h3 id="pin-title" data-i18n="lbl_enter_pin_title">Masukkan PIN</h3>
+            <div class="pin-dots">
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            </div>
+            <div class="pin-keypad">
+                <button onclick="pressPin(1)" class="ripple">1</button>
+                <button onclick="pressPin(2)" class="ripple">2</button>
+                <button onclick="pressPin(3)" class="ripple">3</button>
+                <button onclick="pressPin(4)" class="ripple">4</button>
+                <button onclick="pressPin(5)" class="ripple">5</button>
+                <button onclick="pressPin(6)" class="ripple">6</button>
+                <button onclick="pressPin(7)" class="ripple">7</button>
+                <button onclick="pressPin(8)" class="ripple">8</button>
+                <button onclick="pressPin(9)" class="ripple">9</button>
+                <button onclick="pressPin('c')" class="btn-clear ripple"><i class="fas fa-backspace"></i></button>
+                <button onclick="pressPin(0)" class="ripple">0</button>
+                <button onclick="pressPin('enter')" class="btn-enter ripple"><i class="fas fa-check"></i></button>
+            </div>
+            <button class="btn-text-white mt-20" id="btn-forgot-pin" onclick="resetData()" data-i18n="lbl_forgot_pin" style="display:none;">Lupa PIN? Reset Data</button>
         </div>
     </div>
 
@@ -603,8 +646,6 @@
     </script>
     
     <script src="sw-register.js"></script>
-
     <script type="module" src="js/main.js"></script>
-    
 </body>
 </html>
