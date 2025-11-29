@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <script>
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+        var string = msg.toLowerCase();
+        var substring = "script error";
+        if (string.indexOf(substring) > -1){
+            alert('Script Error: Cek Console Browser (F12) untuk detailnya.');
+        } else {
+            var message = [
+                '🕵️ Laporan Detektif:',
+                'Pesan: ' + msg,
+                'Baris: ' + lineNo,
+                'Kolom: ' + columnNo
+            ].join('\n');
+            alert(message);
+        }
+        return false;
+    };
+</script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
@@ -115,19 +134,30 @@
                 <button class="tab" onclick="switchTab('budget', 'tab-bills')" data-i18n="tab_bills">Tagihan</button>
                 <button class="tab" onclick="switchTab('budget', 'tab-budget-plan')" data-i18n="tab_plan">Target</button>
             </div>
-
+    
             <div id="tab-budget-list" class="tab-content active">
-                <div class="list-header">
-                    <h3 data-i18n="recent_history">Riwayat Terakhir</h3>
-                    <div style="display:flex; gap:5px;">
-                        <button class="btn-xs" onclick="exportCSV('budget')" style="background:#eee; color:#333;"><i class="fas fa-file-csv"></i> CSV</button>
-                        <button class="btn-xs" onclick="generatePDF()" style="background:var(--primary); color:white; border:none;"><i class="fas fa-file-pdf"></i> PDF</button>
-                    </div>
-                </div>
-                <div class="search-wrapper mb-10" style="position:relative; margin-bottom: 15px;">
-                    <i class="fas fa-search" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); color:var(--text-muted);"></i>
-                    <input type="text" id="budget-search" data-i18n-ph="lbl_search_budget" placeholder="Cari transaksi..." onkeyup="renderBudget()" style="padding-left: 40px; margin-bottom:0;">
-                </div>
+    <div class="list-header">
+        <h3 data-i18n="recent_history">Riwayat</h3>
+        <div style="display:flex; gap:5px;">
+            <button class="btn-xs" onclick="exportCSV('budget')" style="background:#eee; color:#333;"><i class="fas fa-file-csv"></i></button>
+            <button class="btn-xs" onclick="generatePDF()" style="background:var(--primary); color:white; border:none;"><i class="fas fa-file-pdf"></i></button>
+        </div>
+    </div>
+
+    <div class="filter-row mb-10" style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <select id="filter-month" onchange="renderBudget()" style="margin-bottom:0; padding: 10px; font-size: 0.85rem;">
+            <option value="all">Semua Waktu</option>
+            </select>
+        <select id="filter-sort-budget" onchange="renderBudget()" style="margin-bottom:0; padding: 10px; font-size: 0.85rem;">
+            <option value="newest">Terbaru</option>
+            <option value="oldest">Terlama</option>
+        </select>
+    </div>
+
+    <div class="search-wrapper mb-10" style="position:relative; margin-bottom: 15px;">
+        <i class="fas fa-search" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); color:var(--text-muted);"></i>
+        <input type="text" id="budget-search" data-i18n-ph="lbl_search_budget" placeholder="Cari transaksi..." onkeyup="renderBudget()" style="padding-left: 40px; margin-bottom:0;">
+    </div>
 
                 <div class="ad-slot" style="margin: 10px 0;">
                     <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4170035550920357" data-ad-slot="1369506733" data-ad-format="auto" data-full-width-responsive="true"></ins>
@@ -179,8 +209,16 @@
             </div>
             <div class="search-wrapper mb-20">
                 <i class="fas fa-search"></i>
-                <input type="text" id="loan-search" data-i18n-ph="lbl_search_loan" placeholder="Cari nama..." onkeyup="renderLoans()">
+                <input type="text" id="loan-search" data-i18n-ph="lbl_search_loan" placeholder="Cari nama..." onkeyup="renderLoans()" style="margin-bottom: 10px;">                
             </div>
+      <div class="filter-row mb-20" style="text-align: right;">
+    <select id="filter-sort-loan" onchange="renderLoans()" style="width: auto; padding: 8px 15px; font-size: 0.85rem;">
+        <option value="closest">Jatuh Tempo Terdekat</option>
+        <option value="furthest">Jatuh Tempo Terlama</option>
+        <option value="newest_input">Input Terbaru</option>
+    </select>
+</div>    
+  
             <div class="ad-slot" style="margin: 10px 0;">
                 <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4170035550920357" data-ad-slot="3450258051" data-ad-format="auto" data-full-width-responsive="true"></ins>
             </div>

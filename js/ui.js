@@ -162,10 +162,40 @@ export function renderWallets() {
     document.getElementById('main-balance').textContent = fmtMoney(globalTotal);
 }
 
+//[BARU] Mengisi dropdown bulan secara otomatis
+export function initMonthFilter() {
+    const select = document.getElementById('filter-month');
+    if(!select) return;
+
+    // Bersihkan opsi selain "Semua Waktu"
+    select.innerHTML = '<option value="all">Semua Waktu</option>';
+
+    const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    const today = new Date();
+    
+    // Tampilkan 12 bulan ke belakang + bulan depan
+    for (let i = -1; i < 12; i++) {
+        const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+        const value = d.toISOString().slice(0, 7); // Format: YYYY-MM
+        const label = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+        
+        const opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = label;
+        
+        // Default pilih bulan ini
+        if (i === 0) opt.selected = true;
+        select.appendChild(opt);
+    }
+}
+
 // --- FEATURE: BUDGET (TRANSAKSI) ---
 export function renderBudget() {
     const list = document.getElementById('budget-list');
     const searchInput = document.getElementById('budget-search');
+    const filterMonth = document.getElementById('filter-month').value; // [BARU] Ambil bulan
+    const sortOrder = document.getElementById('filter-sort-budget').value; // [BARU] Ambil urutan
+    
     const keyword = searchInput ? searchInput.value.toLowerCase() : "";
 
     if(!list) return;
@@ -173,9 +203,21 @@ export function renderBudget() {
     
     let income = 0, expense = 0;
 
-    // Filter data
-    const filteredData = data.budget.filter(b => {
-        return b.desc.toLowerCase().includes(keyword);
+    // 1. Copy data agar aslinya tidak teracak
+    let displayedData = [...data.budget];
+
+    // 2. Filter Search & Bulan
+    displayedData = displayedData.filter(b => {
+        const matchesKeyword = b.desc.toLowerCase().includes(keyword);
+        const matchesMonth = filterMonth === 'all' || b.date.startsWith(filterMonth);
+        return matchesKeyword && matchesMonth;
+    });
+
+    // 3. Sorting (Terbaru/Terlama)
+    displayedData.sort((a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
     });
 
     filteredData.forEach(b => {
@@ -217,12 +259,12 @@ export function renderBudget() {
     document.getElementById('main-income').textContent = fmtMoney(income);
     document.getElementById('main-expense').textContent = fmtMoney(expense);
     
-    // Update Grafik Donat
+    // Update Grafik Donat (Opsional: agar grafik mengikuti filter)
     if (typeof renderChart === "function") {
         renderChart(income, expense);
     }
 
-    if(filteredData.length === 0) {
+    if(displayedData.length === 0) {
         list.innerHTML = `<div style="text-align:center; padding:30px; opacity:0.5;"><i class="fas fa-search" style="font-size:2rem; margin-bottom:10px;"></i><p>Tidak ditemukan</p></div>`;
     }
 }
@@ -556,49 +598,75 @@ export function renderLoans() {
     const activeList = document.getElementById('loan-list-active');
     const historyList = document.getElementById('loan-list-history');
     const search = document.getElementById('loan-search').value.toLowerCase();
+    const sortOrder = document.getElementById('filter-sort-loan').value;
     
     if(!activeList || !historyList) return;
     activeList.innerHTML = ''; historyList.innerHTML = '';
     let totPiutang = 0, totHutang = 0;
     const today = new Date(); today.setHours(0,0,0,0);
 
-    data.loans.forEach(l => {
-        if(l.status === 'active') {
+     // 1. Siapkan data dengan kalkulasi hari jatuh tempo (nextDueDate)
+    let processedLoans = data.loans.map(l => {
+        let diffDays = 9999; // Default jauh
+        let nextDueDateObj = null;
+
+        if (l.status === 'active') {
             const remaining = l.total - l.paid;
             if(l.type === 'piutang') totPiutang += remaining; else totHutang += remaining;
-        }
 
-        if(!l.person.toLowerCase().includes(search)) return;
-
-        let dueStatusHTML = '';
-        let progressLabel = ''; 
-        
-        if (l.status === 'active') {
+            // Hitung Next Due Date
             const transDate = new Date(l.date); transDate.setHours(0,0,0,0);
             const tenor = parseInt(l.tenor) || 1;
             const installmentAmount = l.total / tenor;
-            let monthsPaid = Math.floor((l.paid + 100) / installmentAmount);
+            let monthsPaid = Math.floor((l.paid + 100) / installmentAmount); // +100 toleransi pembulatan
             if (monthsPaid >= tenor) monthsPaid = tenor - 1;
 
             let nextDueDate = new Date(transDate);
             nextDueDate.setMonth(transDate.getMonth() + (monthsPaid + 1));
-
-            const currentInstallmentNo = monthsPaid + 1;
-            progressLabel = `Cicilan ${currentInstallmentNo}/${tenor}`;
+            nextDueDateObj = nextDueDate;
 
             const diffTime = nextDueDate - today;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-            const shortDate = nextDueDate.toLocaleDateString(data.settings.lang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short', year: '2-digit' });
+            diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
 
-            // [UPDATE] Tampilan Status Bersih (Tanpa Background)
-            if (diffDays === 0) {
+        return { ...l, diffDays, nextDueDateObj }; // Return objek baru dengan properti tambahan
+    });
+
+    // 2. Sorting Logika
+    processedLoans.sort((a, b) => {
+        if (sortOrder === 'closest') {
+            return a.diffDays - b.diffDays; // Terkecil (minus/dekat) ke Terbesar
+        } else if (sortOrder === 'furthest') {
+            return b.diffDays - a.diffDays; // Terbesar ke Terkecil
+        } else {
+            return b.id - a.id; // Input Terbaru (ID adalah timestamp)
+        }
+    });
+
+    // 3. Render Loop
+    processedLoans.forEach(l => {
+        if(!l.person.toLowerCase().includes(search)) return; // Filter Search
+
+        let dueStatusHTML = '';
+        let progressLabel = ''; 
+
+        // Logika tampilan HTML (Sedikit disesuaikan karena variabel sudah dihitung di atas)
+        if (l.status === 'active') {
+             const shortDate = l.nextDueDateObj.toLocaleDateString(data.settings.lang === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short', year: '2-digit' });
+             const tenor = parseInt(l.tenor) || 1;
+             const installmentAmount = l.total / tenor;
+             let monthsPaid = Math.floor((l.paid + 100) / installmentAmount);
+             const currentInstallmentNo = Math.min(monthsPaid + 1, tenor);
+
+             progressLabel = `Cicilan ${currentInstallmentNo}/${tenor}`;
+
+             if (l.diffDays === 0) {
                 dueStatusHTML = `<small class="badge-gray" style="color:var(--warning); animation: pulse 1.5s infinite;"><i class="fas fa-exclamation-circle"></i> ${t('sts_due_today', data.settings.lang)}</small>`;
-            } else if (diffDays > 0) {
+            } else if (l.diffDays > 0) {
                 const prefix = data.settings.lang === 'id' ? 'H-' : 'Due ';
-                // Gunakan warna primary (Biru) agar konsisten dengan tema clean
-                dueStatusHTML = `<small style="color:var(--primary); font-weight:700; font-size: 0.75rem;"><i class="fas fa-clock"></i> ${prefix}${diffDays} &bull; ${shortDate}</small>`;
+                dueStatusHTML = `<small style="color:var(--primary); font-weight:700; font-size: 0.75rem;"><i class="fas fa-clock"></i> ${prefix}${l.diffDays} &bull; ${shortDate}</small>`;
             } else {
-                dueStatusHTML = `<small class="badge-gray" style="color:var(--danger);">${t('sts_late', data.settings.lang)} ${Math.abs(diffDays)} ${t('sts_day', data.settings.lang)}</small>`;
+                dueStatusHTML = `<small class="badge-gray" style="color:var(--danger);">${t('sts_late', data.settings.lang)} ${Math.abs(l.diffDays)} ${t('sts_day', data.settings.lang)}</small>`;
             }
         } else {
             dueStatusHTML = `<small class="badge-gray" style="color:var(--success);"><i class="fas fa-check"></i> LUNAS</small>`;
@@ -639,6 +707,7 @@ export function renderLoans() {
         else historyList.appendChild(el);
     });
 
+    // Update label Dashboard Hutang/Piutang
     document.getElementById('main-piutang').textContent = fmtMoney(totPiutang);
     document.getElementById('main-hutang').textContent = fmtMoney(totHutang);
     renderEmptyState('loan-list-active', 'msg_empty_loan', 'fa-hand-holding-usd');
@@ -1026,13 +1095,25 @@ export function generatePDF() {
     doc.text("Laporan Keuangan Pribadi", 14, 26);
     doc.text(`Tanggal Cetak: ${new Date().toLocaleDateString('id-ID')}`, 14, 32);
 
-    // Ringkasan
-    let totalIncome = 0;
-    let totalExpense = 0;
-    data.budget.forEach(b => {
-        if (b.type === 'income') totalIncome += b.amount;
-        else totalExpense += b.amount;
-    });
+    // --- [MODIFIKASI] FILTER DATA ---
+// 1. Ambil nilai bulan dari dropdown filter
+const filterMonth = document.getElementById('filter-month') ? document.getElementById('filter-month').value : 'all';
+
+// 2. Filter data budget berdasarkan bulan yang dipilih
+let reportData = data.budget.filter(b => {
+    return filterMonth === 'all' || b.date.startsWith(filterMonth);
+});
+
+// --- Ringkasan (Hitung dari data yang sudah difilter) ---
+let totalIncome = 0;
+let totalExpense = 0;
+
+// [PENTING] Gunakan 'reportData', BUKAN 'data.budget'
+reportData.forEach(b => {
+    if (b.type === 'income') totalIncome += b.amount;
+    else totalExpense += b.amount;
+});
+
     const balance = totalIncome - totalExpense;
 
     doc.setDrawColor(200);
@@ -1057,7 +1138,7 @@ export function generatePDF() {
     doc.text(fmtMoney(balance), 140, 58);
 
     // Tabel
-    const tableRows = data.budget.map(b => {
+    const tableRows = reportData.map(b => {
         const wallet = data.wallets.find(w => w.id === b.walletId);
         const walletName = wallet ? wallet.name : '-';
         return [
