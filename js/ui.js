@@ -495,7 +495,7 @@ export function renderGoals() {
     renderEmptyState('goal-list', 'msg_empty_goal', 'fa-bullseye');
 }
 
-function openGoalModal(id) {
+exort function openGoalModal(id) {
     document.getElementById('target-current-id').value = id;
     document.getElementById('target-add-amount').value = '';
     openModal('modal-target-add');
@@ -952,7 +952,7 @@ export function pressPin(key) {
     if (currentPinInput.length === 4) setTimeout(validatePin, 200);
 }
 
-function validatePin() {
+export function validatePin() {
     const savedPin = data.settings.pin;
     const dots = document.querySelectorAll('.dot');
     if (isSettingUpPin) {
@@ -1379,7 +1379,7 @@ export function refreshAds(containerId) {
 window.addEventListener('online', updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 
-function updateOnlineStatus() {
+export function updateOnlineStatus() {
     const status = navigator.onLine ? "online" : "offline";
     const container = document.getElementById('toast-container');
     
