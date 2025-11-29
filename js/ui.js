@@ -223,7 +223,7 @@ export function renderBudget() {
         return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
     });
 
-    filteredData.forEach(b => {
+    displayedData.forEach(b => {
         if (b.type === 'income') income += b.amount; else expense += b.amount;
         
         let walletName = 'Dompet';
