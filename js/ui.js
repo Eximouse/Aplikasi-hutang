@@ -221,19 +221,25 @@ export function renderWallets() {
         // Reset dan Hitung Ulang Saldo
 data.wallets.forEach(w => w.balance = 0);
 data.budget.forEach(b => {
-    const w = data.wallets.find(x => x.id === b.walletId);
-    if (w) {
-        if (b.type === 'income') w.balance += b.amount;
-        else w.balance -= b.amount;
-        else if (b.type === 'expense') w.balance -= b.amount;
-            else if (b.type === 'transfer') w.balance -= b.amount;
-    }
-});
- // [BARU] Logika Transfer (MASUK ke dompet tujuan)
+        
+        // 1. Update Saldo Dompet ASAL (Sumber)
+        // Gunakan '==' agar aman (bisa string/number)
+        const w = data.wallets.find(x => x.id == b.walletId);
+        
+        if (w) {
+            if (b.type === 'income') w.balance += b.amount;
+            else if (b.type === 'expense') w.balance -= b.amount;
+            else if (b.type === 'transfer') w.balance -= b.amount; // Uang KELUAR dari sini
+        }
+
+        // 2. Update Saldo Dompet TUJUAN (Target Transfer)
         if (b.type === 'transfer' && b.targetWalletId) {
             const wTarget = data.wallets.find(x => x.id == b.targetWalletId);
             if (wTarget) {
-                wTarget.balance += b.amount;
+                wTarget.balance += b.amount; // Uang MASUK ke sini
+            }
+        }
+    });
 
     container.innerHTML = '';
     select.innerHTML = '';
