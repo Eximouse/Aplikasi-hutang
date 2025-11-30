@@ -796,32 +796,50 @@ const monthlyBill = l.total / tenorVal;
 
         const el = document.createElement('div');
         el.className = 'card list-item';
+        // Tambahkan sedikit padding bottom agar tidak terlalu mepet
+        el.style.padding = '15px'; 
         el.style.borderLeft = `4px solid ${l.type === 'piutang' ? 'var(--success)' : 'var(--danger)'}`;
         
+        // [LAYOUT BARU YANG LEBIH RAPI]
         el.innerHTML = `
             <div onclick="showLoanDetail(${l.id})" style="width:100%">
-                <div class="flex-between">
-                    <div>
-                        <strong>${l.person}</strong>
-                        <div style="margin-top:4px;">${dueStatusHTML}</div>
-                    </div>
-                   <div style="text-align:right">
-     <span style="font-size:0.7rem; font-weight:800; letter-spacing:0.5px; color:${l.type==='piutang'?'var(--success)':'var(--danger)'}">${typeLabel}</span><br>
-    <small class="text-muted" style="font-size:0.7rem;">${l.status === 'active' ? progressLabel : displayTenor}</small>
-    
-    <div style="font-size:0.65rem; color:var(--text-muted); margin-top:2px;">
-        ${fmtMoney(monthlyBill)}/bln
-    </div>
-</div>
-                <div class="flex-between text-muted mt-10" style="font-size:0.8rem; border-top:1px dashed var(--border); padding-top:8px;">
-                    <span>${remainingLabel}: <b style="color:var(--text-main)">${fmtMoney(l.total - l.paid)}</b></span>
-                    <span>${Math.round(progress)}%</span>
+                
+                <div class="flex-between" style="margin-bottom:8px;">
+                    <strong style="font-size:1rem;">${l.person}</strong>
+                    <span style="font-size:0.7rem; font-weight:800; letter-spacing:0.5px; color:${l.type==='piutang'?'var(--success)':'var(--danger)'}">
+                        ${typeLabel}
+                    </span>
                 </div>
-                <div class="goal-progress-bg">
+
+                <div class="flex-between" style="margin-bottom:12px;">
+                    <div>${dueStatusHTML}</div>
+                    <small class="text-muted" style="font-size:0.75rem;">
+                        ${l.status === 'active' ? progressLabel : displayTenor}
+                    </small>
+                </div>
+
+                <div style="background:var(--bg-input); border-radius:10px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    
+                    <div>
+                        <small class="text-muted" style="font-size:0.65rem; display:block; margin-bottom:2px;">Cicilan/bln</small>
+                        <strong style="font-size:0.9rem; color:var(--text-main)">${fmtMoney(monthlyBill)}</strong>
+                    </div>
+
+                    <div style="text-align:right">
+                        <small class="text-muted" style="font-size:0.65rem; display:block; margin-bottom:2px;">${remainingLabel}</small>
+                        <strong style="font-size:0.9rem; color:${l.type==='piutang'?'var(--success)':'var(--danger)'}">
+                            ${fmtMoney(l.total - l.paid)}
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div class="goal-progress-bg" style="height:6px; margin-top:0;">
                     <div class="goal-progress-bar" style="width:${progress}%; background:${l.type==='piutang'?'var(--success)':'var(--danger)'}"></div>
                 </div>
             </div>
         `;
+
         if(l.status === 'active') activeList.appendChild(el);
         else historyList.appendChild(el);
     });
@@ -867,7 +885,7 @@ export function showLoanDetail(id) {
             </div>
         </div>
         <div class="text-center mb-20" style="background:var(--bg-input); padding:10px; border-radius:12px;">
-        <small class="text-muted">Target Cicilan (${l.tenor} Bulan):</small><br>
+        <small class="text-muted">Periode Cicilan (${l.tenor} Bulan):</small><br>
         <strong style="color:var(--primary); font-size:1.1rem;">${fmtMoney(monthlyBill)} / bulan</strong>
     </div>
         ${l.status === 'active' ? `
