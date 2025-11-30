@@ -198,7 +198,30 @@ export const RESOURCES = {
         // Label Modal Konfirmasi (Default HTML)
         msg_confirm_default: "Apakah anda yakin?",
         btn_yes_delete: "Ya, Hapus",
-        word_pay: "Bayar"
+        word_pay: "Bayar",
+        
+        // --- [BARU] KATEGORI ---
+        cat_food: "Makan",
+        cat_transport: "Transport",
+        cat_shop: "Belanja",
+        cat_bill: "Tagihan",
+        cat_health: "Kesehatan",
+        cat_educ: "Edukasi",
+        cat_ent: "Hiburan",
+        cat_others: "Lainnya",
+        
+        cat_salary: "Gaji",
+        cat_bonus: "Bonus",
+        cat_invest: "Investasi",
+        cat_others_in: "Lainnya",
+
+        // --- [BARU] FILTER & SORTIR ---
+        opt_all_time: "Semua Waktu",
+        opt_newest: "Terbaru",
+        opt_oldest: "Terlama",
+        opt_due_closest: "Jatuh Tempo Terdekat",
+        opt_due_furthest: "Jatuh Tempo Terlama",
+        opt_input_newest: "Input Terbaru"
     },
     en: {
         welcome_msg: "Welcome to Finansial Pro App",
@@ -397,6 +420,29 @@ export const RESOURCES = {
         // Confirmation Modal Labels
         msg_confirm_default: "Are you sure?",
         btn_yes_delete: "Yes, Delete",
-        word_pay: "Pay"
+        word_pay: "Pay",
+        
+        // --- [NEW] CATEGORIES ---
+        cat_food: "Food",
+        cat_transport: "Transport",
+        cat_shop: "Shopping",
+        cat_bill: "Bills",
+        cat_health: "Health",
+        cat_educ: "Education",
+        cat_ent: "Entertainment",
+        cat_others: "Others",
+        
+        cat_salary: "Salary",
+        cat_bonus: "Bonus",
+        cat_invest: "Investment",
+        cat_others_in: "Others",
+
+        // --- [NEW] FILTER & SORT ---
+        opt_all_time: "All Time",
+        opt_newest: "Newest",
+        opt_oldest: "Oldest",
+        opt_due_closest: "Closest Due Date",
+        opt_due_furthest: "Furthest Due Date",
+        opt_input_newest: "Newest Input"
     }
 };

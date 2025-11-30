@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>     
+<head>  
+    <script>
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+        var string = msg.toLowerCase();
+        var substring = "script error";
+        if (string.indexOf(substring) > -1){
+            alert('Script Error: Cek Console Browser (F12) untuk detailnya.');
+        } else {
+            var message = [
+                '🕵️ Laporan Detektif:',
+                'Pesan: ' + msg,
+                'Baris: ' + lineNo,
+                'Kolom: ' + columnNo
+            ].join('\n');
+            alert(message);
+        }
+        return false;
+    };
+</script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
@@ -130,9 +149,9 @@
             <option value="all">Semua Waktu</option>
             </select>
         <select id="filter-sort-budget" onchange="renderBudget()" style="margin-bottom:0; padding: 10px; font-size: 0.85rem;">
-            <option value="newest">Terbaru</option>
-            <option value="oldest">Terlama</option>
-        </select>
+            <option value="newest" data-i18n="opt_newest">Terbaru</option>
+    <option value="oldest" data-i18n="opt_oldest">Terlama</option>
+</select>
     </div>
 
     <div class="search-wrapper mb-10" style="position:relative; margin-bottom: 15px;">
@@ -194,10 +213,10 @@
             </div>
       <div class="filter-row mb-20" style="text-align: right;">
     <select id="filter-sort-loan" onchange="renderLoans()" style="width: auto; padding: 8px 15px; font-size: 0.85rem;">
-        <option value="closest">Jatuh Tempo Terdekat</option>
-        <option value="furthest">Jatuh Tempo Terlama</option>
-        <option value="newest_input">Input Terbaru</option>
-    </select>
+        <option value="closest" data-i18n="opt_due_closest">Jatuh Tempo Terdekat</option>
+    <option value="furthest" data-i18n="opt_due_furthest">Jatuh Tempo Terlama</option>
+    <option value="newest_input" data-i18n="opt_input_newest">Input Terbaru</option>
+</select>
 </div>    
   
             <div class="ad-slot" style="margin: 10px 0;">

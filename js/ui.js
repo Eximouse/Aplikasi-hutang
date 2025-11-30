@@ -6,20 +6,20 @@ import { APP_KEY } from './config.js';
 // [BARU] Definisi Kategori
 const CATEGORIES = {
     expense: [
-        { id: 'food', name: 'Makan', icon: 'fa-utensils', color: '#ff6b6b' },
-        { id: 'transport', name: 'Transport', icon: 'fa-bus', color: '#feca57' },
-        { id: 'shop', name: 'Belanja', icon: 'fa-shopping-bag', color: '#54a0ff' },
-        { id: 'bill', name: 'Tagihan', icon: 'fa-file-invoice', color: '#ff9ff3' },
-        { id: 'health', name: 'Kesehatan', icon: 'fa-heartbeat', color: '#ff4d4d' },
-        { id: 'educ', name: 'Edukasi', icon: 'fa-book', color: '#48dbfb' },
-        { id: 'ent', name: 'Hiburan', icon: 'fa-gamepad', color: '#a55eea' },
-        { id: 'others', name: 'Lainnya', icon: 'fa-ellipsis-h', color: '#8395a7' }
+        { id: 'food', nameKey: 'cat_food', icon: 'fa-utensils', color: '#ff6b6b' },
+        { id: 'transport', nameKey: 'cat_transport', icon: 'fa-bus', color: '#feca57' },
+        { id: 'shop', nameKey: 'cat_shop', icon: 'fa-shopping-bag', color: '#54a0ff' },
+        { id: 'bill', nameKey: 'cat_bill', icon: 'fa-file-invoice', color: '#ff9ff3' },
+        { id: 'health', nameKey: 'cat_health', icon: 'fa-heartbeat', color: '#ff4d4d' },
+        { id: 'educ', nameKey: 'cat_educ', icon: 'fa-book', color: '#48dbfb' },
+        { id: 'ent', nameKey: 'cat_ent', icon: 'fa-gamepad', color: '#a55eea' },
+        { id: 'others', nameKey: 'cat_others', icon: 'fa-ellipsis-h', color: '#8395a7' }
     ],
     income: [
-        { id: 'salary', name: 'Gaji', icon: 'fa-money-bill-wave', color: '#1dd1a1' },
-        { id: 'bonus', name: 'Bonus', icon: 'fa-gift', color: '#f368e0' },
-        { id: 'invest', name: 'Investasi', icon: 'fa-chart-line', color: '#2e86de' },
-        { id: 'others-in', name: 'Lainnya', icon: 'fa-plus-circle', color: '#8395a7' }
+        { id: 'salary', nameKey: 'cat_salary', icon: 'fa-money-bill-wave', color: '#1dd1a1' },
+        { id: 'bonus', nameKey: 'cat_bonus', icon: 'fa-gift', color: '#f368e0' },
+        { id: 'invest', nameKey: 'cat_invest', icon: 'fa-chart-line', color: '#2e86de' },
+        { id: 'others-in', nameKey: 'cat_others_in', icon: 'fa-plus-circle', color: '#8395a7' }
     ]
 };
 
@@ -72,7 +72,7 @@ export function renderCategorySelector(type = 'expense') {
             <div class="cat-icon" style="background:${c.color}">
                 <i class="fas ${c.icon}"></i>
             </div>
-            <span>${c.name}</span>
+            <span>${(c.nameKey, data.settings.lang)}</span>
         `;
         grid.appendChild(item);
     });
@@ -240,7 +240,7 @@ export function initMonthFilter() {
     const select = document.getElementById('filter-month');
     if(!select) return;
 
-    select.innerHTML = '<option value="all">Semua Waktu</option>';
+    select.innerHTML = `<option value="all">${t('opt_all_time', data.settings.lang)}</option>`;
 
     const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
     const today = new Date();
@@ -319,10 +319,10 @@ export function renderBudget() {
     // Fallback jika kategori tidak ditemukan atau data lama
     if (!cat) {
         cat = { 
-            name: b.type === 'income' ? 'Pemasukan' : 'Pengeluaran', 
-            icon: b.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up', 
-            color: b.type === 'income' ? '#1dd1a1' : '#ff6b6b' 
-        };
+            nameKey: b.type === 'income' ? 'lbl_income_type' : 'lbl_expense_type', 
+        icon: b.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up', 
+        color: b.type === 'income' ? '#1dd1a1' : '#ff6b6b' 
+    };
     }
         const el = document.createElement('div');
         el.className = `card list-item`;
@@ -333,9 +333,9 @@ export function renderBudget() {
                     <i class="fas ${cat.icon}"></i>
                 </div>
                 <div>
-                    <strong>${b.desc}</strong><br>
-                    <small class="text-muted">${fmtDate(b.date, data.settings.lang)} &bull; ${cat.name}</small>
-                </div>
+    <strong>${b.desc}</strong><br>
+    <small class="text-muted">${fmtDate(b.date, data.settings.lang)} &bull; ${t(cat.nameKey, data.settings.lang)}</small>
+</div>
             </div>
             <div class="text-right">
                 <strong class="${b.type === 'income' ? 'text-green' : 'text-red'}">
