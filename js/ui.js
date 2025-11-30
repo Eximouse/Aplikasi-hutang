@@ -273,15 +273,16 @@ data.budget.forEach(b => {
         opt.value = w.id;
         opt.textContent = `${displayName} (${fmtMoney(w.balance)})`;
         select.appendChild(opt);
+           if(selectTarget) {
+            const optTarget = opt.cloneNode(true);
+            selectTarget.appendChild(optTarget);
+        }
     });
     
     document.getElementById('main-balance').textContent = fmtMoney(globalTotal);
    
    saveAppData(window.currentUser, window.dbInstance);
-   if(selectTarget) {
-            const optTarget = opt.cloneNode(true);
-            selectTarget.appendChild(optTarget);
-        }
+
 }
 
 //[BARU] Mengisi dropdown bulan secara otomatis
