@@ -221,8 +221,15 @@ export const RESOURCES = {
         opt_oldest: "Terlama",
         opt_due_closest: "Jatuh Tempo Terdekat",
         opt_due_furthest: "Jatuh Tempo Terlama",
-        opt_input_newest: "Input Terbaru"
+        opt_input_newest: "Input Terbaru",
+        
+        lbl_transfer_type: "Transfer",
+        lbl_source_wallet: "Dari Dompet",
+        lbl_target_wallet: "Ke Dompet",
+        msg_same_wallet: "Dompet asal dan tujuan tidak boleh sama!"
+        
     },
+    
     en: {
         welcome_msg: "Welcome to Finansial Pro App",
         msg_empty_trans: "No transactions recorded yet",
@@ -443,6 +450,12 @@ export const RESOURCES = {
         opt_oldest: "Oldest",
         opt_due_closest: "Closest Due Date",
         opt_due_furthest: "Furthest Due Date",
-        opt_input_newest: "Newest Input"
+        opt_input_newest: "Newest Input",
+        
+        lbl_transfer_type: "Transfer",
+        lbl_source_wallet: "From Wallet",
+        lbl_target_wallet: "To Wallet",
+        msg_same_wallet: "Source and target wallet cannot be the same!"
+        
     }
 };

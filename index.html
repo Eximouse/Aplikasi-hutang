@@ -432,12 +432,21 @@
                     <label for="t-out" class="type-btn expense" data-i18n="lbl_expense_type">Pengeluaran</label>
                     <input type="radio" name="b-type" id="t-in" value="income">
                     <label for="t-in" class="type-btn income" data-i18n="lbl_income_type">Pemasukan</label>
+                    <input type="radio" name="b-type" id="t-trans" value="transfer">
+    <label for="t-trans" class="type-btn transfer" style="color:var(--text-muted);" data-i18n="lbl_transfer_type">Transfer</label>
+</div>
                 </div>
                 <div id="category-wrapper">
     </div>
-<input type="hidden" id="b-category" value="food"> <div class="form-group" style="margin-bottom: 10px;">
+<input type="hidden" id="b-category" value="food"> 
+<div class="form-group" style="margin-bottom: 10px;">
+     <label id="lbl-wallet-source" style="font-size:0.8rem; color:var(--text-muted); display:none;" data-i18n="lbl_source_wallet">Dari Dompet</label>
                     <select id="b-wallet" style="padding: 10px; border-radius: 12px; background: var(--bg-input);"></select>
                 </div>
+                <div class="form-group" id="target-wallet-group" style="margin-bottom: 10px; display:none;">
+    <label style="font-size:0.8rem; color:var(--text-muted);" data-i18n="lbl_target_wallet">Ke Dompet</label>
+    <select id="b-wallet-target" style="padding: 10px; border-radius: 12px; background: var(--bg-input); width:100%;"></select>
+</div>
                 <input type="text" inputmode="numeric" class="money-input input-lg" id="b-amount" data-i18n-ph="ph_amount" placeholder="Nominal (Rp)">
                 <input type="text" id="b-desc" data-i18n-ph="ph_desc" placeholder="Keterangan..">
                 <input type="date" id="b-date">

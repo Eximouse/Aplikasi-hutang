@@ -78,13 +78,32 @@ export function renderCategorySelector(type = 'expense') {
 // [PENTING] Fungsi inisialisasi agar Radio Button (Masuk/Keluar) mengubah kategori
 export function initTypeSelector() {
     const radios = document.querySelectorAll('input[name="b-type"]');
+    
+    // Elemen yang akan di-toggle
+    const catWrapper = document.getElementById('category-wrapper');
+    const targetGroup = document.getElementById('target-wallet-group');
+    const lblSource = document.getElementById('lbl-wallet-source');
+
     radios.forEach(r => {
         r.addEventListener('change', (e) => {
-            // Reset kategori ke default pertama dari tipe baru
             const newType = e.target.value;
-            const defaultCat = CATEGORIES[newType][0].id;
-            document.getElementById('b-category').value = defaultCat;
-            renderCategorySelector(newType);
+
+            if (newType === 'transfer') {
+                // Tampilan Mode Transfer
+                catWrapper.style.display = 'none'; // Sembunyikan Kategori
+                targetGroup.style.display = 'block'; // Tampilkan Target Dompet
+                lblSource.style.display = 'block'; // Tampilkan Label "Dari Dompet"
+            } else {
+                // Tampilan Mode Normal (Income/Expense)
+                catWrapper.style.display = 'block';
+                targetGroup.style.display = 'none';
+                lblSource.style.display = 'none';
+                
+                // Reset kategori default
+                const defaultCat = CATEGORIES[newType][0].id;
+                document.getElementById('b-category').value = defaultCat;
+                renderCategorySelector(newType);
+            }
         });
     });
 }
@@ -206,13 +225,24 @@ data.budget.forEach(b => {
     if (w) {
         if (b.type === 'income') w.balance += b.amount;
         else w.balance -= b.amount;
+        else if (b.type === 'expense') w.balance -= b.amount;
+            else if (b.type === 'transfer') w.balance -= b.amount;
     }
 });
+ // [BARU] Logika Transfer (MASUK ke dompet tujuan)
+        if (b.type === 'transfer' && b.targetWalletId) {
+            const wTarget = data.wallets.find(x => x.id == b.targetWalletId);
+            if (wTarget) {
+                wTarget.balance += b.amount;
 
     container.innerHTML = '';
     select.innerHTML = '';
     let globalTotal = 0;
 
+    // [TAMBAHAN] Ambil elemen target wallet
+    const selectTarget = document.getElementById('b-wallet-target');
+    if(selectTarget) selectTarget.innerHTML = '';
+    
     data.wallets.forEach(w => {
         globalTotal += w.balance;
         let displayName = w.name;
@@ -238,9 +268,14 @@ data.budget.forEach(b => {
         opt.textContent = `${displayName} (${fmtMoney(w.balance)})`;
         select.appendChild(opt);
     });
+    
     document.getElementById('main-balance').textContent = fmtMoney(globalTotal);
    
    saveAppData(window.currentUser, window.dbInstance);
+   if(selectTarget) {
+            const optTarget = opt.cloneNode(true);
+            selectTarget.appendChild(optTarget);
+        }
 }
 
 //[BARU] Mengisi dropdown bulan secara otomatis
@@ -323,7 +358,20 @@ export function renderBudget() {
     if (b.categoryId) {
         cat = allCats.find(c => c.id === b.categoryId);
     }
-    
+  
+    // [BARU] Override Kategori Khusus Transfer
+        if (b.type === 'transfer') {
+            cat = { 
+                name: t('lbl_transfer_type', data.settings.lang), 
+                icon: 'fa-exchange-alt', 
+                color: '#2e86de' // Biru
+            };
+            
+            // Cari nama dompet tujuan buat ditampilkan di deskripsi
+            const targetW = data.wallets.find(w => w.id == b.targetWalletId);
+            if(targetW) walletName += ` <i class="fas fa-arrow-right"></i> ${targetW.name}`;
+        }
+        
     // Fallback jika kategori tidak ditemukan atau data lama
     if (!cat) {
         cat = { 
@@ -332,8 +380,15 @@ export function renderBudget() {
         color: b.type === 'income' ? '#1dd1a1' : '#ff6b6b' 
     };
     }
+        // [UPDATE HTML] Ubah warna nominal
+        let amountClass = 'text-red'; // Default expense
+        let amountSign = '-';
+        
+        if (b.type === 'income') { amountClass = 'text-green'; amountSign = '+'; }
+        else if (b.type === 'transfer') { amountClass = 'text-blue'; amountSign = ''; } // Transfer netral (biru)
+
         const el = document.createElement('div');
-        el.className = `card list-item`;
+        el.className = `card list-item ${b.type}`; // CSS class transfer bisa ditambah di style.css
         
         el.innerHTML = `
             <div style="display:flex; align-items:center; gap:12px;">
@@ -348,6 +403,9 @@ export function renderBudget() {
             <div class="text-right">
                 <strong class="${b.type === 'income' ? 'text-green' : 'text-red'}">
                     ${b.type === 'income' ? '+' : '-'} ${fmtMoney(b.amount)}
+                </strong>
+                <strong class="${amountClass}">
+                    ${amountSign} ${fmtMoney(b.amount)}
                 </strong>
                  <div style="margin-top:5px; display:flex; gap:10px; justify-content:flex-end;">
                     <i class="fas fa-pen text-primary" onclick="editBudget(${b.id})" style="font-size:0.9rem; cursor:pointer;"></i>
@@ -403,16 +461,24 @@ export function renderChart(income, expense) {
 export function saveBudget() {
     const id = document.getElementById('b-id').value; 
     const typeRadio = document.querySelector('input[name="b-type"]:checked');
-    const type = typeRadio ? typeRadio.value : 'expense'; // [FIX] Ambil nilai radio dgn aman
+    const type = typeRadio ? typeRadio.value : 'expense';
 
     const amountRaw = document.getElementById('b-amount').value;
     const amount = parseMoney(amountRaw);
     const desc = document.getElementById('b-desc').value;
     const date = document.getElementById('b-date').value;
     const walletId = parseInt(document.getElementById('b-wallet').value);
-    const categoryId = document.getElementById('b-category').value || 'others'; 
-
+    const categoryId = document.getElementById('b-category').value || 'others';
+    const targetWalletId = parseInt(document.getElementById('b-wallet-target').value); 
+    
     if (!amount || !desc) return showToast(t('msg_complete_data', data.settings.lang), 'error');
+  
+    // [VALIDASI TRANSFER]
+    if (type === 'transfer') {
+        if (walletId === targetWalletId) {
+            return showToast(t('msg_same_wallet', data.settings.lang), 'error');
+        }
+    }
 
     // --- LOGIKA EDIT ---
     if (id) {
@@ -448,7 +514,12 @@ export function saveBudget() {
             if (type === 'income') wallet.balance += amount;
             else wallet.balance -= amount;
         }
-        data.budget.unshift({ id: Date.now(), type, amount, desc, date, walletId, categoryId });
+         // [UPDATE] Simpan targetWalletId
+        data.budget.unshift({ 
+            id: Date.now(), type, amount, desc, date, walletId, 
+            categoryId: (type === 'transfer' ? null : categoryId), // Transfer ga butuh kategori
+            targetWalletId: (type === 'transfer' ? targetWalletId : null) // Simpan target
+        });
         showToast(t('msg_trans_saved', data.settings.lang));
     }
     

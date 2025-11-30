@@ -516,3 +516,6 @@ input:checked + .type-btn.expense { background: var(--danger); }
 .stat-card i {
     margin-top: 5px; /* Turunkan ikon sedikit biar pas sama teks */
 }
+
+.text-blue { color: #2e86de !important; } /* Warna Transfer */
+.list-item.transfer i { color: #2e86de; background: rgba(46, 134, 222, 0.1); padding: 10px; border-radius: 12px; font-size: 1.1rem; }
