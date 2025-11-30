@@ -50,29 +50,25 @@ export function renderCategorySelector(type = 'expense') {
     const grid = document.createElement('div');
     grid.className = 'category-grid';
 
-    // Ambil list kategori berdasarkan tipe (expense/income)
     const cats = CATEGORIES[type] || CATEGORIES['expense'];
     
-    // Set default value ke item pertama jika belum ada isi
     if(!input.value) input.value = cats[0].id;
 
     cats.forEach(c => {
         const item = document.createElement('div');
         item.className = `cat-item ${input.value === c.id ? 'active' : ''}`;
         item.onclick = function() {
-            // Hapus active dari yang lain
             document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
-            // Tambah active ke yang diklik
             this.classList.add('active');
-            // Simpan ke hidden input
             input.value = c.id;
         };
 
+        // PERHATIKAN BAGIAN SPAN DI BAWAH INI
         item.innerHTML = `
             <div class="cat-icon" style="background:${c.color}">
                 <i class="fas ${c.icon}"></i>
             </div>
-            <span>${(c.nameKey, data.settings.lang)}</span>
+            <span>${t(c.nameKey, data.settings.lang)}</span>
         `;
         grid.appendChild(item);
     });
