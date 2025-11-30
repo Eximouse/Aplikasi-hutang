@@ -487,3 +487,32 @@ input:checked + .type-btn.expense { background: var(--danger); }
 .cat-item span { font-size: 0.75rem; text-align: center; color: var(--text-muted); font-weight: 600; line-height: 1.2;}
 .cat-item.active span { color: var(--primary); 
 }
+
+/* PERBAIKAN TAMPILAN ANGKA HUTANG/PIUTANG */
+.stat-card strong {
+    /* 1. Agar angka menyesuaikan lebar layar (Penting!) */
+    /* Minimal 0.8rem, Idealnya 3.5% lebar layar, Maksimal 1.1rem */
+    font-size: clamp(0.8rem, 3.5vw, 1.1rem) !important;
+
+    /* 2. Mencegah angka patah di tengah (seperti 00 turun ke bawah) */
+    white-space: nowrap !important;  /* Paksa satu baris */
+    word-break: normal !important;   /* Jangan potong kata */
+    overflow-wrap: normal !important;
+    
+    /* 3. Layout */
+    display: block; /* Turun ke baris baru di bawah label "Total..." */
+    margin-top: 4px;
+    width: 100%;
+    overflow: hidden; /* Jaga-jaga kalau masih kepanjangan */
+    text-overflow: ellipsis; /* Tambah titik-titik (...) kalau masih ga muat */
+}
+
+/* Penyesuaian ikon agar sejajar rapi */
+.stat-card {
+    align-items: flex-start !important; /* Rata atas */
+    padding: 15px 10px !important; /* Kurangi padding kiri-kanan sedikit */
+}
+
+.stat-card i {
+    margin-top: 5px; /* Turunkan ikon sedikit biar pas sama teks */
+}
