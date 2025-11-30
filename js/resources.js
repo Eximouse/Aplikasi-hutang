@@ -117,7 +117,7 @@ export const RESOURCES = {
         modal_trans_title: "Catat Keuangan",
         lbl_expense_type: "Pengeluaran",
         lbl_income_type: "Pemasukan",
-        ph_desc: "Keterangan (cth: Makan Siang)",
+        ph_desc: "Keterangan..",
         
         modal_loan_title: "Catat Pinjaman",
         lbl_trans_type: "Tipe Transaksi",
@@ -316,7 +316,7 @@ export const RESOURCES = {
         modal_trans_title: "Record Finance",
         lbl_expense_type: "Expense",
         lbl_income_type: "Income",
-        ph_desc: "Description (e.g., Lunch)",
+        ph_desc: "Description..",
         
         modal_loan_title: "Record Loan",
         lbl_trans_type: "Transaction Type",
