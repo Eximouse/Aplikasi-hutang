@@ -1,25 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>  
-    <script>
-    window.onerror = function(msg, url, lineNo, columnNo, error) {
-        var string = msg.toLowerCase();
-        var substring = "script error";
-        if (string.indexOf(substring) > -1){
-            alert('Script Error: Cek Console Browser (F12) untuk detailnya.');
-        } else {
-            var message = [
-                '🕵️ Laporan Detektif:',
-                'Pesan: ' + msg,
-                'Baris: ' + lineNo,
-                'Kolom: ' + columnNo
-            ].join('\n');
-            alert(message);
-        }
-        return false;
-    };
-</script>
-
+<head>     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
@@ -439,7 +420,7 @@
                     <select id="b-wallet" style="padding: 10px; border-radius: 12px; background: var(--bg-input);"></select>
                 </div>
                 <input type="text" inputmode="numeric" class="money-input input-lg" id="b-amount" data-i18n-ph="ph_amount" placeholder="Nominal (Rp)">
-                <input type="text" id="b-desc" data-i18n-ph="ph_desc" placeholder="Keterangan (cth: Makan Siang)">
+                <input type="text" id="b-desc" data-i18n-ph="ph_desc" placeholder="Keterangan..">
                 <input type="date" id="b-date">
                 <input type="hidden" id="b-id">
                 <button class="btn-primary full-width mt-20" onclick="saveBudget()" data-i18n="btn_save">Simpan</button>
