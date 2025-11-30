@@ -203,6 +203,16 @@ export function renderWallets() {
     const select = document.getElementById('b-wallet');
     if(!container || !select) return;
 
+        // Reset dan Hitung Ulang Saldo
+data.wallets.forEach(w => w.balance = 0);
+data.budget.forEach(b => {
+    const w = data.wallets.find(x => x.id === b.walletId);
+    if (w) {
+        if (b.type === 'income') w.balance += b.amount;
+        else w.balance -= b.amount;
+    }
+});
+
     container.innerHTML = '';
     select.innerHTML = '';
     let globalTotal = 0;
