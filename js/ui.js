@@ -790,6 +790,10 @@ export function renderLoans() {
         const progress = Math.min(100, (l.paid / l.total) * 100);
         const displayTenor = (l.tenor || 1) + ' ' + t('month', data.settings.lang);
 
+        // [BARU] Hitung cicilan per bulan
+const tenorVal = parseInt(l.tenor) || 1;
+const monthlyBill = l.total / tenorVal;
+
         const el = document.createElement('div');
         el.className = 'card list-item';
         el.style.borderLeft = `4px solid ${l.type === 'piutang' ? 'var(--success)' : 'var(--danger)'}`;
@@ -801,11 +805,14 @@ export function renderLoans() {
                         <strong>${l.person}</strong>
                         <div style="margin-top:4px;">${dueStatusHTML}</div>
                     </div>
-                    <div style="text-align:right">
-                         <span style="font-size:0.7rem; font-weight:800; letter-spacing:0.5px; color:${l.type==='piutang'?'var(--success)':'var(--danger)'}">${typeLabel}</span><br>
-                        <small class="text-muted" style="font-size:0.7rem;">${l.status === 'active' ? progressLabel : displayTenor}</small>
-                    </div>
-                </div>
+                   <div style="text-align:right">
+     <span style="font-size:0.7rem; font-weight:800; letter-spacing:0.5px; color:${l.type==='piutang'?'var(--success)':'var(--danger)'}">${typeLabel}</span><br>
+    <small class="text-muted" style="font-size:0.7rem;">${l.status === 'active' ? progressLabel : displayTenor}</small>
+    
+    <div style="font-size:0.65rem; color:var(--text-muted); margin-top:2px;">
+        ${fmtMoney(monthlyBill)}/bln
+    </div>
+</div>
                 <div class="flex-between text-muted mt-10" style="font-size:0.8rem; border-top:1px dashed var(--border); padding-top:8px;">
                     <span>${remainingLabel}: <b style="color:var(--text-main)">${fmtMoney(l.total - l.paid)}</b></span>
                     <span>${Math.round(progress)}%</span>
@@ -832,6 +839,10 @@ export function showLoanDetail(id) {
     const remaining = l.total - l.paid;
     const typeLabel = l.type === 'piutang' ? t('word_receivable', data.settings.lang) : t('word_debt', data.settings.lang);
 
+     // [BARU] Hitung Cicilan
+    const tenorVal = parseInt(l.tenor) || 1;
+    const monthlyBill = l.total / tenorVal;
+    
     let historyHtml = l.history.map((h, i) => 
         `<div class="flex-between" style="border-bottom:1px dashed var(--border); padding:10px 0">
             <small class="text-muted">${fmtDate(h.date, data.settings.lang)}</small>
@@ -855,6 +866,10 @@ export function showLoanDetail(id) {
                 <small>${t('word_remaining', data.settings.lang)}</small><strong class="text-red">${fmtMoney(remaining)}</strong>
             </div>
         </div>
+        <div class="text-center mb-20" style="background:var(--bg-input); padding:10px; border-radius:12px;">
+        <small class="text-muted">Target Cicilan (${l.tenor} Bulan):</small><br>
+        <strong style="color:var(--primary); font-size:1.1rem;">${fmtMoney(monthlyBill)} / bulan</strong>
+    </div>
         ${l.status === 'active' ? `
         <div class="card mt-20" style="background:var(--bg-input); border:none;">
             <h4><i class="fas fa-money-bill-wave"></i> ${t('word_pay', data.settings.lang)}</h4>
