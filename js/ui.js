@@ -243,6 +243,8 @@ data.budget.forEach(b => {
         select.appendChild(opt);
     });
     document.getElementById('main-balance').textContent = fmtMoney(globalTotal);
+   
+   saveAppData(window.currentUser, window.dbInstance);
 }
 
 //[BARU] Mengisi dropdown bulan secara otomatis
