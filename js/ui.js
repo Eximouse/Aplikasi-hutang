@@ -3,6 +3,26 @@ import { data, saveAppData } from './db.js';
 import { t, fmtMoney, fmtDate, parseMoney, initMoneyInputs } from './utils.js';
 import { APP_KEY } from './config.js';
 
+// [BARU] Definisi Kategori
+const CATEGORIES = {
+    expense: [
+        { id: 'food', name: 'Makan', icon: 'fa-utensils', color: '#ff6b6b' },
+        { id: 'transport', name: 'Transport', icon: 'fa-bus', color: '#feca57' },
+        { id: 'shop', name: 'Belanja', icon: 'fa-shopping-bag', color: '#54a0ff' },
+        { id: 'bill', name: 'Tagihan', icon: 'fa-file-invoice', color: '#ff9ff3' },
+        { id: 'health', name: 'Kesehatan', icon: 'fa-heartbeat', color: '#ff4d4d' },
+        { id: 'educ', name: 'Edukasi', icon: 'fa-book', color: '#48dbfb' },
+        { id: 'ent', name: 'Hiburan', icon: 'fa-gamepad', color: '#a55eea' },
+        { id: 'others', name: 'Lainnya', icon: 'fa-ellipsis-h', color: '#8395a7' }
+    ],
+    income: [
+        { id: 'salary', name: 'Gaji', icon: 'fa-money-bill-wave', color: '#1dd1a1' },
+        { id: 'bonus', name: 'Bonus', icon: 'fa-gift', color: '#f368e0' },
+        { id: 'invest', name: 'Investasi', icon: 'fa-chart-line', color: '#2e86de' },
+        { id: 'others-in', name: 'Lainnya', icon: 'fa-plus-circle', color: '#8395a7' }
+    ]
+};
+
 // --- VARIABLES ---
 let chartInstance = null;
 let trendChartInstance = null;
@@ -18,6 +38,59 @@ export function showToast(msg, type = 'success') {
     toast.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${msg}`;
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
+}
+
+//Fungsi untuk merender grid kategori di Modal
+export function renderCategorySelector(type = 'expense') {
+    const wrapper = document.getElementById('category-wrapper');
+    const input = document.getElementById('b-category');
+    if(!wrapper || !input) return;
+
+    wrapper.innerHTML = '';
+    const grid = document.createElement('div');
+    grid.className = 'category-grid';
+
+    // Ambil list kategori berdasarkan tipe (expense/income)
+    const cats = CATEGORIES[type] || CATEGORIES['expense'];
+    
+    // Set default value ke item pertama jika belum ada isi
+    if(!input.value) input.value = cats[0].id;
+
+    cats.forEach(c => {
+        const item = document.createElement('div');
+        item.className = `cat-item ${input.value === c.id ? 'active' : ''}`;
+        item.onclick = function() {
+            // Hapus active dari yang lain
+            document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
+            // Tambah active ke yang diklik
+            this.classList.add('active');
+            // Simpan ke hidden input
+            input.value = c.id;
+        };
+
+        item.innerHTML = `
+            <div class="cat-icon" style="background:${c.color}">
+                <i class="fas ${c.icon}"></i>
+            </div>
+            <span>${c.name}</span>
+        `;
+        grid.appendChild(item);
+    });
+    wrapper.appendChild(grid);
+}
+
+// [PENTING] Fungsi inisialisasi agar Radio Button (Masuk/Keluar) mengubah kategori
+export function initTypeSelector() {
+    const radios = document.querySelectorAll('input[name="b-type"]');
+    radios.forEach(r => {
+        r.addEventListener('change', (e) => {
+            // Reset kategori ke default pertama dari tipe baru
+            const newType = e.target.value;
+            const defaultCat = CATEGORIES[newType][0].id;
+            document.getElementById('b-category').value = defaultCat;
+            renderCategorySelector(newType);
+        });
+    });
 }
 
 // --- NAVIGATION & MODALS ---
@@ -226,6 +299,7 @@ export function renderBudget() {
     displayedData.forEach(b => {
         if (b.type === 'income') income += b.amount; else expense += b.amount;
         
+        let cat = null;
         let walletName = 'Dompet';
         const w = data.wallets.find(x => x.id === b.walletId);
         if (w) {
@@ -234,29 +308,46 @@ export function renderBudget() {
             else if (w.type === 'ewallet') walletName = t('wallet_ewallet', data.settings.lang);
             else walletName = w.name;
         }
-
+        
+        const allCats = [...CATEGORIES.expense, ...CATEGORIES.income];
+        
+          // Cek apakah data punya categoryId? Jika tidak (data lama), pakai default 'others'
+    if (b.categoryId) {
+        cat = allCats.find(c => c.id === b.categoryId);
+    }
+    
+    // Fallback jika kategori tidak ditemukan atau data lama
+    if (!cat) {
+        cat = { 
+            name: b.type === 'income' ? 'Pemasukan' : 'Pengeluaran', 
+            icon: b.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up', 
+            color: b.type === 'income' ? '#1dd1a1' : '#ff6b6b' 
+        };
+    }
         const el = document.createElement('div');
-        el.className = `card list-item ${b.type}`;
+        el.className = `card list-item`;
         
         el.innerHTML = `
-            <div>
-                <i class="fas ${b.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="background:${cat.color}; width:40px; height:40px; border-radius:12px; display:grid; place-items:center; color:white; flex-shrink:0;">
+                    <i class="fas ${cat.icon}"></i>
+                </div>
                 <div>
                     <strong>${b.desc}</strong><br>
-                    <small class="text-muted">${fmtDate(b.date, data.settings.lang)} &bull; ${walletName}</small>
+                    <small class="text-muted">${fmtDate(b.date, data.settings.lang)} &bull; ${cat.name}</small>
                 </div>
             </div>
             <div class="text-right">
                 <strong class="${b.type === 'income' ? 'text-green' : 'text-red'}">
                     ${b.type === 'income' ? '+' : '-'} ${fmtMoney(b.amount)}
                 </strong>
-                <div style="margin-top:5px; display:flex; gap:10px; justify-content:flex-end;">
+                 <div style="margin-top:5px; display:flex; gap:10px; justify-content:flex-end;">
                     <i class="fas fa-pen text-primary" onclick="editBudget(${b.id})" style="font-size:0.9rem; cursor:pointer;"></i>
                     <i class="fas fa-trash text-muted" onclick="deleteItem('budget', ${b.id})" style="font-size:0.9rem; cursor:pointer;"></i>
                 </div>
             </div>
-        `;
-        list.appendChild(el);
+    `;
+    list.appendChild(el);
     });
     
     document.getElementById('main-income').textContent = fmtMoney(income);
@@ -311,6 +402,7 @@ export function saveBudget() {
     const desc = document.getElementById('b-desc').value;
     const date = document.getElementById('b-date').value;
     const walletId = parseInt(document.getElementById('b-wallet').value);
+    const categoryId = document.getElementById('b-category').value || 'others'; 
 
     if (!amount || !desc) return showToast(t('msg_complete_data', data.settings.lang), 'error');
 
@@ -330,6 +422,7 @@ export function saveBudget() {
             oldItem.desc = desc;
             oldItem.date = date;
             oldItem.walletId = walletId;
+            oldItem.categoryId = categoryId;
             
             // 3. Potong saldo baru
             const newWallet = data.wallets.find(w => w.id === walletId);
@@ -347,7 +440,7 @@ export function saveBudget() {
             if (type === 'income') wallet.balance += amount;
             else wallet.balance -= amount;
         }
-        data.budget.unshift({ id: Date.now(), type, amount, desc, date, walletId });
+        data.budget.unshift({ id: Date.now(), type, amount, desc, date, walletId, categoryId });
         showToast(t('msg_trans_saved', data.settings.lang));
     }
     
@@ -368,13 +461,21 @@ export function editBudget(id) {
     
     if(item.walletId) document.getElementById('b-wallet').value = item.walletId;
     
-    // [FIX] Set Radio Button dengan benar
-    if (item.type === 'income') {
-        document.getElementById('t-in').checked = true;
-    } else {
-        document.getElementById('t-out').checked = true;
-    }
+    // [BARU] Set Kategori
+if (item.categoryId) {
+    document.getElementById('b-category').value = item.categoryId;
+} else {
+    document.getElementById('b-category').value = item.type === 'income' ? 'others-in' : 'others';
+}
 
+// [FIX] Set Radio Button & Trigger Render Kategori
+if (item.type === 'income') {
+    document.getElementById('t-in').checked = true;
+} else {
+    document.getElementById('t-out').checked = true;
+}
+    
+    renderCategorySelector(item.type);
     openModal('modal-budget');
 }
 

@@ -446,3 +446,44 @@ input:checked + .type-btn.expense { background: var(--danger); }
     gap: 5px;
     margin-top: 5px;
 }
+
+/* --- FITUR KATEGORI (NEW) --- */
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 15px 0;
+}
+
+.cat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px 5px;
+    border-radius: 12px;
+    transition: 0.2s;
+    border: 1px solid transparent;
+}
+
+.cat-item:hover { background: var(--bg-input); }
+
+.cat-item.active {
+    background: rgba(68, 129, 235, 0.1);
+    border-color: var(--primary);
+}
+
+.cat-icon {
+    width: 45px; height: 45px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: white; font-size: 1.2rem;
+    margin-bottom: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.cat-item.active .cat-icon { transform: scale(1.1); }
+.cat-item span { font-size: 0.75rem; text-align: center; color: var(--text-muted); font-weight: 600; line-height: 1.2;}
+.cat-item.active span { color: var(--primary); 
+}

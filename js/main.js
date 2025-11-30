@@ -138,9 +138,12 @@ async function startApp() {
     UI.initTheme();
     UI.checkPinLock();
     initMoneyInputs(UI.calcLoanPreview); 
-    if(typeof UI.initTypeSelector === 'function') UI.initTypeSelector(); 
+    if(typeof UI.initTypeSelector === 'function')                                     UI.initTypeSelector(); 
        if (typeof UI.initBillDateSelect === 'function') UI.initBillDateSelect();
     if (typeof UI.initMonthFilter === 'function') UI.initMonthFilter();
+    if(typeof UI.renderCategorySelector === 'function') {
+    UI.renderCategorySelector('expense');
+  }
     
     // 4. Render Awal
     UI.renderWallets();
