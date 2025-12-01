@@ -499,26 +499,25 @@ export function saveBudget() {
     if (id) {
         const oldItem = data.budget.find(b => b.id == id);
         if (oldItem) {
-            // 1. Kembalikan saldo lama
-            const oldWallet = data.wallets.find(w => w.id === oldItem.walletId);
-            if (oldWallet) {
-                if (oldItem.type === 'income') oldWallet.balance -= oldItem.amount;
-                else oldWallet.balance += oldItem.amount;
-            }
-            // 2. Update Item
+            // Catatan: Kita TIDAK PERLU hitung saldo manual (oldWallet/newWallet) di sini.
+            // Karena fungsi 'renderWallets' sudah otomatis menghitung ulang semuanya dari nol.
+            
+            // 1. Update Data Utama
             oldItem.type = type;
             oldItem.amount = amount;
             oldItem.desc = desc;
             oldItem.date = date;
             oldItem.walletId = walletId;
-            oldItem.categoryId = categoryId;
             
-            // 3. Potong saldo baru
-            const newWallet = data.wallets.find(w => w.id === walletId);
-            if (newWallet) {
-                if (type === 'income') newWallet.balance += amount;
-                else newWallet.balance -= amount;
+            // 2. [PERBAIKAN PENTING] Update Target Transfer
+            if (type === 'transfer') {
+                oldItem.targetWalletId = targetWalletId; // Simpan tujuan baru
+                oldItem.categoryId = null; // Transfer tidak butuh kategori
+            } else {
+                oldItem.targetWalletId = null; // Jika berubah jadi bukan transfer, hapus target
+                oldItem.categoryId = categoryId; // Simpan kategori
             }
+            
             showToast("Transaksi berhasil diedit");
         }
     } 
@@ -549,27 +548,59 @@ export function editBudget(id) {
     if (!item) return;
 
     document.getElementById('b-id').value = item.id;
-    document.getElementById('b-amount').value = item.amount.toLocaleString('id-ID');
+    // Format angka tanpa titik untuk input
+    document.getElementById('b-amount').value = item.amount.toLocaleString('id-ID'); 
     document.getElementById('b-desc').value = item.desc;
     document.getElementById('b-date').value = item.date;
     
+    // Set Dompet Sumber
     if(item.walletId) document.getElementById('b-wallet').value = item.walletId;
     
-    // [BARU] Set Kategori
-if (item.categoryId) {
-    document.getElementById('b-category').value = item.categoryId;
-} else {
-    document.getElementById('b-category').value = item.type === 'income' ? 'others-in' : 'others';
-}
-
-// [FIX] Set Radio Button & Trigger Render Kategori
-if (item.type === 'income') {
-    document.getElementById('t-in').checked = true;
-} else {
-    document.getElementById('t-out').checked = true;
-}
+    // --- [PERBAIKAN LOGIKA TAMPILAN EDIT] ---
     
-    renderCategorySelector(item.type);
+    const catWrapper = document.getElementById('category-wrapper');
+    const targetGroup = document.getElementById('target-wallet-group');
+    const lblSource = document.getElementById('lbl-wallet-source');
+    
+    // Reset Radio Button sesuai tipe
+    if (item.type === 'income') {
+        document.getElementById('t-in').checked = true;
+    } else if (item.type === 'transfer') {
+        document.getElementById('t-trans').checked = true;
+    } else {
+        document.getElementById('t-out').checked = true;
+    }
+
+    // Atur Tampilan berdasarkan Tipe
+    if (item.type === 'transfer') {
+        // Mode Transfer
+        catWrapper.style.display = 'none';
+        targetGroup.style.display = 'block';
+        lblSource.style.display = 'block';
+        
+        // Isi Dropdown Target
+        if(item.targetWalletId) {
+            document.getElementById('b-wallet-target').value = item.targetWalletId;
+        }
+    } else {
+        // Mode Normal (Income/Expense)
+        catWrapper.style.display = 'block';
+        targetGroup.style.display = 'none';
+        lblSource.style.display = 'none';
+        
+        // Set Kategori
+        if (item.categoryId) {
+            document.getElementById('b-category').value = item.categoryId;
+        } else {
+            // Default kategori jika data lama
+            const defaultCat = item.type === 'income' ? 'salary' : 'food'; // sesuaikan dgn ID kategori pertama kamu
+            document.getElementById('b-category').value = defaultCat;
+        }
+        
+        // Render ulang ikon kategori
+        renderCategorySelector(item.type);
+    }
+
     openModal('modal-budget');
 }
 
