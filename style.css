@@ -222,12 +222,40 @@ input:focus, select:focus { outline: none; background: var(--bg-card); border-co
 }
 
 /* Type Selector */
-.type-selector { display: flex; gap: 10px; margin-bottom: 25px; background: var(--bg-input); padding: 6px; border-radius: 18px; }
+.type-selector {
+    display: flex;
+    gap: 4px; /* Jarak antar tombol diperkecil */
+    margin-bottom: 25px;
+    background: var(--bg-input);
+    padding: 5px; /* Padding wadah diperkecil */
+    border-radius: 16px;
+}
+
 .type-selector input { display: none; }
-.type-btn { flex: 1; padding: 12px; text-align: center; border-radius: 14px; cursor: pointer; font-weight: 600; color: var(--text-muted); transition: 0.3s; }
+
+.type-btn {
+    flex: 1;
+    padding: 10px 2px; /* Padding tombol diperkecil biar muat 3 */
+    text-align: center;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: 0.3s;
+
+    /* [BARU] Agar teks panjang tetap rapi di satu baris */
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 input:checked + .type-btn { color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 input:checked + .type-btn.income { background: var(--success); }
 input:checked + .type-btn.expense { background: var(--danger); }
+input:checked + .type-btn.transfer { 
+    background: #2e86de; /* Warna Biru */
+    color: white; 
+}
 
 /* Goal Progress */
 .goal-progress-bg { background: var(--bg-input); height: 12px; border-radius: 6px; margin-top: 12px; overflow: hidden; }
