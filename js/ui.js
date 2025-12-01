@@ -347,7 +347,8 @@ export function renderBudget() {
     });
 
     displayedData.forEach(b => {
-        if (b.type === 'income') income += b.amount; else expense += b.amount;
+       if (b.type === 'income') income += b.amount; 
+        else if (b.type === 'expense') expense += b.amount;
         
         let cat = null;
         let walletName = 'Dompet';
@@ -387,30 +388,37 @@ export function renderBudget() {
         color: b.type === 'income' ? '#1dd1a1' : '#ff6b6b' 
     };
     }
-        // [UPDATE HTML] Ubah warna nominal
-        let amountClass = 'text-red'; // Default expense
-        let amountSign = '-';
+            let finalCategoryName = '';
         
+        if (b.type === 'transfer') {
+            finalCategoryName = cat.name; // Pakai nama langsung (ada panahnya)
+        } else {
+            // Cek dulu apakah ada nameKey, kalau tidak ada pakai name biasa
+            if(cat.nameKey) finalCategoryName = t(cat.nameKey, data.settings.lang);
+            else finalCategoryName = cat.name || '-';
+        }
+
+        // Tentukan Warna Nominal
+        let amountClass = 'text-red';
+        let amountSign = '-';
         if (b.type === 'income') { amountClass = 'text-green'; amountSign = '+'; }
-        else if (b.type === 'transfer') { amountClass = 'text-blue'; amountSign = ''; } // Transfer netral (biru)
+        else if (b.type === 'transfer') { amountClass = 'text-blue'; amountSign = ''; }
 
         const el = document.createElement('div');
-        el.className = `card list-item ${b.type}`; // CSS class transfer bisa ditambah di style.css
-        
+        el.className = `card list-item`; 
+
+        // [UPDATE HTML] Gunakan variable 'finalCategoryName'
         el.innerHTML = `
             <div style="display:flex; align-items:center; gap:12px;">
                 <div style="background:${cat.color}; width:40px; height:40px; border-radius:12px; display:grid; place-items:center; color:white; flex-shrink:0;">
                     <i class="fas ${cat.icon}"></i>
                 </div>
                 <div>
-    <strong>${b.desc}</strong><br>
-    <small class="text-muted">${fmtDate(b.date, data.settings.lang)} &bull; ${t(cat.nameKey, data.settings.lang)}</small>
-</div>
+                    <strong>${b.desc}</strong><br>
+                    <small class="text-muted">${fmtDate(b.date, data.settings.lang)} &bull; ${finalCategoryName}</small>
+                </div>
             </div>
             <div class="text-right">
-                <strong class="${b.type === 'income' ? 'text-green' : 'text-red'}">
-                    ${b.type === 'income' ? '+' : '-'} ${fmtMoney(b.amount)}
-                </strong>
                 <strong class="${amountClass}">
                     ${amountSign} ${fmtMoney(b.amount)}
                 </strong>
@@ -419,8 +427,8 @@ export function renderBudget() {
                     <i class="fas fa-trash text-muted" onclick="deleteItem('budget', ${b.id})" style="font-size:0.9rem; cursor:pointer;"></i>
                 </div>
             </div>
-    `;
-    list.appendChild(el);
+        `;
+        list.appendChild(el);
     });
     
     document.getElementById('main-income').textContent = fmtMoney(income);
