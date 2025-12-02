@@ -136,9 +136,9 @@ export function navTo(pageId) {
         fab.style.display = 'flex';
     }   
         // Render ulang grafik trend jika masuk home agar animasi jalan
-        if (pageId === 'page-home') { setTimeout(() ==> renderTrendChart(),
-     100);
-     }
+        if (pageId === 'page-home') {
+        setTimeout(() => renderTrendChart(), 100);
+    }
 }
 
 export function switchTab(context, tabId) {
