@@ -45,7 +45,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
 /* [MODIFIED FOR ADSENSE] Padding bawah diperbesar */
-body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 140px; transition: background 0.3s ease, color 0.3s ease; }
+body { background-color: var(--bg-body); color: var(--text-main); padding-bottom: 90px; transition: background 0.3s ease, color 0.3s ease; }
 
 /* Utilities */
 .text-green { color: var(--success) !important; }
@@ -67,18 +67,6 @@ body { background-color: var(--bg-body); color: var(--text-main); padding-bottom
     word-break: break-all; /* Memaksa potong jika tidak ada spasi */
     white-space: normal;
     line-height: 1.2;
-}
-
-/* [NEW] Class Khusus Wadah Iklan Manual (Opsional) */
-.ad-slot {
-    width: 100%;
-    min-height: 100px;
-    background: transparent;
-    margin: 20px 0;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 /* Header */

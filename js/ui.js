@@ -134,13 +134,11 @@ export function navTo(pageId) {
         fab.style.display = 'none';
     } else {
         fab.style.display = 'flex';
-    }
-    // Trigger lazy load ads saat pindah halaman
-    setTimeout(() => {
-        if (typeof window.refreshAds === 'function') window.refreshAds(pageId);
+    }   
         // Render ulang grafik trend jika masuk home agar animasi jalan
-        if (pageId === 'page-home') renderTrendChart();
-    }, 100);
+        if (pageId === 'page-home') { setTimeout(() ==> renderTrendChart(),
+     100);
+     }
 }
 
 export function switchTab(context, tabId) {
@@ -1695,25 +1693,6 @@ export function exportCSV(type) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-}
-
-
-export function refreshAds(containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    const ads = container.querySelectorAll('ins.adsbygoogle');
-    ads.forEach(ad => {
-        if (ad.getAttribute('data-adsbygoogle-status')) return;
-        if (ad.offsetWidth === 0) {
-            setTimeout(() => { refreshAds(containerId); }, 300);
-            return;
-        }
-        try {
-            if (typeof window.adsbygoogle !== 'undefined') window.adsbygoogle.push({});
-        } catch (e) {
-            console.warn("AdSense pending...");
-        }
-    });
 }
 
 // [BARU] Deteksi Koneksi Internet

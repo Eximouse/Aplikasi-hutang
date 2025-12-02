@@ -36,10 +36,8 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-
-    <meta name="google-adsense-account" content="ca-pub-4170035550920357">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4170035550920357" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js">        
+    </script>
 </head>
 <body>
     <div id="loading-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg-body); z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center;">
@@ -97,12 +95,7 @@
                     <div><small data-i18n="total_debt">Total Hutang</small><strong id="main-hutang">Rp 0</strong></div>
                 </div>
             </div>
-
-            <div class="ad-slot">
-                <small style="display:block; font-size:0.6rem; color:#ccc; margin-bottom:5px;">Advertisement</small>
-                <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fs+3n+7a-ag-4h" data-ad-client="ca-pub-4170035550920357" data-ad-slot="6949327399"></ins> 
-            </div>
-            
+          
             <div class="card" onclick="navTo('page-tools'); switchTab('tools', 'tab-emergency')" style="cursor: pointer; background: var(--bg-input);">
                 <div class="flex-between">
                     <div style="display:flex; align-items:center; gap:10px;">
@@ -158,10 +151,7 @@
         <i class="fas fa-search" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); color:var(--text-muted);"></i>
         <input type="text" id="budget-search" data-i18n-ph="lbl_search_budget" placeholder="Cari transaksi..." onkeyup="renderBudget()" style="padding-left: 40px; margin-bottom:0;">
     </div>
-
-                <div class="ad-slot" style="margin: 10px 0;">
-                    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4170035550920357" data-ad-slot="1369506733" data-ad-format="auto" data-full-width-responsive="true"></ins>
-                </div>
+               
                 <div id="budget-list" class="transaction-list mt-10"></div>
             </div>
 
@@ -218,10 +208,7 @@
     <option value="newest_input" data-i18n="opt_input_newest">Input Terbaru</option>
 </select>
 </div>    
-  
-            <div class="ad-slot" style="margin: 10px 0;">
-                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4170035550920357" data-ad-slot="3450258051" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            </div>
+              
             <div id="tab-loans-active" class="tab-content active">
                 <div id="loan-list-active" class="loan-grid"></div>
             </div>
@@ -261,12 +248,7 @@
                     </div>
                     <button class="btn-primary full-width mt-10" onclick="openModal('modal-emergency-add')"><i class="fas fa-plus-circle"></i> <span data-i18n="btn_add_savings">Tambah Tabungan</span></button>
                 </div>
-
-                <div class="ad-slot">
-                     <small style="display:block; font-size:0.6rem; color:#ccc; margin-bottom:5px;">Advertisement</small>
-                     <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fs+3n+7a-ag-4h" data-ad-client="ca-pub-4170035550920357" data-ad-slot="4634047443"></ins>
-                </div>
-
+                
                 <div class="card mt-20">
                     <div class="flex-between" onclick="toggleEmergencySettings()" style="cursor: pointer;">
                         <h3><i class="fas fa-sliders-h"></i> <span data-i18n="risk_profile_title">Atur Profil Risiko</span></h3>

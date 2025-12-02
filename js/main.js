@@ -153,10 +153,5 @@ async function startApp() {
     UI.renderGoals();
     UI.renderEmergency();
     UI.updateUI(); 
-
-    setTimeout(() => {
-        if (typeof UI.refreshAds === 'function') {
-            UI.refreshAds('page-home');
-        }
-    }, 500);
+    
 }
