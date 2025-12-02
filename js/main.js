@@ -2,156 +2,122 @@
 import { firebaseConfig } from './config.js';
 import { data, loadAppData, saveAppData, setupRealtimeListener } from './db.js';
 import { setupAuthListeners, logoutUser } from './auth.js';
-import * as UI from './ui.js'; 
 import { initMoneyInputs } from './utils.js';
+
+// --- IMPORT DARI STRUKTUR UI BARU ---
+import * as UI from './ui/index.js';
 
 // Inisialisasi Event Listener UI (Tombol Konfirmasi)
 UI.setupConfirmListener();
 
 // --- BRIDGE KE WINDOW (Agar onclick di HTML berfungsi) ---
 // Navigasi & Modal
-window.navTo = UI.navTo;
-window.switchTab = UI.switchTab;
-window.openModal = UI.openModal;
-window.closeModal = UI.closeModal;
+window.navTo = UI.Nav.navTo;
+window.switchTab = UI.Nav.switchTab;
+window.openModal = UI.Nav.openModal;
+window.closeModal = UI.Nav.closeModal;
 
 // Fitur Simpan Data
-window.saveBudget = UI.saveBudget;
-window.saveBill = UI.saveBill;
-window.saveLoan = UI.saveLoan;
-window.addGoal = UI.addGoal;
-window.saveTargetSavings = UI.saveTargetSavings;
-window.addEmergencyFund = UI.addEmergencyFund;
-window.saveEmergencyProfile = UI.saveEmergencyProfile;
-window.toggleEmergencySettings = UI.toggleEmergencySettings;
-window.toggleAddBill = UI.toggleAddBill;
+window.saveBudget = UI.Budget.saveBudget;
+window.saveBill = UI.Bills.saveBill;
+window.saveLoan = UI.Loans.saveLoan;
+window.addGoal = UI.Goals.addGoal;
+window.saveTargetSavings = UI.Goals.saveTargetSavings;
+window.addEmergencyFund = UI.Tools.addEmergencyFund;
+window.saveEmergencyProfile = UI.Tools.saveEmergencyProfile;
+window.toggleEmergencySettings = UI.Tools.toggleEmergencySettings;
+window.toggleAddBill = UI.Bills.toggleAddBill;
 
-// Fitur Aksi (Bayar, Hapus, Detail)
-window.payBill = UI.payBill;
-window.payLoan = UI.payLoan;
-window.editBudget = UI.editBudget;
-window.showLoanDetail = UI.showLoanDetail;
-window.deletePayment = UI.deletePayment;
-window.deleteItem = UI.deleteItem;
-window.renderBudget = UI.renderBudget;
-window.renderLoans = UI.renderLoans;
+// Fitur Aksi
+window.payBill = UI.Bills.payBill;
+window.payLoan = UI.Loans.payLoan;
+window.editBudget = UI.Budget.editBudget;
+window.showLoanDetail = UI.Loans.showLoanDetail;
+window.deletePayment = UI.Loans.deletePayment;
+window.deleteItem = UI.deleteItem; // Global Delete
+window.renderBudget = UI.Budget.renderBudget;
+window.renderLoans = UI.Loans.renderLoans;
 
-// Fitur Sistem & Tampilan
-window.toggleFab = UI.toggleFab;
-window.toggleTheme = UI.toggleTheme;
-window.togglePinSetup = UI.togglePinSetup;
-window.pressPin = UI.pressPin; 
-window.exportCSV = UI.exportCSV;
-window.resetData = UI.resetData;
-window.downloadBackup = UI.downloadBackup;
-window.restoreBackup = UI.restoreBackup;
-window.generatePDF = UI.generatePDF;
-window.openLangModal = UI.openLangModal;
-window.selectLang = UI.selectLang;
-window.logoutUser = () => { logoutUser(auth);
-if (unsubscribeListener) unsubscribeListener();
+// Fitur Sistem
+window.toggleFab = UI.Nav.toggleFab;
+window.toggleTheme = UI.Settings.toggleTheme;
+window.togglePinSetup = UI.Settings.togglePinSetup;
+window.pressPin = UI.Settings.pressPin; 
+window.exportCSV = UI.Settings.exportCSV;
+window.resetData = UI.Settings.resetData;
+window.downloadBackup = UI.Settings.downloadBackup;
+window.restoreBackup = UI.Settings.restoreBackup;
+window.generatePDF = UI.Settings.generatePDF;
+window.openLangModal = UI.Settings.openLangModal;
+window.selectLang = UI.Settings.selectLang;
+window.logoutUser = () => { 
+    logoutUser(auth);
+    if (unsubscribeListener) unsubscribeListener();
 };
 
-// Fungsi Kalkulator Investasi
-window.calculateCompound = UI.calculateCompound; 
-window.toggleDcaInput = UI.toggleDcaInput;
-window.resetCalc = UI.resetCalc;
-window.showCalcDetail = UI.showCalcDetail;
+// Kalkulator
+window.calculateCompound = UI.Tools.calculateCompound; 
+window.toggleDcaInput = UI.Tools.toggleDcaInput;
+window.resetCalc = UI.Tools.resetCalc;
+window.showCalcDetail = UI.Tools.showCalcDetail;
+window.calcLoanPreview = UI.Loans.calcLoanPreview;
 
-// Fungsi Kalkulator Pinjaman (Preview saat ngetik)
-window.calcLoanPreview = UI.calcLoanPreview;
-
-// Variabel Global Auth & DB
+// Variabel Global
 let auth, db;
 let unsubscribeListener;
 
 // --- LOGIKA UTAMA SAAT APLIKASI DIMUAT ---
 window.addEventListener('load', () => {
-    // Cek apakah Library Firebase berhasil dimuat dari index.html?
     if(window.firebaseLib) {
-        const { initializeApp, getAuth, getFirestore, onAuthStateChanged } = window.firebaseLib;
+        const { initializeApp, getAuth, getFirestore, onAuthStateChanged, enableIndexedDbPersistence } = window.firebaseLib;
         
         const app = initializeApp(firebaseConfig);
         auth = getAuth(app);
         db = getFirestore(app);
      
-       // [BARU] AKTIFKAN OFFLINE PERSISTENCE
-        const { enableIndexedDbPersistence } = window.firebaseLib;
         enableIndexedDbPersistence(db).catch((err) => {
-            if (err.code == 'failed-precondition') {
-                console.log('Persistence failed: Multiple tabs open');
-            } else if (err.code == 'unimplemented') {
-                console.log('Persistence not supported by browser');
-            }
+            console.log('Persistence:', err.code);
         });
         
-        // Simpan instance DB ke window agar bisa diakses UI.js saat save
         window.dbInstance = db; 
-
-        // Pasang listener tombol login
         setupAuthListeners(auth);
 
-        // Cek Status Login Pengguna
         onAuthStateChanged(auth, (user) => {
-            // Matikan Loading Overlay
             const loadingOverlay = document.getElementById('loading-overlay');
             if(loadingOverlay) loadingOverlay.style.display = 'none';
 
             if (user) {
-                // KASUS: SUDAH LOGIN
                 window.currentUser = user;
                 document.getElementById('login-screen').style.display = 'none';
-                startApp(); // Jalankan aplikasi
+                startApp(); 
             } else {
-                // KASUS: BELUM LOGIN
                 document.getElementById('login-screen').style.display = 'flex';
                 document.getElementById('login-status').innerText = "";
             }
         });
     } else {
-        // Error Handling jika Firebase Library gagal load
-        alert("FATAL: Library Firebase TIDAK DITEMUKAN!\nCek koneksi internet atau file index.html Anda.");
-        const loadingOverlay = document.getElementById('loading-overlay');
-        if(loadingOverlay) loadingOverlay.style.display = 'none';
+        alert("FATAL: Library Firebase TIDAK DITEMUKAN!");
+        document.getElementById('loading-overlay').style.display = 'none';
     }
 });
 
-// --- FUNGSI START APLIKASI ---
 async function startApp() {
-    // 1. Load Data Awal
     await loadAppData(window.currentUser, db);
     
-    // 2. [LEVEL 3] Aktifkan Real-time Listener
-    // PERBAIKAN: Hapus 'data.' di depan setupRealtimeListener
     unsubscribeListener = setupRealtimeListener(window.currentUser, db, () => {
-        // Refresh SEMUA Tampilan saat data berubah
-        UI.renderWallets();
-        UI.renderBills();
-        UI.renderBudget();
-        UI.renderLoans();
-        UI.renderGoals();
-        UI.renderEmergency();
         UI.updateUI();
     });
     
-    // 3. Inisialisasi Komponen UI
-    UI.initTheme();
-    UI.checkPinLock();
-    initMoneyInputs(UI.calcLoanPreview); 
-    if(typeof UI.initTypeSelector === 'function')                                     UI.initTypeSelector(); 
-       if (typeof UI.initBillDateSelect === 'function') UI.initBillDateSelect();
-    if (typeof UI.initMonthFilter === 'function') UI.initMonthFilter();
-    if(typeof UI.renderCategorySelector === 'function') {
-    UI.renderCategorySelector('expense');
-  }
+    // Init Komponen UI
+    UI.Settings.initTheme();
+    UI.Settings.checkPinLock();
+    initMoneyInputs(UI.Loans.calcLoanPreview); 
     
-    // 4. Render Awal
-    UI.renderWallets();
-    UI.renderBills();
-    UI.renderBudget();
-    UI.renderLoans();
-    UI.renderGoals();
-    UI.renderEmergency();
+    UI.Budget.initTypeSelector();
+    UI.Budget.initMonthFilter();
+    UI.Budget.renderCategorySelector('expense');
+    UI.Bills.initBillDateSelect();
+    
+    // Render Awal
     UI.updateUI(); 
-    
 }
