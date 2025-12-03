@@ -2,11 +2,23 @@
 <html lang="id">
 <head>  
     <script>
-        window.addEventListener('error', function(e) {
-            // Tampilkan error ke layar agar terbaca di HP
-            alert("🔥 ERROR DETECTED 🔥\n\nPesan: " + e.message + "\nFile: " + e.filename + "\nBaris: " + e.lineno);
-        });
-    </script>
+    window.onerror = function(msg, url, lineNo, columnNo, error) {
+        var string = msg.toLowerCase();
+        var substring = "script error";
+        if (string.indexOf(substring) > -1){
+            alert('Script Error: Cek Console Browser (F12) untuk detailnya.');
+        } else {
+            var message = [
+                '🕵️ Laporan Detektif:',
+                'Pesan: ' + msg,
+                'Baris: ' + lineNo,
+                'Kolom: ' + columnNo
+            ].join('\n');
+            alert(message);
+        }
+        return false;
+    };
+</script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -466,6 +478,11 @@
                     <div class="flex-between"><span data-i18n="lbl_installment">Cicilan/bln:</span> <strong id="prev-installment">Rp 0</strong></div>
                     <div class="flex-between"><span data-i18n="lbl_total_final">Total Akhir:</span> <strong id="prev-total">Rp 0</strong></div>
                 </div>
+                <div class="form-group">
+    <label style="font-size:0.8rem; color:var(--text-muted);">Ambil Modal Dari Dompet:</label>
+    <select id="l-wallet" style="padding: 10px; border-radius: 12px; background: var(--bg-input); width:100%;">
+        </select>
+</div>
                 <button class="btn-primary full-width mt-20" onclick="saveLoan()" data-i18n="btn_save">Simpan</button>
             </div>
         </div>

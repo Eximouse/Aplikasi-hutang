@@ -242,6 +242,10 @@ data.budget.forEach(b => {
     container.innerHTML = '';
     select.innerHTML = '';
     let globalTotal = 0;
+    
+    // [TAMBAHAN] Ambil elemen select di modal loan
+    const selectLoan = document.getElementById('l-wallet');
+    if(selectLoan) selectLoan.innerHTML = '';
 
     // [TAMBAHAN] Ambil elemen target wallet
     const selectTarget = document.getElementById('b-wallet-target');
@@ -274,6 +278,15 @@ data.budget.forEach(b => {
            if(selectTarget) {
             const optTarget = opt.cloneNode(true);
             selectTarget.appendChild(optTarget);
+        }
+    });
+    
+     // [TAMBAHAN] Isi dropdown di Modal Loan
+        if(selectLoan) {
+            const optLoan = document.createElement('option');
+            optLoan.value = w.id;
+            optLoan.textContent = `${w.name} (${fmtMoney(w.balance)})`;
+            selectLoan.appendChild(optLoan);
         }
     });
     
@@ -799,25 +812,52 @@ export function calcLoanPreview() {
 }
 
 export function saveLoan() {
-    const type = document.getElementById('l-type').value;
+    const type = document.getElementById('l-type').value; // piutang (kita meminjamkan) atau hutang
     const person = document.getElementById('l-person').value;
     const principal = parseMoney(document.getElementById('l-principal').value);
     const rate = parseFloat(document.getElementById('l-rate').value) || 0;
     const tenor = parseInt(document.getElementById('l-tenor').value) || 1;
     const date = document.getElementById('l-date').value;
+    const walletId = parseInt(document.getElementById('l-wallet').value); // [BARU]
 
     if(!person || !principal) return showToast(t('msg_complete_data', data.settings.lang), 'error');
 
+    // Hitung Total
     const total = principal + (principal * (rate/100) * tenor);
     
+    // 1. LOGIKA SALDO (Hanya jika tipe 'piutang' / Saya Meminjamkan)
+    if (type === 'piutang') {
+        const wallet = data.wallets.find(w => w.id === walletId);
+        if (wallet) {
+            if (wallet.balance < principal) {
+                return showToast("Saldo dompet tidak cukup untuk modal!", "error");
+            }
+            wallet.balance -= principal; // Potong Saldo
+        }
+
+        // Opsional: Catat otomatis ke Riwayat Transaksi (Budget) agar cashflow terlihat
+        data.budget.unshift({
+            id: Date.now() + 1, // +1 biar beda dikit ID nya
+            type: 'expense', // Anggap pengeluaran modal
+            amount: principal,
+            desc: `[Modal Pinjaman] ke ${person}`,
+            date: date,
+            walletId: walletId,
+            categoryId: 'invest' // Masuk kategori Investasi/Bisnis
+        });
+    }
+
+    // 2. SIMPAN DATA PINJAMAN
     data.loans.unshift({
         id: Date.now(), type, person, principal, rate, tenor, total, date,
-        paid: 0, history: [], status: 'active'
+        paid: 0, history: [], status: 'active',
+        walletId: walletId // Simpan ID wallet biar tau nanti balikin ke mana (opsional)
     });
+
     saveAppData(window.currentUser, window.dbInstance);
     closeModal('modal-loan');
     resetInputs('modal-loan');
-    showToast(t('msg_loan_saved', data.settings.lang));
+    showToast("Data tersimpan & Saldo terpotong");
     updateUI();
 }
 
@@ -825,6 +865,7 @@ export function renderLoans() {
     const activeList = document.getElementById('loan-list-active');
     const historyList = document.getElementById('loan-list-history');
     const search = document.getElementById('loan-search').value.toLowerCase();
+    
     const sortOrder = document.getElementById('filter-sort-loan').value;
     
     if(!activeList || !historyList) return;
@@ -977,13 +1018,16 @@ export function showLoanDetail(id) {
     const monthlyBill = l.total / tenorVal;
     
     let historyHtml = l.history.map((h, i) => 
-        `<div class="flex-between" style="border-bottom:1px dashed var(--border); padding:10px 0">
-            <small class="text-muted">${fmtDate(h.date, data.settings.lang)}</small>
-            <div style="display:flex; align-items:center; gap:10px;">
-                <small style="font-weight:bold;">${fmtMoney(h.amount)}</small>
-                <i class="fas fa-times-circle text-red" onclick="deletePayment(${l.id}, ${i})" style="cursor:pointer;" title="${t('tip_delete_pay', data.settings.lang)}"></i> 
-            </div>
-        </div>`
+        `<div class="mt-10">
+        <label style="font-size:0.75rem; color:var(--text-muted);">Masuk ke Dompet:</label>
+        <select id="pay-wallet" style="margin-bottom:10px; padding:8px; border-radius:8px; background:white;">
+            ${walletOptions}
+        </select>
+        <div class="flex-between">
+            <input type="text" inputmode="numeric" class="money-input" id="pay-amount" placeholder="${t('ph_amount', data.settings.lang)}" style="margin:0; width:60%">
+            <button class="btn-primary" onclick="payLoan(${l.id})" style="width:35%">${t('word_pay', data.settings.lang)}</button>
+        </div>
+    </div>`
     ).join('');
 
     const html = `
@@ -1016,7 +1060,10 @@ export function showLoanDetail(id) {
             ${historyHtml || '<small class="text-muted" style="display:block; text-align:center; margin-top:10px;">- ' + t('word_remaining', data.settings.lang) + ' 0 -</small>'}
         </div>
         <button class="btn-danger full-width mt-20" onclick="deleteItem('loans', ${l.id})">${t('btn_delete_data', data.settings.lang)}</button>
-    `;
+        let walletOptions = '';
+    data.wallets.forEach(w => {
+        walletOptions += `<option value="${w.id}">${w.name}</option>`;
+    });
     
     document.getElementById('detail-content').innerHTML = html;
     openModal('modal-detail');
@@ -1025,18 +1072,45 @@ export function showLoanDetail(id) {
 
 export function payLoan(id) {
     const amount = parseMoney(document.getElementById('pay-amount').value);
+    const walletId = parseInt(document.getElementById('pay-wallet').value); // [BARU]
+
     if(!amount || amount <= 0) return showToast(t('msg_invalid_amount', data.settings.lang), 'error');
 
     const l = data.loans.find(x => x.id === id);
     if (!l) return;
 
+    // 1. UPDATE DATA PINJAMAN
     l.paid += amount;
-    l.history.push({ date: new Date().toISOString().split('T')[0], amount: amount });
+    l.history.push({ 
+        date: new Date().toISOString().split('T')[0], 
+        amount: amount,
+        toWalletId: walletId // Simpan info masuk ke wallet mana
+    });
+
+    // 2. LOGIKA SALDO (Uang Masuk ke Dompet)
+    const wallet = data.wallets.find(w => w.id === walletId);
+    if (wallet) {
+        wallet.balance += amount; // Tambah Saldo Dompet
+    }
+
+    // 3. CATAT KE RIWAYAT TRANSAKSI (Pemasukan Bisnis)
+    // Ini penting agar Anda bisa melihat "Pemasukan" di grafik Beranda
+    data.budget.unshift({
+        id: Date.now(),
+        type: 'income',
+        amount: amount,
+        desc: `[Cicilan] ${l.person}`,
+        date: new Date().toISOString().split('T')[0],
+        walletId: walletId,
+        categoryId: 'invest' // Atau buat kategori baru 'business'
+    });
+
+    // Cek Lunas
     if(l.paid >= l.total) {
         l.status = 'completed';
-        showToast(t('msg_paid', data.settings.lang), 'success');
+        showToast("LUNAS! Saldo Bertambah", 'success');
     } else {
-        showToast(t('msg_payment_recorded', data.settings.lang));
+        showToast("Pembayaran dicatat & Saldo Bertambah");
     }
     
     saveAppData(window.currentUser, window.dbInstance);
