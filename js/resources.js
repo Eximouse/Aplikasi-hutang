@@ -214,6 +214,7 @@ export const RESOURCES = {
         cat_bonus: "Bonus",
         cat_invest: "Investasi",
         cat_others_in: "Lainnya",
+        cat_capital: "Suntik Modal",
 
         // --- [BARU] FILTER & SORTIR ---
         opt_all_time: "Semua Waktu",
@@ -443,6 +444,7 @@ export const RESOURCES = {
         cat_bonus: "Bonus",
         cat_invest: "Investment",
         cat_others_in: "Others",
+        cat_capital: "Capital Injection",
 
         // --- [NEW] FILTER & SORT ---
         opt_all_time: "All Time",

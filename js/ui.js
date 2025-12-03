@@ -16,6 +16,7 @@ const CATEGORIES = {
         { id: 'others', nameKey: 'cat_others', icon: 'fa-ellipsis-h', color: '#8395a7' }
     ],
     income: [
+        { id:'capital', nameKey: 'cat_capital', icon: 'fa-briefcase', color: '#6c5ce7' },
         { id: 'salary', nameKey: 'cat_salary', icon: 'fa-money-bill-wave', color: '#1dd1a1' },
         { id: 'bonus', nameKey: 'cat_bonus', icon: 'fa-gift', color: '#f368e0' },
         { id: 'invest', nameKey: 'cat_invest', icon: 'fa-chart-line', color: '#2e86de' },
@@ -254,9 +255,11 @@ data.budget.forEach(b => {
     data.wallets.forEach(w => {
         globalTotal += w.balance;
         let displayName = w.name;
-        if (w.type === 'cash') displayName = t('wallet_cash', data.settings.lang);
-        else if (w.type === 'bank') displayName = t('wallet_bank', data.settings.lang);
-        else if (w.type === 'ewallet') displayName = t('wallet_ewallet', data.settings.lang);
+        if (w.id <= 3) {
+            if (w.type === 'cash') displayName = t('wallet_cash', data.settings.lang);
+            else if (w.type === 'bank') displayName = t('wallet_bank', data.settings.lang);
+            else if (w.type === 'ewallet') displayName = t('wallet_ewallet', data.settings.lang);
+            }
 
         let iconClass = 'fa-wallet';
         if(w.type === 'bank') iconClass = 'fa-university';

@@ -7,7 +7,8 @@ export let data = {
     wallets: [
         { id: 1, name: 'Tunai', type: 'cash', balance: 0 },
         { id: 2, name: 'Bank/ATM', type: 'bank', balance: 0 },
-        { id: 3, name: 'E-Wallet', type: 'ewallet', balance: 0 }
+        { id: 3, name: 'E-Wallet', type: 'ewallet', balance: 0 },
+        { id: 4, name: 'Kas Bisnis', type: 'bank', balance: 0 } 
     ],
     emergency: { saved: 0, expense: 0, job: 'stable', dependents: '0', targetMonths: 6, targetAmount: 0 },
     settings: { theme: 'light', lang: 'id', pin: null }
