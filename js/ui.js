@@ -279,15 +279,13 @@ data.budget.forEach(b => {
             const optTarget = opt.cloneNode(true);
             selectTarget.appendChild(optTarget);
         }
-    });
-    
-     // [TAMBAHAN] Isi dropdown di Modal Loan
-        if(selectLoan) {
+            if(selectLoan) {
             const optLoan = document.createElement('option');
             optLoan.value = w.id;
             optLoan.textContent = `${w.name} (${fmtMoney(w.balance)})`;
             selectLoan.appendChild(optLoan);
         }
+    });
     
     document.getElementById('main-balance').textContent = fmtMoney(globalTotal);
    
