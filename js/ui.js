@@ -287,8 +287,7 @@ data.budget.forEach(b => {
             optLoan.value = w.id;
             optLoan.textContent = `${w.name} (${fmtMoney(w.balance)})`;
             selectLoan.appendChild(optLoan);
-        }
-    };
+        }    
     
     document.getElementById('main-balance').textContent = fmtMoney(globalTotal);
    
