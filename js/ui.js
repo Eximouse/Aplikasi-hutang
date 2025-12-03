@@ -287,7 +287,7 @@ data.budget.forEach(b => {
             optLoan.value = w.id;
             optLoan.textContent = `${w.name} (${fmtMoney(w.balance)})`;
             selectLoan.appendChild(optLoan);
-        }    
+        }
     
     document.getElementById('main-balance').textContent = fmtMoney(globalTotal);
    
@@ -1012,23 +1012,30 @@ export function showLoanDetail(id) {
     const remaining = l.total - l.paid;
     const typeLabel = l.type === 'piutang' ? t('word_receivable', data.settings.lang) : t('word_debt', data.settings.lang);
 
-     // [BARU] Hitung Cicilan
+    // Hitung Cicilan
     const tenorVal = parseInt(l.tenor) || 1;
     const monthlyBill = l.total / tenorVal;
     
+    // --- [PERBAIKAN 1] SIAPKAN OPSI DOMPET DULUAN ---
+    // Kode ini harus dijalankan SEBELUM kita membuat variabel html
+    let walletOptions = '';
+    data.wallets.forEach(w => {
+        // Perhatikan tanda backtick (`) di awal dan akhir baris ini
+        walletOptions += `<option value="${w.id}">${w.name}</option>`;
+    });
+    // ------------------------------------------------
+
     let historyHtml = l.history.map((h, i) => 
-        `<div class="mt-10">
-        <label style="font-size:0.75rem; color:var(--text-muted);">Masuk ke Dompet:</label>
-        <select id="pay-wallet" style="margin-bottom:10px; padding:8px; border-radius:8px; background:white;">
-            ${walletOptions}
-        </select>
-        <div class="flex-between">
-            <input type="text" inputmode="numeric" class="money-input" id="pay-amount" placeholder="${t('ph_amount', data.settings.lang)}" style="margin:0; width:60%">
-            <button class="btn-primary" onclick="payLoan(${l.id})" style="width:35%">${t('word_pay', data.settings.lang)}</button>
-        </div>
-    </div>`
+        `<div class="flex-between" style="border-bottom:1px dashed var(--border); padding:10px 0">
+            <small class="text-muted">${fmtDate(h.date, data.settings.lang)}</small>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <small style="font-weight:bold;">${fmtMoney(h.amount)}</small>
+                <i class="fas fa-times-circle text-red" onclick="deletePayment(${l.id}, ${i})" style="cursor:pointer;" title="${t('tip_delete_pay', data.settings.lang)}"></i> 
+            </div>
+        </div>`
     ).join('');
 
+    // --- [PERBAIKAN 2] MASUKKAN DROPDOWN KE DALAM HTML ---
     const html = `
         <div class="text-center mb-20">
             <h2>${l.person}</h2>
@@ -1043,26 +1050,33 @@ export function showLoanDetail(id) {
             </div>
         </div>
         <div class="text-center mb-20" style="background:var(--bg-input); padding:10px; border-radius:12px;">
-        <small class="text-muted">Periode Cicilan (${l.tenor} Bulan):</small><br>
-        <strong style="color:var(--primary); font-size:1.1rem;">${fmtMoney(monthlyBill)} / bulan</strong>
-    </div>
+            <small class="text-muted">Periode Cicilan (${l.tenor} Bulan):</small><br>
+            <strong style="color:var(--primary); font-size:1.1rem;">${fmtMoney(monthlyBill)} / bulan</strong>
+        </div>
+
         ${l.status === 'active' ? `
         <div class="card mt-20" style="background:var(--bg-input); border:none;">
             <h4><i class="fas fa-money-bill-wave"></i> ${t('word_pay', data.settings.lang)}</h4>
-            <div class="flex-between mt-10">
-                <input type="text" inputmode="numeric" class="money-input" id="pay-amount" placeholder="${t('ph_amount', data.settings.lang)}" style="margin:0; width:60%">
-                <button class="btn-primary" onclick="payLoan(${l.id})" style="width:35%">${t('word_pay', data.settings.lang)}</button>
+            
+            <div class="mt-10">
+                <label style="font-size:0.75rem; color:var(--text-muted);">Masuk ke Dompet:</label>
+                <select id="pay-wallet" style="margin-bottom:10px; padding:8px; border-radius:8px; background:white; width:100%;">
+                    ${walletOptions}
+                </select>
+                <div class="flex-between">
+                    <input type="text" inputmode="numeric" class="money-input" id="pay-amount" placeholder="${t('ph_amount', data.settings.lang)}" style="margin:0; width:60%">
+                    <button class="btn-primary" onclick="payLoan(${l.id})" style="width:35%">${t('word_pay', data.settings.lang)}</button>
+                </div>
             </div>
+
         </div>` : `<div class="text-center text-green mt-20"><strong><i class="fas fa-check"></i> ${t('msg_paid', data.settings.lang)}</strong></div>`}
+        
         <div class="mt-20">
             <h4>${t('lbl_pay_history', data.settings.lang)}</h4>
             ${historyHtml || '<small class="text-muted" style="display:block; text-align:center; margin-top:10px;">- ' + t('word_remaining', data.settings.lang) + ' 0 -</small>'}
         </div>
         <button class="btn-danger full-width mt-20" onclick="deleteItem('loans', ${l.id})">${t('btn_delete_data', data.settings.lang)}</button>
-        let walletOptions = '';
-    data.wallets.forEach(w => {
-        walletOptions += `<option value="${w.id}">${w.name}</option>`;
-    });
+    `;
     
     document.getElementById('detail-content').innerHTML = html;
     openModal('modal-detail');
