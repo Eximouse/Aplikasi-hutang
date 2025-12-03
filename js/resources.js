@@ -54,6 +54,7 @@ export const RESOURCES = {
         ph_goal_amount: "Target Nominal (Rp)",
         btn_save: "Simpan",
         goal_hint: "Klik pada kartu target untuk menambah tabungan.",
+        lbl_target_add_title: 'Tambah Tabungan',
         
         lbl_interest_rate: "Bunga (%/bln)",
         lbl_tenor_month: "Tenor (Bulan)",
@@ -284,6 +285,7 @@ export const RESOURCES = {
         ph_goal_amount: "Target Amount (Rp)",
         btn_save: "Save",
         goal_hint: "Click on a goal card to add savings.",
+        lbl_target_add_title:'Add Saving Goals',
 
         lbl_interest_rate: "Interest Rate (%/mo)",
         lbl_tenor_month: "Duration (Months)",
