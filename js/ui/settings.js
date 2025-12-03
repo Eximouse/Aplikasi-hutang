@@ -1,11 +1,11 @@
-// Bahasa, Tema, PIN, PDF, dan Backup.
-
 import { data, saveAppData } from '../db.js';
 import { t, fmtDate, fmtMoney } from '../utils.js';
 import { showToast, showConfirmDialog } from './core.js';
-import { updateUI } from './index.js';
 import { openModal, closeModal } from './nav.js';
 import { APP_KEY } from '../config.js';
+
+// [FIX] Hapus import ini
+// import { updateUI } from './index.js';
 
 // --- LANGUAGE ---
 export function renderLanguage() {
@@ -46,7 +46,7 @@ export function openLangModal() {
 export function selectLang(langCode) {
     data.settings.lang = langCode;
     saveAppData(window.currentUser, window.dbInstance);
-    updateUI();
+    if(window.updateUI) window.updateUI();
     closeModal('modal-lang');
     showToast(langCode === 'id' ? "Bahasa diganti" : "Language changed");
 }

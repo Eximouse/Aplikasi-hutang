@@ -1,10 +1,9 @@
-// Logika target tabungan.
-
 import { data, saveAppData } from '../db.js';
 import { t, fmtMoney, parseMoney } from '../utils.js';
 import { showToast } from './core.js';
-import { updateUI, deleteItem } from './index.js';
 import { openModal, closeModal } from './nav.js';
+// [FIX] Hapus import index.js
+// import { updateUI, deleteItem } from './index.js';
 
 export function addGoal() {
     const name = document.getElementById('goal-name').value;
@@ -18,7 +17,7 @@ export function addGoal() {
     document.getElementById('goal-name').value = '';
     document.getElementById('goal-amount').value = '';
     showToast(t('msg_goal_created', data.settings.lang));
-    updateUI();
+    if(window.updateUI) window.updateUI();
 }
 
 export function renderGoals() {
@@ -75,6 +74,6 @@ export function saveTargetSavings() {
         saveAppData(window.currentUser, window.dbInstance);
         closeModal('modal-target-add');
         showToast(`${t('msg_success_add', data.settings.lang)} Rp ${amount.toLocaleString()}`);
-        updateUI();
+        if(window.updateUI) window.updateUI();
     }
 }

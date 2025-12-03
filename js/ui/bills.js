@@ -1,9 +1,8 @@
-//Logika tagihan rutin.
-
 import { data, saveAppData } from '../db.js';
 import { t, fmtMoney, parseMoney } from '../utils.js';
 import { showToast } from './core.js';
-import { updateUI, deleteItem } from './index.js';
+// [FIX] Hapus import index.js
+// import { updateUI, deleteItem } from './index.js';
 
 export function initBillDateSelect() {
     const select = document.getElementById('bill-date');
@@ -95,7 +94,8 @@ export function saveBill() {
     document.getElementById('bill-name').value = '';
     document.getElementById('bill-amount').value = '';
     showToast(t('msg_trans_saved', data.settings.lang));
-    updateUI();
+    
+    if(window.updateUI) window.updateUI();
 }
 
 export function payBill(id) {
@@ -119,5 +119,6 @@ export function payBill(id) {
 
     saveAppData(window.currentUser, window.dbInstance);
     showToast(t('msg_bill_paid', data.settings.lang));
-    updateUI();
+    
+    if(window.updateUI) window.updateUI();
 }

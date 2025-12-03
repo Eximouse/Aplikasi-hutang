@@ -1,10 +1,9 @@
-// Gabungan Kalkulator dan Dana Darurat.
-
 import { data, saveAppData } from '../db.js';
 import { t, fmtMoney, parseMoney } from '../utils.js';
 import { showToast } from './core.js';
-import { updateUI } from './index.js';
 import { openModal, closeModal } from './nav.js';
+// [FIX] Hapus import index.js
+// import { updateUI } from './index.js';
 
 // --- EMERGENCY FUND ---
 export function toggleEmergencySettings() {
@@ -44,7 +43,7 @@ export function saveEmergencyProfile() {
     saveAppData(window.currentUser, window.dbInstance);
     toggleEmergencySettings();
     showToast(`${t('msg_prof_saved', data.settings.lang)} ${months} ${t('month', data.settings.lang)}`);
-    updateUI();
+    if(window.updateUI) window.updateUI();
 }
 
 export function addEmergencyFund() {
@@ -55,7 +54,7 @@ export function addEmergencyFund() {
         closeModal('modal-emergency-add');
         document.getElementById('em-add-amount').value = '';
         showToast(`${t('em_fund_title', data.settings.lang)} +${fmtMoney(amount)}`);
-        updateUI();
+        if(window.updateUI) window.updateUI();
     } else {
         showToast(t('msg_invalid_amount', data.settings.lang), 'error');
     }

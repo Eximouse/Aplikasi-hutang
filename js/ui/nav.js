@@ -1,20 +1,17 @@
-// Mengurus navigasi halaman, tab, dan modal.
-
 import { t } from '../utils.js';
 import { data } from '../db.js';
-import { renderTrendChart } from './budget.js'; 
+
+// [FIX] Jangan import budget.js di sini supaya tidak muter-muter
+// Panggil chart lewat window saja nanti
 
 export function navTo(pageId) {
-    // 1. Pindah Halaman
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const targetPage = document.getElementById(pageId);
     if(targetPage) targetPage.classList.add('active');
     
-    // 2. Update Navigasi Bawah
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     if(event && event.currentTarget) event.currentTarget.classList.add('active');
     
-    // 3. Update Header Title
     const titleKeys = {
         'page-home': 'nav_home', 
         'page-budget': 'nav_budget', 
@@ -30,15 +27,16 @@ export function navTo(pageId) {
         headerEl.textContent = t(titleKey, data.settings.lang);
     }
     
-    // 4. Atur FAB (Sembunyikan di Settings)
     const fab = document.querySelector('.fab-wrapper');
     if (fab) {
         fab.style.display = (pageId === 'page-settings') ? 'none' : 'flex';
     }   
 
-    // 5. Render Chart jika ke Home (agar animasi jalan)
     if (pageId === 'page-home') {
-        setTimeout(() => renderTrendChart(), 100);
+        // [FIX] Panggil lewat window agar aman
+        setTimeout(() => {
+            if(window.renderTrendChart) window.renderTrendChart();
+        }, 100);
     }
 }
 
@@ -82,15 +80,12 @@ function resetInputs(containerId) {
     const container = document.getElementById(containerId);
     if(!container) return;
     
-    // Reset Text Inputs
     container.querySelectorAll('input:not([type="radio"]):not([type="hidden"])').forEach(input => input.value = '');
     
-    // Reset Date to Today
     const today = new Date().toISOString().split('T')[0];
     const dateInput = container.querySelector('input[type="date"]');
     if(dateInput) dateInput.value = today;
 
-    // Reset Specific Forms
     if(containerId === 'modal-budget') {
         const defaultRadio = document.getElementById('t-out');
         if(defaultRadio) defaultRadio.checked = true;

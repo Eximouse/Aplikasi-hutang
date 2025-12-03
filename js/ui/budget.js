@@ -1,10 +1,10 @@
-// Logika transaksi, kategori, dan grafik.
-
 import { data, saveAppData } from '../db.js';
 import { t, fmtMoney, fmtDate, parseMoney } from '../utils.js';
 import { CATEGORIES, showToast } from './core.js';
 import { openModal, closeModal } from './nav.js';
-import { updateUI, deleteItem } from './index.js'; // Import aggregator
+
+// [FIX] Hapus baris import ini agar tidak circular dependency
+// import { updateUI, deleteItem } from './index.js'; 
 
 let chartInstance = null;
 let trendChartInstance = null;
@@ -41,7 +41,7 @@ export function renderCategorySelector(type = 'expense') {
     wrapper.appendChild(grid);
 }
 
-// --- INIT LISTENER TIPE TRANSAKSI (IN/OUT/TRANSFER) ---
+// --- INIT LISTENER ---
 export function initTypeSelector() {
     const radios = document.querySelectorAll('input[name="b-type"]');
     radios.forEach(r => {
@@ -59,7 +59,6 @@ export function initTypeSelector() {
                 catWrapper.style.display = 'block';
                 targetGroup.style.display = 'none';
                 lblSource.style.display = 'none';
-                
                 const defaultCat = CATEGORIES[newType][0].id;
                 document.getElementById('b-category').value = defaultCat;
                 renderCategorySelector(newType);
@@ -68,7 +67,6 @@ export function initTypeSelector() {
     });
 }
 
-// --- INIT FILTER BULAN ---
 export function initMonthFilter() {
     const select = document.getElementById('filter-month');
     if(!select) return;
@@ -82,7 +80,6 @@ export function initMonthFilter() {
         const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, '0');
-        
         const opt = document.createElement('option');
         opt.value = `${year}-${month}`;
         opt.textContent = `${monthNames[d.getMonth()]} ${year}`;
@@ -91,7 +88,7 @@ export function initMonthFilter() {
     }
 }
 
-// --- RENDER BUDGET LIST ---
+// --- RENDER BUDGET ---
 export function renderBudget() {
     const list = document.getElementById('budget-list');
     const searchInput = document.getElementById('budget-search');
@@ -105,47 +102,38 @@ export function renderBudget() {
     let displayedData = [...data.budget];
     const keyword = searchInput ? searchInput.value.toLowerCase() : "";
 
-    // Filter
     displayedData = displayedData.filter(b => {
         const matchesKeyword = b.desc.toLowerCase().includes(keyword);
         const matchesMonth = filterMonth === 'all' || b.date.startsWith(filterMonth);
         return matchesKeyword && matchesMonth;
     });
 
-    // Sorting
     displayedData.sort((a, b) => {
         const dateA = new Date(a.date);
         const dateB = new Date(b.date);
         return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
     });
 
-    // Render
     displayedData.forEach(b => {
         if (b.type === 'income') income += b.amount; 
         else if (b.type === 'expense') expense += b.amount;
         
         let cat = null;
-        let walletName = 'Dompet';
-        
-        // Cari Kategori
-        const allCats = [...CATEGORIES.expense, ...CATEGORIES.income];
-        if (b.categoryId) cat = allCats.find(c => c.id === b.categoryId);
+        if (b.categoryId) {
+            const allCats = [...CATEGORIES.expense, ...CATEGORIES.income];
+            cat = allCats.find(c => c.id === b.categoryId);
+        }
   
-        // Handle Transfer Display
         if (b.type === 'transfer') {
             cat = { name: t('lbl_transfer_type', data.settings.lang), icon: 'fa-exchange-alt', color: '#2e86de' };
-            const targetW = data.wallets.find(w => w.id == b.targetWalletId);
-            if(targetW) walletName += ` -> ${targetW.name}`;
         }
         
-        // Fallback Category
         if (!cat) cat = { 
             nameKey: b.type === 'income' ? 'lbl_income_type' : 'lbl_expense_type', 
             icon: b.type === 'income' ? 'fa-arrow-down' : 'fa-arrow-up', 
             color: '#888' 
         };
         
-        // Finalize Labels
         let catName = b.type === 'transfer' ? cat.name : (cat.nameKey ? t(cat.nameKey, data.settings.lang) : cat.name);
         let amountClass = 'text-red';
         let amountSign = '-';
@@ -154,6 +142,7 @@ export function renderBudget() {
 
         const el = document.createElement('div');
         el.className = `card list-item`; 
+        // deleteItem ada di window global
         el.innerHTML = `
             <div style="display:flex; align-items:center; gap:12px;">
                 <div style="background:${cat.color}; width:40px; height:40px; border-radius:12px; display:grid; place-items:center; color:white; flex-shrink:0;">
@@ -177,7 +166,6 @@ export function renderBudget() {
         list.appendChild(el);
     });
     
-    // Update Dashboard Info
     document.getElementById('main-income').textContent = fmtMoney(income);
     document.getElementById('main-expense').textContent = fmtMoney(expense);
     
@@ -205,7 +193,6 @@ export function saveBudget() {
     if (type === 'transfer' && walletId === targetWalletId) return showToast(t('msg_same_wallet', data.settings.lang), 'error');
 
     if (id) {
-        // Edit Mode
         const oldItem = data.budget.find(b => b.id == id);
         if (oldItem) {
             oldItem.type = type;
@@ -213,7 +200,6 @@ export function saveBudget() {
             oldItem.desc = desc;
             oldItem.date = date;
             oldItem.walletId = walletId;
-            
             if (type === 'transfer') {
                 oldItem.targetWalletId = targetWalletId;
                 oldItem.categoryId = null;
@@ -224,7 +210,6 @@ export function saveBudget() {
             showToast("Transaksi berhasil diedit");
         }
     } else {
-        // Create Mode
         data.budget.unshift({ 
             id: Date.now(), type, amount, desc, date, walletId, 
             categoryId: (type === 'transfer' ? null : categoryId), 
@@ -235,7 +220,9 @@ export function saveBudget() {
     
     saveAppData(window.currentUser, window.dbInstance);
     closeModal('modal-budget');
-    updateUI(); 
+    
+    // [FIX] Gunakan window.updateUI
+    if(window.updateUI) window.updateUI(); 
 }
 
 export function editBudget(id) {
@@ -252,12 +239,10 @@ export function editBudget(id) {
     const targetGroup = document.getElementById('target-wallet-group');
     const lblSource = document.getElementById('lbl-wallet-source');
     
-    // Set Radio Type
     if (item.type === 'income') document.getElementById('t-in').checked = true;
     else if (item.type === 'transfer') document.getElementById('t-trans').checked = true;
     else document.getElementById('t-out').checked = true;
 
-    // Toggle UI Inputs
     if (item.type === 'transfer') {
         catWrapper.style.display = 'none';
         targetGroup.style.display = 'block';
@@ -270,15 +255,12 @@ export function editBudget(id) {
         document.getElementById('b-category').value = item.categoryId || (item.type === 'income' ? 'salary' : 'food');
         renderCategorySelector(item.type);
     }
-
     openModal('modal-budget');
 }
 
-// --- CHARTS ---
 function renderChart(income, expense) {
     const ctx = document.getElementById('mainChart');
     if(!ctx) return;
-
     if(chartInstance) chartInstance.destroy();
     if(income === 0 && expense === 0) { income = 1; expense = 0; }
     
@@ -300,7 +282,6 @@ function renderChart(income, expense) {
 export function renderTrendChart() {
     const ctx = document.getElementById('trendChart');
     if(!ctx) return; 
-
     const labels = [];
     const dataPoints = [];
     const today = new Date();

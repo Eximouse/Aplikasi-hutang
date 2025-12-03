@@ -1,4 +1,3 @@
-// js/main.js
 import { firebaseConfig } from './config.js';
 import { data, loadAppData, saveAppData, setupRealtimeListener } from './db.js';
 import { setupAuthListeners, logoutUser } from './auth.js';
@@ -7,10 +6,14 @@ import { initMoneyInputs } from './utils.js';
 // --- IMPORT DARI STRUKTUR UI BARU ---
 import * as UI from './ui/index.js';
 
-// Inisialisasi Event Listener UI (Tombol Konfirmasi)
+// Inisialisasi Event Listener UI
 UI.setupConfirmListener();
 
-// --- BRIDGE KE WINDOW (Agar onclick di HTML berfungsi) ---
+// --- BRIDGE KE WINDOW ---
+// [PENTING] Expose updateUI agar file anak bisa panggil tanpa circular dependency
+window.updateUI = UI.updateUI;
+window.renderTrendChart = UI.Budget.renderTrendChart;
+
 // Navigasi & Modal
 window.navTo = UI.Nav.navTo;
 window.switchTab = UI.Nav.switchTab;
@@ -34,7 +37,7 @@ window.payLoan = UI.Loans.payLoan;
 window.editBudget = UI.Budget.editBudget;
 window.showLoanDetail = UI.Loans.showLoanDetail;
 window.deletePayment = UI.Loans.deletePayment;
-window.deleteItem = UI.deleteItem; // Global Delete
+window.deleteItem = UI.deleteItem; 
 window.renderBudget = UI.Budget.renderBudget;
 window.renderLoans = UI.Loans.renderLoans;
 

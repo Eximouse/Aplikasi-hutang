@@ -1,20 +1,18 @@
-// ​Logika hutang piutang.
-
 import { data, saveAppData } from '../db.js';
 import { t, fmtMoney, parseMoney, fmtDate, initMoneyInputs } from '../utils.js';
 import { showToast, showConfirmDialog } from './core.js';
-import { updateUI, deleteItem } from './index.js';
 import { openModal, closeModal } from './nav.js';
+
+// [FIX] Hapus import ini
+// import { updateUI, deleteItem } from './index.js';
 
 export function calcLoanPreview() {
     const p = parseMoney(document.getElementById('l-principal').value) || 0;
     const r = parseFloat(document.getElementById('l-rate').value) || 0;
     const t = parseFloat(document.getElementById('l-tenor').value) || 1;
-
     const totalInterest = p * (r/100) * t;
     const total = p + totalInterest;
     const installment = total / t;
-
     document.getElementById('prev-total').textContent = fmtMoney(total);
     document.getElementById('prev-installment').textContent = fmtMoney(installment);
 }
@@ -38,7 +36,8 @@ export function saveLoan() {
     saveAppData(window.currentUser, window.dbInstance);
     closeModal('modal-loan');
     showToast(t('msg_loan_saved', data.settings.lang));
-    updateUI();
+    
+    if(window.updateUI) window.updateUI();
 }
 
 export function renderLoans() {
@@ -60,17 +59,14 @@ export function renderLoans() {
         if (l.status === 'active') {
             const remaining = l.total - l.paid;
             if(l.type === 'piutang') totPiutang += remaining; else totHutang += remaining;
-
             const transDate = new Date(l.date); transDate.setHours(0,0,0,0);
             const tenor = parseInt(l.tenor) || 1;
             const installmentAmount = l.total / tenor;
             let monthsPaid = Math.floor((l.paid + 100) / installmentAmount); 
             if (monthsPaid >= tenor) monthsPaid = tenor - 1;
-
             let nextDueDate = new Date(transDate);
             nextDueDate.setMonth(transDate.getMonth() + (monthsPaid + 1));
             nextDueDateObj = nextDueDate;
-
             const diffTime = nextDueDate - today;
             diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         }
@@ -95,17 +91,10 @@ export function renderLoans() {
              const installmentAmount = l.total / tenor;
              let monthsPaid = Math.floor((l.paid + 100) / installmentAmount);
              const currentInstallmentNo = Math.min(monthsPaid + 1, tenor);
-
              progressLabel = `Cicilan ${currentInstallmentNo}/${tenor}`;
-
-             if (l.diffDays === 0) {
-                dueStatusHTML = `<small class="badge-gray" style="color:var(--warning); animation: pulse 1.5s infinite;"><i class="fas fa-exclamation-circle"></i> ${t('sts_due_today', data.settings.lang)}</small>`;
-            } else if (l.diffDays > 0) {
-                const prefix = data.settings.lang === 'id' ? 'H-' : 'Due ';
-                dueStatusHTML = `<small style="color:var(--primary); font-weight:700; font-size: 0.75rem;"><i class="fas fa-clock"></i> ${prefix}${l.diffDays} &bull; ${shortDate}</small>`;
-            } else {
-                dueStatusHTML = `<small class="badge-gray" style="color:var(--danger);">${t('sts_late', data.settings.lang)} ${Math.abs(l.diffDays)} ${t('sts_day', data.settings.lang)}</small>`;
-            }
+             if (l.diffDays === 0) dueStatusHTML = `<small class="badge-gray" style="color:var(--warning); animation: pulse 1.5s infinite;"><i class="fas fa-exclamation-circle"></i> ${t('sts_due_today', data.settings.lang)}</small>`;
+             else if (l.diffDays > 0) { const prefix = data.settings.lang === 'id' ? 'H-' : 'Due '; dueStatusHTML = `<small style="color:var(--primary); font-weight:700; font-size: 0.75rem;"><i class="fas fa-clock"></i> ${prefix}${l.diffDays} &bull; ${shortDate}</small>`; }
+             else dueStatusHTML = `<small class="badge-gray" style="color:var(--danger);">${t('sts_late', data.settings.lang)} ${Math.abs(l.diffDays)} ${t('sts_day', data.settings.lang)}</small>`;
         } else {
             dueStatusHTML = `<small class="badge-gray" style="color:var(--success);"><i class="fas fa-check"></i> LUNAS</small>`;
             progressLabel = "Selesai";
@@ -222,7 +211,7 @@ export function payLoan(id) {
     
     saveAppData(window.currentUser, window.dbInstance);
     closeModal('modal-detail');
-    updateUI(); 
+    if(window.updateUI) window.updateUI(); 
 }
 
 export function deletePayment(loanId, historyIndex) {
@@ -235,7 +224,7 @@ export function deletePayment(loanId, historyIndex) {
         l.history.splice(historyIndex, 1);
         if (l.paid < l.total) l.status = 'active';
         saveAppData(window.currentUser, window.dbInstance);
-        updateUI(); 
+        if(window.updateUI) window.updateUI(); 
         showLoanDetail(loanId); 
         showToast(t('msg_pay_deleted', data.settings.lang));
     });
