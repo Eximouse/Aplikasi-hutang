@@ -1,6 +1,6 @@
 // js/ui.js
 import { data, saveAppData } from './db.js';
-import { t, fmtMoney, fmtDate, parseMoney, initMoneyInputs } from './utils.js';
+import { t, fmtMoney, fmtDate, parseMoney, initMoneyInputs, hashPin } from './utils.js';
 import { APP_KEY } from './config.js';
 
 // [BARU] Definisi Kategori
@@ -1367,22 +1367,40 @@ export function pressPin(key) {
     if (currentPinInput.length === 4) setTimeout(validatePin, 200);
 }
 
-function validatePin() {
-    const savedPin = data.settings.pin;
+async function validatePin() {
+    // Ambil PIN yang tersimpan (sekarang isinya harus hash)
+    const savedPinHash = data.settings.pin;
     const dots = document.querySelectorAll('.dot');
+    
     if (isSettingUpPin) {
-        data.settings.pin = currentPinInput;
+        // --- PROSES PEMBUATAN PIN BARU ---
+        
+        // 1. Enkripsi input user menjadi Hash
+        const hashed = await hashPin(currentPinInput);
+        
+        // 2. Simpan Hash-nya, BUKAN angkanya
+        data.settings.pin = hashed;
         saveAppData(window.currentUser, window.dbInstance);
+        
         showToast(t('pin_set', data.settings.lang), "success");
         document.getElementById('pin-overlay').classList.add('hidden');
         currentPinInput = "";
         isSettingUpPin = false;
         updatePinButtonText();
+        
     } else {
-        if (currentPinInput === savedPin) {
+        // --- PROSES LOGIN (BUKA KUNCI) ---
+        
+        // 1. Enkripsi input user saat ini
+        const inputHash = await hashPin(currentPinInput);
+        
+        // 2. Bandingkan Hash Input vs Hash Tersimpan
+        if (inputHash === savedPinHash) {
+            // Jika Cocok: Buka Aplikasi
             document.getElementById('pin-overlay').classList.add('hidden');
             currentPinInput = "";
         } else {
+            // Jika Salah: Tampilkan Error & Goyang
             dots.forEach(d => d.classList.add('error'));
             setTimeout(() => {
                 dots.forEach(d => { d.classList.remove('error'); d.classList.remove('filled'); });

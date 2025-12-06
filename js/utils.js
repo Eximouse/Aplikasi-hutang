@@ -48,3 +48,12 @@ export function initMoneyInputs(callbackCalc) {
         });
     });
 }
+
+// [TAMBAHAN KEAMANAN]
+// Fungsi untuk mengubah PIN menjadi kode acak (Hash SHA-256)
+export async function hashPin(pinString) {
+    const msgBuffer = new TextEncoder().encode(pinString);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
